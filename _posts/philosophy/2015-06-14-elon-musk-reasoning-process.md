@@ -1,5 +1,5 @@
 ---
-layout: post
+layout: article
 title: Elon Musk's Reasoning Process
 ---
 

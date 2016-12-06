@@ -1,5 +1,5 @@
 ---
-layout: post
+layout: article
 title: How to work with Jupyter Notebook on a remote machine (Linux)
 ---
 

@@ -1,5 +1,5 @@
 ---
-layout: post
+layout: article
 title: A introduction to Neural Networks without any formula
 ---
 
