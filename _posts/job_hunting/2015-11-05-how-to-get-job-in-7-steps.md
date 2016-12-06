@@ -1,5 +1,5 @@
 ---
-layout: post
+layout: article
 title: How to get the job you want after graduation in 7 steps
 ---
 
