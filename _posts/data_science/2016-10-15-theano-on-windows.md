@@ -1,5 +1,5 @@
 ---
-layout: post
+layout: article
 title: How to Install Theano on Windows 10 64b to try deep learning on GPUs
 ---
 

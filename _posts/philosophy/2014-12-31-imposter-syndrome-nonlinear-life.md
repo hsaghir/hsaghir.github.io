@@ -1,5 +1,5 @@
 ---
-layout: post
+layout: article
 title: impostor syndrome or nonlinear life?
 ---
 
