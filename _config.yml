@@ -1,11 +1,11 @@
 # Site wide configuration
 
-title: "My Site"
-description: "This is a description of my awesome site."
+title: "Hamidreza Saghir's Blog"
+description: "Data Scientist - PhD Candidate at University of Toronto"
 logo: # 120x120 px default image used for Twitter summary card
 teaser: # 400x250 px default teaser image used in image archive grid
 locale: en
-url:
+url: hsaghir.github.io
 feed:
   path: atom.xml
 
@@ -26,15 +26,15 @@ gems:
 
 # Site owner
 owner:
-  name:
-  email:
-  twitter:
+  name: Hamidreza Saghir
+  email: h.saghir@mail.utoronto.ca
+  twitter: hrsaghir
   google:
     ad-client:
     ad-slot:
   bio:
-  avatar: bio-photo.jpg # 160x160 px image for author byline
-  disqus-shortname:
+  avatar: https://github.com/hsaghir.png # 160x160 px image for author byline
+  disqus-shortname: hsaghir-github-io
 
 
 include:
