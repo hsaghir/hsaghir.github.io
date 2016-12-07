@@ -1,6 +1,9 @@
 ---
 layout: article
 title: How to Install Theano on Windows 10 64b to try deep learning on GPUs
+comments: true
+image:
+  feature: Deep_RBM.png
 ---
 
 [Deep learning](http://en.wikipedia.org/wiki/Deep_learning) is hot! Mostly due to significantly improved [results](http://www.technologyreview.com/s/513696/deep-learning/) that you might have heard about. The use of graphical processing units ([GPUs](http://en.wikipedia.org/wiki/Graphics_processing_unit)) that can perform many calculations in parallel has been instrumental to these advancements. Nvidia has been a pioneer in this and you can try deep learning on their GPUs with the least hassle! The concepts behind deep learning are actually very simple and algorithms are more than two decades old. They are just surprisingly easy to understand conceptually if you know simple linear algebra and math although there are many tricks to make them work better. Check out Chris Olah's [blog](http://colah.github.io/) for more on that. What's different today from say 20 years ago then? Well, mostly there is tons of very large structured datasets available and we've figured out we can use GPUs. So if you want to get a taste of deep learning for yourself what you need to do is to try training neural networks with GPUs to get a sense of how things work. You don't even need a fancy GPU to get started. My old laptop has an old [GeForce GT 630M GPU](http://www.geforce.com/hardware/notebook-gpus/geforce-gt-630m) and it still gives me a roughly 8-10 times faster computation on simple neural networks than my core i7 CPU.
