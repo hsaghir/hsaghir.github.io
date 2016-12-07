@@ -2,7 +2,7 @@
 
 title: "HSaghir's Blog"
 description: "Data Scientist - PhD Candidate at University of Toronto"
-logo: # 120x120 px default image used for Twitter summary card
+logo: avatar.jpg # 120x120 px default image used for Twitter summary card
 teaser: teaser.jpg # 400x250 px default teaser image used in image archive grid
 locale: en
 url:
