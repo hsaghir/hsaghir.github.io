@@ -1,6 +1,7 @@
 ---
 layout: article
 title: impostor syndrome or nonlinear life?
+comments: true
 ---
 
 
