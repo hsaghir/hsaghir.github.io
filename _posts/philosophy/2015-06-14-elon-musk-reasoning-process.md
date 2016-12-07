@@ -3,7 +3,7 @@ layout: article
 title: Elon Musk's Reasoning Process
 comments: true
 image:
-  feature: Elon_Musk_-_The_Summit_2013.jpg
+  teaser: Elon_Musk_-_The_Summit_2013.jpg
 ---
 
 

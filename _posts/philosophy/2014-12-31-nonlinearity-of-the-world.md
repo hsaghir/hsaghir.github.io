@@ -3,7 +3,7 @@ layout: article
 title: nonlinearity, why it makes sense to think big
 comments: true
 image:
-  feature: nonlinear-life.jpg
+  teaser: nonlinear-life.jpg
 ---
 
 
