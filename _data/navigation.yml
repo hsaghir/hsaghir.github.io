@@ -4,3 +4,12 @@
   url:
   excerpt:
   image:
+
+- title: About
+  url: /about/
+
+- title: Research
+  url: /Research/
+
+- title: Subscribe
+  url: /subscribe/
