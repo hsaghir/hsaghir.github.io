@@ -33,7 +33,8 @@ We need to sample the hidden code from its distribution to be able to generate d
 In classic version of neural networks we could simply measure the error of network outputs with desired target value using a simple mean square error. But now that we are dealing with distributions, MSE is no longer a good error metric. So instead, loosely speaking, we use another metric for measuring the difference between two distributions i.e. [KL-Divergence](https://www.quora.com/What-is-a-good-laymans-explanation-for-the-Kullback-Leibler-Divergence). It turns out that this distance between output and data distributions is not very easy to minimize either. However using some math, we know that this distance comprises of two main parts and that it is always positive. So instead of minimizing the whole thing, we can maximize a lower bound (ELBO) on the smaller term. If after maximizing, the lower bound is close to the output distribution, then the distance is close to zero and voila! we have minimized the error distance. The algorithm we use to maximize the lower bound is the exact opposite of gradient descent. Instead of going in the reverse direction of the gradient to get to the minimum, we go toward the positive direction to get to the maximum, so it's now called gradient ascent! This whole algorithm is called "autoencoding variational bayes"!
 
 So here is a high level pseudo-code for the architecture of a VAE:
-'''
+
+```
 
 network= {
 
@@ -62,7 +63,7 @@ cost={
 
 stochastic_gradient_descent(data, network, cost_total)
 
-'''
+```
 
 Now that the intuition is clear, take a look at [this](https://github.com/fchollet/keras/blob/master/examples/variational_autoencoder.py) code that puts these intuitions into practice and makes the understanding more concrete. The code is useful even if you have never worked with Keras.
 
