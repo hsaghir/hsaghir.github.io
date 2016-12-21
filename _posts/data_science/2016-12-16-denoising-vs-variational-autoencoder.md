@@ -17,7 +17,7 @@ I start with a short history. In the 90s, a few researchers suggested a probabil
 
 The probabilistic interpretation relaxes the rigid constraint of a single value for each parameter in the network by assuming a statistical distributions for each parameter. So for example, if in classical neural networks we calculated a weight as w_i=0.7, in the probabilistic version we calculate a Gaussian distribution around mean u_i=0.7 and some variance v_i=0.1, i.e. w_i=N(2, 0.1). This is done for all the weights but not biases of the network. This assumption will convert the inputs, hidden representations, and the outputs of a neural network to probabilistic random variables within a directed graphical model. Such a network is called a bayesian neural network or BNN.
 
-![alt text](/images/weight_2_dist.png "parameters to distributions")
+![alt text](/images/weight_2_dist.jpg "parameters to distributions")
 
 
 The goal of learning would now be to find the parameters of the mentioned distributions instead of single-value weights. This learning is now called "inference" in probabilistic terms since we want to infer distributions for weights from our data distribution. Inference in a Bayes net corresponds to calculating the conditional probability of latent variables with respect to the data, or put simply, finding the mean and variance for Gaussian distributions over parameters. 
