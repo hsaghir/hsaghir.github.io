@@ -1,7 +1,7 @@
 # Site wide configuration
 
-title: "HSaghir's Blog"
-description: "Data Scientist - PhD Candidate at University of Toronto"
+title: "Intuitions behind the world"
+description: "Data Scientist/AI Researcher - PhD Candidate at University of Toronto"
 logo: avatar.jpg # 120x120 px default image used for Twitter summary card
 teaser: teaser.jpg # 400x250 px default teaser image used in image archive grid
 locale: en
@@ -27,12 +27,12 @@ gems:
 # Site owner
 owner:
   name: Hamidreza Saghir
-  email: h.saghir@mail.utoronto.ca
+  email: saghir.hr@gmail.com
   twitter: hrsaghir
   google:
     ad-client:
     ad-slot:
-  bio: Data Scientist - PhD Candidate at University of Toronto
+  bio: Data Scientist/AI Researcher - PhD Candidate at University of Toronto
   avatar: avatar.jpg # 160x160 px image for author byline
   disqus-shortname: hsaghir-github-io
 
