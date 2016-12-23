@@ -1,6 +1,6 @@
 ---
 layout: article
-title: A introduction to Neural Networks without any formula
+title: An introduction to Neural Networks without any formula
 comments: true
 image:
   teaser: Aneuron.jpg
