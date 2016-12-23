@@ -1,6 +1,6 @@
 ---
 layout: article
-title: Denoising autoencoders vs. variational autoencoders 
+title: An intuitive understanding of variational autoencoders without any formula 
 comments: true
 image:
   teaser: Autoencoder_structure.png
