@@ -3,7 +3,7 @@ layout: article
 title: An intuitive understanding of variational autoencoders without any formula 
 comments: true
 image:
-  teaser: Autoencoder_structure.png
+  teaser: VAE_intuitions/Autoencoder_structure.png
 ---
 
 I love the simplicity of [autoencoders](https://en.wikipedia.org/wiki/Autoencoder) as a very intuitive [unsupervised learning](https://en.wikipedia.org/wiki/Unsupervised_learning) method. They are in the simplest case, a three layer [neural network](https://hsaghir.github.io/a-primer-on-neural-networks/). In the first layer the data comes in, the second layer typically has smaller number of nodes than the input and the third layer is similar to the input layer. These layers are usually fully connected with each other. Such networks are called auto-encoders since they first "encode" the input to a hidden code and then "decode" it back from the hidden representation. They can be trained by simply measuring the reconstruction error and [back-propagating](https://hsaghir.github.io/a-primer-on-neural-networks/) it to the network's parameters. If you add noise to the input before sending it through the network, they can learn better and in that case, they are called [denoising autoencoders](https://en.wikipedia.org/wiki/Autoencoder). They are useful because they help with understanding the data by trying to extract regularities in them and can compress them into a lower dimensional code.
@@ -31,15 +31,6 @@ Let's get back to the bayesian net, since parameters now have distributions, the
 We need to sample the hidden code from its distribution to be able to generate data (hidden code is a distribution not a single value anymore). Therefore to make it differentiable, we treat the mean and variances of the distributions as traditional network parameters and multiply the variance by a sample from a normal noise generator to add randomness. By parameterizing the hidden distribution this way, we can backpropagate the gradient to the parameters of the encoder and train the whole network with stochastic gradient descent. This procedure will allow us to learn mean and variance values for the hidden code and it's called the ["re-parameterization trick"](http://stats.stackexchange.com/questions/199605/how-does-the-reparameterization-trick-for-vaes-work-and-why-is-it-important). It is important to appreciate the importance of the fact that the whole network is now differentiable. This means that optimization techniques can now be used to solve the inference problem efficiently. 
 
 In classic version of neural networks we could simply measure the error of network outputs with desired target value using a simple [mean square error](https://en.wikipedia.org/wiki/Mean_squared_error). But now that we are dealing with distributions, MSE is no longer a good error metric. So instead, loosely speaking, we use another metric for measuring the difference between two distributions i.e. [KL-Divergence](https://www.quora.com/What-is-a-good-laymans-explanation-for-the-Kullback-Leibler-Divergence). It turns out that this distance between output and data distributions is not very easy to minimize either [2]. However, using some math, we know that this distance comprises of two main parts and that it is always positive. So instead of minimizing the whole thing, we can maximize a lower bound (ELBO) on the smaller term [4]. If after maximizing, the lower bound is close to the output distribution, then the distance is close to zero and voila! we have minimized the error distance. The algorithm we use to maximize the lower bound is the exact opposite of gradient descent. Instead of going in the reverse direction of the gradient to get to the minimum, we go toward the positive direction to get to the maximum, so it's now called gradient ascent! This whole algorithm is called "autoencoding variational bayes" [1]! After we are done with the learning we can see the latent space of our VAE and generate samples from it. Pretty cool, eh!?
-
-Here are the results for a simple VAE trained on the MNIST dataset: 
-
-![alt text](/images/VAE_intuitions/latent_space.jpg "VAE Latent space")
-
-![alt text](/images/VAE_intuitions/manifold.jpg "VAE generated samples")
-
-
-
 
 Here is a high level pseudo-code for the architecture of a VAE to put things into perspective:
 
@@ -74,7 +65,12 @@ stochastic_gradient_descent(data, network, cost_total)
 
 ```
 
-Now that the intuition is clear, take a look at [this](https://github.com/fchollet/keras/blob/master/examples/variational_autoencoder.py) code that puts these intuitions into practice and makes the understanding more concrete. The code is useful even if you have never worked with Keras.
+Now that the intuition is clear, [here is a jupyter notebook](https://github.com/hsaghir/VAE_intuitions/blob/master/VAE_MNIST_keras.ipynb) for playing with VAEs, if you like to learn more. The notebook is based on [this](https://github.com/fchollet/keras/blob/master/examples/variational_autoencoder.py) keras example. The resulting learned latent space of the encoder and the manifold of a simple VAE trained on the MNIST dataset are below. 
+
+![alt text](/images/VAE_intuitions/latent_space.jpg "VAE Latent space")
+
+![alt text](/images/VAE_intuitions/manifold.jpg "VAE generated samples")
+
 
 references:
 
