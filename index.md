@@ -17,7 +17,7 @@ title: ""
 {% endfor %}
 </div>
 
-<div class="tiles">
+<!-- <div class="tiles">
 <h3>Job Hunting</h3>
 {% for post in site.categories.job %}
   {% include post-grid.html %}
@@ -29,4 +29,4 @@ title: ""
 {% for post in site.categories.philosophy %}
   {% include post-grid.html %}
 {% endfor %}
-</div>
+</div> -->
