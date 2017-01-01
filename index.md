@@ -7,7 +7,7 @@ title: ""
 <div class="tiles">
 <h3>Deep Learning</h3>
 {% for post in site.categories.data_science %}
-  {% include post-grid.html %}
+  {% include post-list.html %}
 {% endfor %}
 </div>
 
