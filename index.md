@@ -5,7 +5,8 @@ title: ""
 ---
 
 <div class="tiles">
-{% for post in site.posts %}
+# DEEP LEARNING
+{% for post in site.posts.data_science %}
 	{% include post-grid.html %}
 {% endfor %}
 </div><!-- /.tiles -->
