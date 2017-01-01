@@ -7,15 +7,14 @@ title: ""
 <div class="tiles">
 <h3>Deep Learning</h3>
 {% for post in site.categories.data_science %}
-  {% include post-list.html %}
+  {% include post-grid.html %}
 {% endfor %}
-</div>
 
-<div class="tiles">
 <h3>Job Hunting</h3>
 {% for post in site.categories.job %}
   {% include post-grid.html %}
 {% endfor %}
+
 </div>
 
 <div class="tiles">
