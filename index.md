@@ -9,15 +9,18 @@ title: ""
     {% for post in site.categories.data_science %}
       {% include post-grid.html %}
     {% endfor %}
+</div>
 
+<div class="tiles">
   <h3>Job Hunting</h3><br />
     {% for post in site.categories.job %}
       {% include post-grid.html %}
     {% endfor %}
-  <br />
+</div>
+
+<div class="tiles">
   <h3>Philosophy</h3><br />
     {% for post in site.categories.philosophy %}
       {% include post-grid.html %}
     {% endfor %}
 </div>
-
