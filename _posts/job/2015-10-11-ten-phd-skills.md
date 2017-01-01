@@ -2,6 +2,7 @@
 layout: article
 title: 10 skills PhDs master that give them an edge over other job seekers 
 comments: true
+categories: job
 image:
   teaser: 10-phd-skills.jpg
 ---

@@ -2,6 +2,7 @@
 layout: article
 title: How to Install Theano on Windows 10 64b to try deep learning on GPUs
 comments: true
+categories: data_science
 image:
   teaser: Deep_RBM.png
 ---

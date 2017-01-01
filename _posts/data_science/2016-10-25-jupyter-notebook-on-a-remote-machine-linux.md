@@ -2,6 +2,7 @@
 layout: article
 title: How to work with Jupyter Notebook on a remote machine (Linux)
 comments: true
+categories: data_science
 image:
   teaser: jupyter-main-logo.svg
 ---
