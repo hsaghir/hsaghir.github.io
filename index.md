@@ -4,9 +4,29 @@ permalink: /
 title: ""
 ---
 
-<div class="tiles">
-<h2>Deep Learning Intuitions</h2>
+<!-- <div class="tiles">
 {% for post in site.posts %}
 	{% include post-grid.html %}
 {% endfor %}
-</div><!-- /.tiles -->
+</div> -->
+
+<div class="tiles">
+<h3>Deep Learning</h3>
+{% for post in site.categories.data_science %}
+  {% include post-grid.html %}
+{% endfor %}
+</div>
+
+<div class="tiles">
+<h3>Job Hunting</h3>
+{% for post in site.categories.job %}
+  {% include post-grid.html %}
+{% endfor %}
+</div>
+
+<div class="tiles">
+<h3>Philosophy</h3>
+{% for post in site.categories.philosophy %}
+  {% include post-grid.html %}
+{% endfor %}
+</div>

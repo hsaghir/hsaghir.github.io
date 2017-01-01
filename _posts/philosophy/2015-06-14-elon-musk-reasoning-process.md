@@ -2,6 +2,7 @@
 layout: article
 title: Elon Musk's Reasoning Process
 comments: true
+category: philosophy
 image:
   teaser: Elon_Musk_-_The_Summit_2013.jpg
 ---

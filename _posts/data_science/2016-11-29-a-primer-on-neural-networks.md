@@ -2,6 +2,7 @@
 layout: article
 title: An introduction to Neural Networks without any formula
 comments: true
+categories: data_science
 image:
   teaser: Aneuron.jpg
 ---

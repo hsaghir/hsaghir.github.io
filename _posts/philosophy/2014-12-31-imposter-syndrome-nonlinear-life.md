@@ -2,6 +2,7 @@
 layout: article
 title: impostor syndrome or nonlinear life?
 comments: true
+category: philosophy
 image:
   teaser: nonlinear_dynamical_system.jpg
 ---

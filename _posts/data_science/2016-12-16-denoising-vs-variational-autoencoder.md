@@ -2,6 +2,7 @@
 layout: article
 title: An intuitive understanding of variational autoencoders without any formula 
 comments: true
+categories: data_science
 image:
   teaser: VAE_intuitions/Autoencoder_structure.png
 ---

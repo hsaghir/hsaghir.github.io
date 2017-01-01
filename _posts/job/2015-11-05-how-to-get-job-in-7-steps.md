@@ -2,6 +2,7 @@
 layout: article
 title: How to get the job you want after graduation in 7 steps
 comments: true
+categories: job
 image:
   teaser: job-in-7-steps.jpg
 ---
