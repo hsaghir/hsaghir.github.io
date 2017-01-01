@@ -1,0 +1,11 @@
+---
+layout: archive
+permalink: /job
+title: "Job Hunting"
+---
+
+<div class="tiles">
+  {% for post in site.job %}
+    {% include post-grid.html %}
+  {% endfor %}
+</div>
