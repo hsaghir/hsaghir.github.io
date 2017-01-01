@@ -4,14 +4,12 @@ permalink: /
 title: ""
 ---
 
-<div class="tiles">
+<div>
   <h3>Deep Learning</h3>
     {% for post in site.categories.data_science %}
       {% include post-grid.html %}
     {% endfor %}
 </div>
-
-::after
 
 <div>
   <h3>Job Hunting</h3>
@@ -19,8 +17,6 @@ title: ""
       {% include post-grid.html %}
     {% endfor %}
 </div>
-
-::after
 
 <div>
   <h3>Philosophy</h3>
