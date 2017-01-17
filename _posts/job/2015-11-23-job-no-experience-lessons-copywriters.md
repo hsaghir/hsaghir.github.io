@@ -4,7 +4,7 @@ title: How to get the job you want with no experience, lessons from top copywrit
 comments: true
 categories: job
 image:
-  teaser: job-no-experience-copywriters.jpg
+  teaser: job/job-no-experience-copywriters.jpg
 ---
 
 
