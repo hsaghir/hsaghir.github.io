@@ -4,7 +4,7 @@ title: Theano workflow
 comments: true
 categories: data_science
 image:
-  teaser: Deep_RBM.png
+  teaser: practical\Deep_RBM.png
 ---
 
 Theano might look intimidating, so here is a theano pseudo-code for a simple sigmoid neural net layer without the details to show how theano works. The important thing to keep in mind is that theano makes a computational graph of symbolic variables to make the automatic differentiation possible. Therefore, defining a model in theano involves specifying the structure of the symbolic graph and then compiling the graph using the **theano.function()** method. 
@@ -13,7 +13,7 @@ Theano might look intimidating, so here is a theano pseudo-code for a simple sig
 import theano 
 import theano.tensor as T
 
-X=x #x is the desired input tensor defining the shape
+X=x #x is the numpy input tensor defining the shape
 W=theano.shared(w, theano.config.floatx) # w is a numpy tensor defining the shape
 B=theano.shared(b, theano.config.floatx) # b is a numpy tensor defining the shape
 
