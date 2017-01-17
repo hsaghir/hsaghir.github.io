@@ -4,7 +4,7 @@ title: How to work with Jupyter Notebook on a remote machine (Linux)
 comments: true
 categories: data_science
 image:
-  teaser: jupyter-main-logo.svg
+  teaser: practical\jupyter-main-logo.svg
 ---
 
 I typically use my computers at home to connect to my work computer. I setup xRDP to remote desktop into my work computer(Linux) which is OK but slow at times depending on the Internet connection. Since I usually use jypyter notebook, I wanted to be able to run a jupyter notebook server on my work computer and access it from my home computer browser. I did some search on the Internet and found a method that works, thought I'd share it here. 
