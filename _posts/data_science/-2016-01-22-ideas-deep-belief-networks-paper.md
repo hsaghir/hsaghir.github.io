@@ -1,7 +1,6 @@
 ---
 layout: article
-title: Geometric intuitions of Linear Algebra - Deep Learning Book - Ch 2
-comments: true
+title: Deep belief nets, deep Gaussian processes
 categories: data_science
 image:
   teaser: jupyter-main-logo.svg
@@ -39,3 +38,7 @@ This hybrid model has some attractive features:
 References:
 
 Hinton, Geoffrey E., Simon Osindero, and Yee-Whye Teh. "A fast learning algorithm for deep belief nets." Neural computation 18.7 (2006): 1527-1554.
+
+
+
+----

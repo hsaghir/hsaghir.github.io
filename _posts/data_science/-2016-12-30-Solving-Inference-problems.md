@@ -28,9 +28,9 @@ Inference about the unknowns (i.e. finding the posterior P(z|x)) is done through
 1. Exact Inference (For very simple problems where P(x) is tractable)
 2. Evidence estimation (Estimating P(x) instead of its analytical form)
 3. Density ratio estimation (Avoiding density estimation by calculating ratio of two densities)
-4. Gradient ration estimation (Instead of estimating ratios, we estimate gradients of log densities)
+4. Gradient ratio estimation (Instead of estimating ratios, we estimate gradients of log densities)
 
-Other types of inference problems are we might encounter are Moment computation $E[f(z)|x] =\int f(z)p(z|x)dz$, Prediction $p(xt+1) =\int p(xt+1|xt)p(xt)dxt$, and Hypothesis Testing $B = log p(x|H1) - log p(x|H2)$. These are usually solved using the same strategies layed out above.
+Other types of inference problems we might encounter are 5) Moment computation $E[f(z)|x] =\int f(z)p(z|x)dz$, 6) Prediction $p(xt+1) =\int p(xt+1|xt)p(xt)dxt$, and 7) Hypothesis Testing $B = log p(x|H1) - log p(x|H2)$. These are usually solved using the same strategies layed out above.
 
 Before getting into the nuts and bolts of solving the inference problem, it is useful to have an intuition of the problem. When we setup a Bayesian inference problem with N unknowns, we are implicitly creating an N dimensional space of parameters for the prior distributions to exist in. Associated is an additional dimension, that reflects the prior probability of a particular point in the N dimensional space. Surfaces describe our prior distributions on the unknowns, and after incorporating our observed data X, the surface of the space changes by pulling and stretching the fabric of the prior surface to reflect where the true parameters likely live. The tendency of the observed data to push up the posterior probability in certain areas is checked by the prior probability distribution, so that lower prior probability means more resistance. More data means more pulling and stretching, and our original shape becomes mangled or insignificant compared to the newly formed shape. Less data, and our original shape is more present. Regardless, the resulting surface describes the posterior distribution.
 

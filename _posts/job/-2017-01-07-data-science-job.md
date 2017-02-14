@@ -22,3 +22,16 @@ Only answer recruiters who know your name.
 Take every interview you can. Note skills you need to build.
 5. Decline the offer
 6. Go to step one
+
+
+
+Areas of proficiency:
+- Excellent Programming skills in R, Python, C/C++, Java, and MATLAB.
+- Experienced in Machine Learning methods, Predictive Modeling, and Natural Language Processing.
+- Hands-on Apache Spark experience in writing applications and interactive data analysis.
+- Proficient in Statistical Methods, Cleaning Data, Data Visualization, and Signal Processing. 
+- Profound Knowledge of Relational Databases and SQL.
+- Knowledge and Skills to Manage Innovation at Strategic and Operational Levels.
+- Optimization Techniques applicable in solving various engineering problems.
+- Knowledge and Skills for International Business Success.
+- Strong Quantitative Analysis and Problem Solving skills.

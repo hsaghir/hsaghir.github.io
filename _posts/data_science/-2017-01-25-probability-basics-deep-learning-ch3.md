@@ -15,7 +15,7 @@ There is, however, a better tool for this purpose that is closer to what we huma
 
 
 
-# Probability theory
+# Probability theory DL book Ch3
 Probability theory was originally developed to analyze the frequencies of events. So it was used for frequent events like tossing a coin (frequentist). How about probability of being sick? it doesn't refer to frequency anymore but the degree of belief (Bayesian)! The same set of axioms, rules and formulae will be used in computing both frequentist and Bayesian probability. Probability can be seen as the extension of logic to deal with uncertainty. Probability theory provides a set of formal rules for determining the likelihood of a proposition being true given the likelihood of other propositions.
 
 A random variable takes random values. On its own it is just the set of possible values; a probability distribution has to be attached to it to represent how likely is each state. To be a probability mass function on a random variable x, a function P must satisfy the following properties:
@@ -34,7 +34,15 @@ Variance gives how much the values of a function of a random variable varies as 
 ## Probability distribution
 If Z is discrete random variable, then its distribution is called a probability mass function, denoted P(Z=k); a continuous random variable has a probability density function denoted by f(z|λ). Bayesian inference is concerned with what λ is likely to be by assigning a probability distribution to λ. Recall that under Bayesian philosophy, we can assign probabilities if we interpret them as beliefs. Bernouli is a distribution over a single binary random variable and is controlled by a single parameter. The multinoulli or categorical distribution is a distribution over a single discrete variable with k different states parametrized by a vector p. 
 
-Gaussian distribution is parameterized by two parameters mean and variance. In the absence of prior knowledge about what form a distribution over the real numbers should take, the normal distribution is a good default choice since central limit theorem shows that the sum of many independent random variables is approximately normally distributed, and out of all possible probability distributions with the same variance, the normal distribution encodes the maximum amount of uncertainty. multivariate normal distribution generalizes Gaussian and may be parametrized with a positive definite symmetric covariance matrix and a vector mean (since covariance of random variables i with j is the same as j with i). Since any symmetric matrix is diagonalizable, covariance matrix can always be written in terms of its eigenvalues and eigenvectors. A full-rank covariance matrix, allows it to control the variance separately along an arbitrary basis of directions. A diagonal covariance matrix, means it can control the variance separately along each axis-aligned direction. 
+Gaussian distribution is parameterized by two parameters mean and variance. In the absence of prior knowledge about what form a distribution over the real numbers should take, the normal distribution is a good default choice since central limit theorem shows that the sum of many independent random variables is approximately normally distributed, and out of all possible probability distributions with the same variance, the normal distribution encodes the maximum amount of uncertainty. multivariate normal distribution generalizes Gaussian and may be parametrized with a vector mean and a positive definite symmetric covariance matrix (since covariance of random variables i with j is the same as j with i). Multivariate Gaussian is basically the joint distribution of multiple Gaussian random variables. 
+
+Suppose a 2D Gaussian, a diagonal Covariance corresponds to a circular support where x1 and x2 are independant of each other (iid). However, a non-diagonal term will make x1 and x2 dependant and the support will look like an elipse instead. Now the probability distribution of a 2D Gaussian is like the surface of a 3D bell; if we cut through the bell at a certain x2 value, we get a 1D conditional P(x1|x2) that is also a Gaussian. The good thing about multivariate Gaussians is that, if we know the joint P(x1,x2), we can analytically compute all conditional and marginals which are also Gaussians.
+
+Sampling from a particular distribution is done through sampling from a uniform distribution [0,1] and projecting the sample on the CDF of our desired distribution. Inverse CDF gives us a sample from our desired distribution [0,1]. To sample from a Gaussian with arbitrary mean and variance, we sample from the unit uniform, project the sample on the CDF of a unit (mean 0, var 1) Gaussian, and inverse it to get a sample from unit Gaussian. Then we multiply the sample by standard deviation and add the mean to convert it into a sample from our desired Gaussian mean and variance. The same way, we can sample from a multivariate Gaussian with the difference that the variance is now a covariance matrix. So instead of multiplying the standard deviation (i.e. the square root of variance), we now multiply our sample from unit Gaussian by the Cholesky decomposition of the covariance matrix and add the mean vector.
+
+Since any symmetric matrix is diagonalizable, covariance matrix can always be written in terms of its eigenvalues and eigenvectors. A full-rank covariance matrix, allows it to control the variance separately along an arbitrary basis of directions. A diagonal covariance matrix, means it can control the variance separately along each axis-aligned direction.  
+
+
 
 When we wish to evaluate the PDF of a normal (e.g. sample from it), the covariance is not a computationally efficient way to parametrize the distribution, since we need to invert covariance matrix to evaluate the PDF (variance is denominator in Normal dist). We can instead use a precision matrix β. We often fix the covariance matrix to be a diagonal (iid). An even simpler version is the isotropic Gaussian distribution, whose covariance is a scalar times the identity matrix.
 
@@ -61,9 +69,28 @@ KL-divergence meausres a sort of distance between two distributions but it's not
 
 
 ## Bayesian
-Bayesians, have a more intuitive approach. Bayesians interpret a probability as measure of belief. we assign the belief (probability) measure to an individual, not to Nature. we denote our belief about event A as P(A). We call this quantity the prior probability. We denote our updated belief as P(A|X), interpreted as the probability of A given the evidence X. We call the updated belief the posterior probability so as to contrast it with the prior probability. 
+In Bayesian framework, probability is a measure of belief. Bayesian inference is simply process of updating beliefs after considering the evidence from data. The process is as follows:
 
-Bayesian inference is simply updating your beliefs after considering new evidence. A Bayesian can rarely be certain about a result, but he or she can be very confident. 
+1. Prior, P(z) is our initial belief.
+
+2. Likelihood, P(x/z) is the probability of getting the dataset in an imaginary situation. We calculate it by asking "If this model for data generation process (this hypothesis) is true, what is the probability of getting the dataset when we experiment?"
+
+3. Posterior, P(z/x) is our updated belief after considering imaginary situation with dataset. Posterior can be obtained by multiplying the likelihood probability by intitial (prior) probability. If instead of a model we are testing hypotheses, we calculate a posterior for every hypothesis.
+
+4. Marginal/evidence/partition function/normalizer: The denominator is the probability of obtaining the data D but without assuming that hypothesis H is either true or false. This is obtained using the sum rule. There are two ways that the data D could occur, either via H being true (this has probability P(H)P(D|H)), or via H being false (this has probability P(H¯ )P(D|H¯ )). These two ways are mutually exclusive, so we can add their probabilities to obtain P(D). If there are more hypotheses, we simply add all of them up. 
+
+
+An alternative way of thinking about Bayes formulation is using a model. In modeling a dataset we are interested in the probability density of the dataset. Under a model, instead of using a single function to represent the probability density of data, we can split the probability density into simpler factors that we multiply together. 
+
+These factorizations can greatly reduce the number of parameters needed to describe the distribution. Each factor uses a number of parameters that is exponential in the number of variables in the factor. This means that we can greatly reduce the cost of representing a distribution if we are able to find a factorization into distributions over fewer variables. We can describe these kinds of factorizations using graphs. 
+
+directed model contains one factor for every random variable xi in the distribution, and that factor consists of the conditional distribution over xi given the parents. Undirected models use graphs with undirected edges, and they represent factorizations into a set of functions; unlike in the directed case, these functions are usually not probability distributions of any kind. Any set of nodes that are all connected to each other is called a clique and each clique is associated with a factor.The output of each factor must be non-negative, but there is no constraint that the factor must sum or integrate to 1 like a probability distribution. The probability of a configuration of random variables is proportional to the product of all of these factors.there is no guarantee that this product will sum to 1. We therefore divide by a normalizing constant Z, defined to be the sum or integral over all states of the product of the factor functions to get a normalized probability distribution.
+
+Graphical representations of factorizations are not mutually exclusive families of probability distributions. Being directed or undirected is not a property of a probability distribution; it is a property of a particular representation of a probability distribution, but any probability distribution may be described in directed and undirected mode.
+
+
+
+
 
 Denote N as the number of instances of evidence we possess. As we gather an infinite amount of evidence, say as N→∞, our Bayesian results (often) align with frequentist results. Hence for large N, statistical inference is more or less objective. On the other hand, for small N, inference is much more unstable: frequentist estimates have more variance and larger confidence intervals. This is where Bayesian analysis excels. By introducing a prior, and returning probabilities (instead of a scalar estimate), we preserve the uncertainty that reflects the instability of statistical inference of a small N dataset.
 

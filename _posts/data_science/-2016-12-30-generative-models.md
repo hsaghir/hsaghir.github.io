@@ -106,3 +106,30 @@ Stochastic variational inference (SVI) scales VI to massive data. Additionally, 
 - Write down the ELBO and compute the expectation.  
 - Take ELBO derivative (use stohcastic estimate instead)
 - Optimize using the GD/SGD update rule
+
+
+
+# Other Generative modeling ideas (inspired by GANs)
+
+[Unsupervised learning of visual representations by solving jigsaw puzzles](http://arxiv.org/abs/1603.09246) is a clever trick. The author break the image into a puzzle and train a deep neural network to solve the puzzle. The resulting network has one of the highest performance of pre-trained networks.
+
+[Unsupervised learning of visual representations from image patches and locality](https://arxiv.org/abs/1511.06811) is also a clever trick. Here they take two patches of the same image closely located. These patches are statistically of the same object. A third patch is taken from a random picture and location, statistically not of the same object as the other 2 patches. Then a deep neural network is trained to discriminate between 2 patches of same object or different objects. The resulting network has one of the highest performance of pre-trained networks.
+
+[Unsupervised learning of visual representations from stereo image reconstructions](http://arxiv.org/abs/1604.03650) takes a stereo image, say the left frame, and reconstruct the right frame. Albeit this work was not aimed at unsupervised learning, it can be! This method also generates interesting [3D movies form stills](https://github.com/piiswrong/deep3d).
+
+[Unsupervised Learning of Visual Representations using surrogate categories](http://arxiv.org/abs/1406.6909) uses patches of images to create a very large number of surrogate classes. These image patches are then augmented, and then used to train a supervised network based on the augmented surrogate classes. This gives one of the best results in unsupervised feature learning.
+
+[Unsupervised Learning of Visual Representations using Videos](http://arxiv.org/abs/1505.00687) uses an encoder-decoder LSTM pair. The encoder LSTM runs through a sequence of video frames to generate an internal representation. This representation is then decoded through another LSTM to produce a target sequence. To make this unsupervised, one way is to predict the same sequence as the input. Another way is to predict future frames.
+
+Another paper (MIT: Vondrick, Torralba) using videos with very compelling results is [here](http://arxiv.org/abs/1504.08023). This work is from April 2015! The great idea behind this work is to predict the representation of future frames from a video input. This is an elegant approach.
+
+[PredNet is a network designed to predict future frames in video](https://coxlab.github.io/prednet/)
+PredNet is a very clever neural network model that in our opinion will have a major role in the future of neural networks. PredNet learns a neural representation that extends beyond the single frames of supervised CNN.It uses [predictive coding](http://www.nature.com/neuro/journal/v2/n1/full/nn0199_79.html) and using [feedback connections in neural models](http://arxiv.org/abs/1608.03425)
+
+# Future
+
+Unsupervised training is very much an open topic, where you can make a large contribution by:
+
+- creating a new unsupervised task to train networks, e.g.: solve a puzzle, compare image patches, generate images, …)
+
+- thinking of tasks that create great unsupervised features, e.g.: what is object and what is background, same on stereo images, same on video frames ~= similar to how our human visual system develops
