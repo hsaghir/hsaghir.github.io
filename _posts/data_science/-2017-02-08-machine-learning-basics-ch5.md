@@ -1,6 +1,6 @@
 ---
 layout: article
-title: Numerical Computation Deep Learning book Ch4
+title: Machine learning basics Deep Learning book Ch4
 comments: true
 categories: data_science
 image:
