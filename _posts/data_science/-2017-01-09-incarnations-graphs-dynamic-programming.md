@@ -6,7 +6,17 @@ image:
   teaser: jupyter-main-logo.svg
 ---
 
-Computational graphs are a nice way to think about mathematical expressions. For example, consider the expression e=(a+b)∗(b+1). There are three operations: two additions and one multiplication. To help us talk about this, let’s introduce two intermediary variables, c and dd so that every function’s output has a variable. We now have:
+Computational graphs are a nice way to think about mathematical expressions. Consists of nodes which can be variables, vectors, tensors, etc; and edges which are a set of possible operations. Functions more complicated than the basic operations will be obtained by composing operations. Backpropagation is an algorithm that computes the chain rule with a specific order of operations that is highly efficient (Compare to elimination/sum-product algo for computing chain rule of probabilities). Partial derivative of z wrt to x is equal to sum over y of partial z to partial y time partial y to partial x. Put another way, back-prop calculates the product of the jacobian of y wrt x by the gradient of z wrt y for each operation in a computational graph. Therefore, back-prop consists of recursively applying the chaing rule! To reduce the redundant calculations as the gradient propagates back, back-prop reduces the computational costs by factoring the gradients and storing them in order to reuse them as we propagate back in the network (dynamic-programming)! We can also compute the same gradients in a forward mode which will result in exponential number of calculations since we don't get the factorizations of backward mode gradients. 
+
+- Back-prop is a special case of broader set of techniques called reverse mode accumulation. When the outputs of a graph is larger than the inputs, it is better to use another form of automatic differentiation called forward mode accumulation. This is similar to left-multiplying or right-multiplying a set of matrices. The computational cost depends on the shape and both may be useful! For example ABC; if C is a column vector while A has many rows, starting computation from right only requires matrix-vector products while if we start with left we have to do matrix-matrix products which are more expensive.
+
+
+- Back-prop (sum-product) is very simple. To calculate the derivative of z wrt its ancestor nodes, we start with dz/dz=1 and compute the gradient wrt each parent by multiplying current gradient by the jacobian of the operation that produced the current output. Continue this procedure till we get to x, saving the gradients at each step to eliminate redundant calculations. Nodes that are reachable by more than one path, get sumed on all paths.
+
+- Higher order derivatives, i.e. Hessian, might be useful but are very costly to compute. We might use krylov methods with them which is basically a set of iterative techniques that approximate various operations like inverse or find eigendecomposition without any operation other than matrix-vector products (i.e. Hessian free optimization). 
+
+
+For example, consider the expression e=(a+b)∗(b+1). There are three operations: two additions and one multiplication. To help us talk about this, let’s introduce two intermediary variables, c and dd so that every function’s output has a variable. We now have:
 
 c=a+b
 
