@@ -62,6 +62,8 @@ Any symmetric matrix
 
 - Psuedo-inverse: For non-square matrices, inverse becomes psuedo-inverse. SVD easily defines psuedo inverse as $A^+ = V D^+ U^T$ which means that we reverse the order or transformations on the two orthogonal coordinate systems and scale them by the inverse of the eigenvalues.
 
+- Condition number: The ratio of the largest to smallest singular value in SVD. A matrix with a very large condition number is ill-conditioned meaning that it is characterized by a very large change in a certain direction while only a miniscule change in another. Numerical calculations with ill-conditioned matrices is difficult due to over/under-flow problems. 
+
 - Trace: Trace is the sum of diagonal values of a matrix so it's scalar and invariant to moving around matrices in a product. 
 
 - Determinant: is the product of all eigenvalues of a matrix. Since eigenvalues scale different directions/vectors of a matrix, the determinant provides a measure of how a space is transformed through multiplication by a matrix.

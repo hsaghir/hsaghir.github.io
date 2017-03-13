@@ -191,7 +191,7 @@ It doesn't work well in data with serial correlation in the residual (time serie
 
 
 2. Density ratio estimation 
-In statistical pattern recognition, it is important to avoid density estimation (evidence marginal integral) since density estimation is often more difficult than pattern recognition itself. Following this idea—known as Vapnik’s principle, a statistical data processing framework that employs the ratio of two probability density functions has been developed recently and is gathering a lot of attention in the machine learning and data mining communities. The main idea is to estimate a ratio of real data distribution and model data distribution p(x)/q(x) instead of computing two densities that are hard. The density ratio r(x) is the core quantity for hypothesis testing, motivated by either the Neyman-Pearson lemma or the Bayesian posterior evidence, appearing as the likelihood ratio or the Bayes factor, respectively. likelihood-free inference can be done through estimating density ratios and using them as the driving principle for learning in implicit generative models (transformation models). Four main ways of calculating the ratio:
+In statistical pattern recognition, it is important to avoid density estimation (evidence marginal integral) since density estimation is often more difficult than pattern recognition itself. Following this idea—known as Vapnik’s principle, a statistical data processing framework that employs the ratio of two probability density functions has been developed recently and is gathering a lot of attention in the machine learning and data mining communities. The main idea is to estimate a ratio of real data distribution and model data distribution p(x)/q(x) instead of computing two densities that are hard. The ELBO in variational inference can be written in terms of the ratio. Introducing the variational posterior into the marginal integral of the joint results in the ELBO being $E[log p(x,z)- log q(z/x)]$. By subtracting emprical distribution on the observations, q(x) which is a constant and doesn't change optimization we have the ELBO using ratio as $E[log p(x,z)/q(x,z)]= E[log r(x,z)]$. The density ratio r(x) is the core quantity for hypothesis testing, motivated by either the Neyman-Pearson lemma or the Bayesian posterior evidence, appearing as the likelihood ratio or the Bayes factor, respectively. likelihood-free inference can be done through estimating density ratios and using them as the driving principle for learning in implicit generative models (transformation models). Four main ways of calculating the ratio:
 
 - Probabilistic classification: We can frame it as the problem of classifying the real data (p(x)) from the data produced from model (q(x)). We use a label of (+1) for the numerator and label (-1) for denumerator so the ratio will be r(x)=p(x|+1)/q(x|-1). Using Bayesian rule this will be $r(x)=(p(-1)/(p+1))*(p(+1|x)/p(-1|x))$. The first ratio is simply the ratio of the number of data in each class and the second ratio is given by the ratio of classification accuracy. simple and elegant! This is what happens in GAN. So if there are $N1$ data real points and $N2$ generated data points and the classifer classifies the real data points with probability $D$, then the ratio is $r(x)= (N2/N1) * (D/(D-1))$. Given the classifer, we can develop a loss function for training using logarithmic loss for binary classification. Using some simple math we get the GAN loss function as: 
 
@@ -219,10 +219,6 @@ The ratio loss is minimised since it acts as a surrogate negative log-likelihood
  
 
 
+# Causal inference
 
-
-
-
-
-
-
+- Two types of studies are possible, one is interventional studies where in a controlled environment, we introduce an intervention. Causality inference is directly possible due to the intervention. However, we might not have access to interventions. In such cases, we want to perform causal inference using only observation data. 
