@@ -9,9 +9,9 @@ image:
 
 What is a neural network? To get started, it's beneficial to keep in mind that modern neural network started as an attempt to model the way that brain performs computations. We have billions of [neuron](https://en.wikipedia.org/wiki/Neuron) cells in our brains that are connected to each other and pass information around. \\( 1/x^{2} \\)
 
-
+$$
 \[ \frac{1}{n^{2}} \]
-
+$$
 
 ![alt text](/images/nnet/neuron.jpg "A Neuron Cell")
 
@@ -50,7 +50,7 @@ There are other techniques that are used in practice to make neural networks wor
 
 4- Update the parameters in [batches](https://en.wikipedia.org/wiki/Online_machine_learning) using [stochastic gradient descent or adagrad/adam/rmsprop/etc](http://sebastianruder.com/optimizing-gradient-descent/). 
 
-5- Add [regularization](https://www.quora.com/What-is-regularization-in-machine-learning) terms to the loss function to prevent overfitting if required (a mechanism for ocam's razor). There are L-p regularization terms which correspond to $$\sum(W^p)$$ that penalize large parameters.
+5- Add [regularization](https://www.quora.com/What-is-regularization-in-machine-learning) terms to the loss function to prevent overfitting if required (a mechanism for ocam's razor). There are L-p regularization terms which correspond to $\sum(W^p)$ that penalize large parameters.
 
 6- Do [early stopping](https://en.wikipedia.org/wiki/Early_stopping) for improved generalization: stop training if the performance on the validation set degrades.
 
