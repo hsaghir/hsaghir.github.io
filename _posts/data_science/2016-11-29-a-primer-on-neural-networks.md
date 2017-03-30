@@ -7,10 +7,10 @@ image:
   teaser: nnet/Aneuron.jpg
 ---
 
-What is a neural network? To get started, it's beneficial to keep in mind that modern neural network started as an attempt to model the way that brain performs computations. We have billions of [neuron](https://en.wikipedia.org/wiki/Neuron) cells in our brains that are connected to each other and pass information around. \( 1/x^{2} \)
+What is a neural network? To get started, it's beneficial to keep in mind that modern neural network started as an attempt to model the way that brain performs computations. We have billions of [neuron](https://en.wikipedia.org/wiki/Neuron) cells in our brains that are connected to each other and pass information around. \\( 1/x^{2} \\)
 
 
-\[ \frac{1}{n^{2}} \]
+\\[ \frac{1}{n^{2}} \\]
 
 
 ![alt text](/images/nnet/neuron.jpg "A Neuron Cell")
