@@ -7,6 +7,50 @@ image:
   teaser: jupyter-main-logo.svg
 ---
 
+- DL practitioners need to decide the right course of action on whether to gather more data, increase or decrease model capacity, add or remove regularizing features, improve the optimization of a model, improve approximate inference in a model, or debug the software implementation of the model.
+
+- Design process (1)Determine what error metric to use, and your target value for this error metric. These goals and error metrics should be driven by the problem that the application is intended to solve. (2)Establish a working end-to-end pipeline as soon as possible, including the estimation of the appropriate performance metrics. (3) Instrument the system well to determine bottlenecks in performance. Diagnose which components are performing worse than expected and whether it is due to overfitting, underfitting, or a defect in the data or software. (4) Repeatedly make incremental changes such as gathering new data, adjusting hyperparameters, or changing algorithms, based on specific findings from your instrumentation.
+
+- 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
