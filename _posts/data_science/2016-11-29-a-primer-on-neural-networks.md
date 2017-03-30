@@ -7,11 +7,7 @@ image:
   teaser: nnet/Aneuron.jpg
 ---
 
-What is a neural network? To get started, it's beneficial to keep in mind that modern neural network started as an attempt to model the way that brain performs computations. We have billions of [neuron](https://en.wikipedia.org/wiki/Neuron) cells in our brains that are connected to each other and pass $$ a+b $$ information around. \\( 1/x^{2} \\)
-
-$$
-\[ \frac{1}{n^{2}} \]
-$$
+What is a neural network? To get started, it's beneficial to keep in mind that modern neural network started as an attempt to model the way that brain performs computations. We have billions of [neuron](https://en.wikipedia.org/wiki/Neuron) cells in our brains that are connected to each other and pass information around.
 
 ![alt text](/images/nnet/neuron.jpg "A Neuron Cell")
 
@@ -54,6 +50,6 @@ There are other techniques that are used in practice to make neural networks wor
 
 6- Do [early stopping](https://en.wikipedia.org/wiki/Early_stopping) for improved generalization: stop training if the performance on the validation set degrades.
 
-7- To reduce the effects of a certain division of dataset that might not be representative of all data and to reduce overfitting, we can employ a method called [k-fold crossvalidation](https://en.wikipedia.org/wiki/Cross-validation_(statistics)). In step 1, we further divide the training set into $k$ random segment. We reserve one segment for validation and train on the remaining $k-1$ segments; We   repeat this process for all $k$ segments and measure performance to average all $k$ models. 
+7- To reduce the effects of a certain division of dataset that might not be representative of all data and to reduce overfitting, we can employ a method called [k-fold crossvalidation](https://en.wikipedia.org/wiki/Cross-validation_(statistics)). In step 1, we further divide the training set into $$k$$ random segment. We reserve one segment for validation and train on the remaining $$k-1$$ segments; We   repeat this process for all $$k$$ segments and measure performance to average all $$k$$ models. 
 
 This is the gist of neural networks but of course there are some details that I skipped here. The core idea is simple and elegant. You might have heard of deep learning. It is interesting to know that deep learning means just more layers between input and output. Before 2006, people thought that calculating the weights and biases would not be possible for deep network but with today's fast GPUs and the vast amount of labeled data that we have today, it is now possible and it does wonders!
