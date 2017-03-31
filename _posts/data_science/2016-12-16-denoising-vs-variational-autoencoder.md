@@ -69,7 +69,9 @@ stochastic_gradient_descent(data, network, cost_total)
 
 Now that the intuition is clear, [here is a jupyter notebook](https://github.com/hsaghir/VAE_intuitions/blob/master/VAE_MNIST_keras.ipynb) for playing with VAEs, if you like to learn more. The notebook is based on [this](https://github.com/fchollet/keras/blob/master/examples/variational_autoencoder.py) keras example. The resulting learned latent space of the encoder and the manifold of a simple VAE trained on the MNIST dataset are below. 
 
-![alt text](/images/VAE_intuitions/latent_space.jpg =250x250 "VAE Latent space" ) | ![alt text](/images/VAE_intuitions/manifold.jpg =250x250 "VAE generated samples")
+
+<img src="/images/VAE_intuitions/latent_space.jpg" alt="VAE Latent space" width="250" height="250"> | <img src="/images/VAE_intuitions/manifold.jpg" alt="VAE generated samples" width="250" height="250">
+
 
 ##### Side note 1: 
 The ELBO is determined from introducing a variational distribution q, on lower bound on the marginal log likelihood, i.e. $$\log \ p(x)=\log \int_z p(x,z) * \frac{q(z|x)}{q(z|x)}$$. We use the log likelihood to be able to use the concavity of the $$\log$$ function and employ Jensen's equation to move the $$\log$$ inside the integral i.e. $$\log \ p(x) > \int_z \log\ (p(x,z) * \frac{q(z|x)}{q(z|x)})$$ and then use the definition of expectation on $$q$$ (the nominator $$q$$ goes into the definition of the expectation on $$q$$ to write that as the ELBO) $$\log \ p(x) > ELBO(z) = E_q [- \log\ q(z|x) + \log \ p(x,z)]$$. The difference between the ELBO and the marginal $$p(x)$$ which converts the inequality to an equality is the distane between the real posterior and the approximate posterior i.e. $$KL[q(z|x)\ | \ p(z|x)]$$. Or alternatively, the distance between the ELBO and the KL term is the log normalizer $$p(x)$$. Replace the $$p(z|x)$$ with Bayesian formula to see how. 
