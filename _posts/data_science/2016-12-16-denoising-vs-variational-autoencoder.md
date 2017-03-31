@@ -70,7 +70,7 @@ stochastic_gradient_descent(data, network, cost_total)
 Now that the intuition is clear, [here is a jupyter notebook](https://github.com/hsaghir/VAE_intuitions/blob/master/VAE_MNIST_keras.ipynb) for playing with VAEs, if you like to learn more. The notebook is based on [this](https://github.com/fchollet/keras/blob/master/examples/variational_autoencoder.py) keras example. The resulting learned latent space of the encoder and the manifold of a simple VAE trained on the MNIST dataset are below. 
 
 
-<img src="/images/VAE_intuitions/latent_space.jpg" alt="VAE Latent space" width="250" height="250"> | <img src="/images/VAE_intuitions/manifold.jpg" alt="VAE generated samples" width="250" height="250">
+<img src="/images/VAE_intuitions/latent_space.jpg" alt="VAE Latent space" width="350" height="350"> | <img src="/images/VAE_intuitions/manifold.jpg" alt="VAE generated samples" width="350" height="350">
 
 
 ##### Side note 1: 
