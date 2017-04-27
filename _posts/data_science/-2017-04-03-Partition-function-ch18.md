@@ -49,13 +49,24 @@ image:
 
 ## Score Matching and Ratio Matching
 
-- Score matching trains a model without estimating Z or its derivatives. The derivatives of a log density with respect to its argument, $$\Delta_x \log P(x)$$, is called its score. The idea is to  minimize a expected squared difference loss function between the derivatives of the model’s log density and the data’s log density with respect to the input. This objective function avoids the difficulties associated with differentiating the partition function Z because Z is not a function of x. 
+- Score matching trains a model without estimating Z or its derivatives. The derivatives of a log density with respect to its argument, $$\Delta_x \log P(x)$$, is called its score. The idea is to  minimize the expected value of an squared difference loss function between the derivatives of the model’s log density and the data’s log density with respect to the input. This objective function avoids the difficulties associated with differentiating the partition function, $$Z$$, because $$Z$$ is not a function of $$x$$. 
 
-- Computing the score of the data distribution requires knowledge of the true distribution generating the training data, $$p_data$$, which is unkown but that's equivalent to minimizing the expected value of
+$$L(x,\theta)=\frac{1}{2} \norm{\Delta_x \log p_model(x;\theta) - \Delta_x \log p_data(x)}^2$$
 
-- Because score matching requires taking derivatives with respect to x, it is not applicable to models of discrete data. However, the latent variables in the model may be discrete.
+- We can't calculate the $$\Delta_x p_data(x)$$ since we don't know the true distribution generating the training data but minimizing the expected value of the follwoing objective is equivalent to score matching objective:
 
-- Ratio matching is a variant of score matching that applies specifically to binary data. Ratio matching consists of minimizing the average over examples of an objective function. As with the pseudolikelihood estimator, ratio matching can be thought of as pushing down on all fantasy states that have only one variable different from a training example. Since ratio matching applies specifically to binary data, this means that it acts on all fantasy states within Hamming distance 1 of the data.
+$$L^~(x,\theta)=\sum_{j=1}^n (\frac{\partial^2}{\partial x_{j}^2} \log p_model(x;\theta)+\frac{1}{2}(\frac{\partial}{\partial x_j} \log p_model(x;\theta))^2)$$
+
+where $$n$$ is the dimensionality of the $$x$$. Because score matching requires taking derivatives with respect to x, it is not applicable to models of discrete data (latent variables may be discrete). It only works when we are able to evaluate the likelihood and its derivatives directly and not with evidence lower bounds (ELBO) since lower bounds don't provide any info about derivatives.
+
+- Score matching doesn't have an explicit negative phase but can be viewed as a version of contrastive divergence using a speciﬁc kind of Markov chain that makes local moves guided by the gradient. This way it is equivalent to CD when the size of the local moves approach zero.
+
+## Ratio matching 
+
+- An approach to extending the basic ideas of score matching to discrete data is ratio matching. It applies specifically to binary data and consists of minimizing the average over examples of an objective function. 
+
+
+As with the pseudolikelihood estimator, ratio matching can be thought of as pushing down on all fantasy states that have only one variable different from a training example. Since ratio matching applies specifically to binary data, this means that it acts on all fantasy states within Hamming distance 1 of the data.
 
 ## Denoising Score Matching
 
