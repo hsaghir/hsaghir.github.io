@@ -63,69 +63,34 @@ where $$n$$ is the dimensionality of the $$x$$. Because score matching requires 
 
 ## Ratio matching 
 
-- An approach to extending the basic ideas of score matching to discrete data is ratio matching. It applies specifically to binary data and consists of minimizing the average over examples of an objective function. 
+- Ratio matching extends the basic ideas of score matching to discrete data. It applies specifically to binary data and consists of minimizing the average over examples of an objective function based on model probability ratio. 
 
+$$L(x,\theta)=\sum_{j=1}^n (\frac{1}{1+\frac{p_model(x;\theta)}{p_model(f(x,j); \theta)}})^2$$
 
-As with the pseudolikelihood estimator, ratio matching can be thought of as pushing down on all fantasy states that have only one variable different from a training example. Since ratio matching applies specifically to binary data, this means that it acts on all fantasy states within Hamming distance 1 of the data.
+where $$f(x,j)$$ returns $$x$$ with the bit at position $$j$$ flipped. As with the pseudolikelihood estimator, ratio matching can be thought of as pushing down on all fantasy states that have only one variable different from a training example. Since ratio matching applies specifically to binary data, this means that it acts on all fantasy states within Hamming distance 1 of the data. Ratio matching can be useful for dealing with high dimensional sparse data where MCMC usually has trouble. 
 
 ## Denoising Score Matching
 
-- Denoising score matching is especially useful because in practice we usually do not have access to the true pdata but rather only an empirical distribution defined by samples from it. Any consistent estimator will, given enough capacity, make pmodel into a set of Dirac distributions centered on the training points. Smoothing by q helps to reduce this problem, at the loss of the asymptotic consistency property.
+- In practice we usually do not have access to the true $$p_data$$ but rather only an empirical distribution defined by samples from it. A consistent emprical  estimator will, make $$p_model$$ into a set of Dirac distributions centered on the training points. Denoising score matching smoothes the emprical estimate using a corruption process, $$q(x|y)$$, that makes new $$x$$ by adding small noise to data, $$y$$. However, the denoising smoothing will lead to loss of asymptotic consistency of the emprical estimator (consistency ensures the bias introduced by estimator goes to zero as number of data grows).
 
-- several autoencoder training algorithms are
-equivalent to score matching or denoising score matching. These autoencoder
-training algorithms are therefore a way of overcoming the partition function
-problem.
+$$p_smooth(x)=\int p_data(y) q(x|y)dy$$
+
+- This denoising process can also be used as a regularizer for score matching. Several autoencoder training algorithms are equivalent to score matching or denoising score matching. These autoencoder training algorithms are therefore a way of bypassing the partition function problem.
 
 ## Noise-Contrastive Estimation
 
-- Most techniques for estimating models with intractable partition functions do not
-provide an estimate of the partition function. SML and CD estimate only the
-gradient of the log partition function, rather than the partition function itself.
-Score matching and pseudolikelihood avoid computing quantities related to the
-partition function altogether.
-Noise-contrastive estimation (NCE) (Gutmann and Hyvarinen, 2010) takes a
-different strategy. In this approach, the probability distribution estimated by the
-model is represented explicitly as
 
-log pmodel(x) = log p˜model(x; θ) + c, (18.28)
+NCE is based on the idea that a good generative model should be able to distinguish data from noise. It works by converting the density estimation problem $$p_data(x)$$ into a ratio density estimation of true distribution and a noise distribution $$\frac{p_data(x)}{p_noise(x)}$$. This density ratio estimation problem is solved using the binary classifier approach of classifying $$p_data(x)$$ and $$p_noise(x)$$. The noise distribution should be tractable to evaluate and to sample from. 
 
-where c is explicitly introduced as an approximation of − log Z(θ). Rather than
-estimating only θ , the noise contrastive estimation procedure treats c as just
-another parameter and estimates θ and c simultaneously, using the same algorithm
-for both. The resulting log pmodel(x) thus may not correspond exactly to a valid
-probability distribution, but will become closer and closer to being valid as the
-estimate of c improves.1
+- In a sense, NCE doesn't completely bypass calculation of the normalizer and learns both the partition function and the unnormalized probability together $$\log p_model(x) = log p_unnormalized(x; θ) + c$$. The resulting $$\log p_model(x)$$ thus may not correspond exactly to a valid probability distribution, but will become closer and closer to being valid as the estimate of $$c$$ improves.
 
-- NCE works by reducing the unsupervised learning problem of estimating p(x)
-to that of learning a probabilistic binary classifier in which one of the categories
-corresponds to the data generated by the model. This supervised learning problem
-is constructed in such a way that maximum likelihood estimation in this supervised learning problem defines an asymptotically consistent estimator of the original
-problem. Specifically, we introduce a second distribution, the noise distribution pnoise(x).
-The noise distribution should be tractable to evaluate and to sample from. We
-can now construct a model over both x and a new, binary class variable y. y is a switch variable that determines whether we will generate x from the model or from the noise distribution.
-
-- The special case of NCE where the noise samples
-are those generated by the model suggests that maximum likelihood can be
-interpreted as a procedure that forces a model to constantly learn to distinguish
-reality from its own evolving beliefs, while noise contrastive estimation achieves
-some reduced computational cost by only forcing the model to distinguish reality
-from a fixed baseline (the noise model).
-
-- Using the supervised task of classifying between training samples and generated
-samples (with the model energy function used in defining the classifier) to provide
-a gradient on the model was introduced earlier in various forms
-
-- Noise contrastive estimation is based on the idea that a good generative model
-should be able to distinguish data from noise. A closely related idea is that
-a good generative model should be able to generate samples that no classifier
-can distinguish from data. This idea yields generative adversarial networks
+- NCE only forces the model to distinguish reality from a fixed baseline (the noise model). However, the special case of NCE where the noise samples are those generated by the model suggests that maximum likelihood learning of classifier can be interpreted as a procedure that forces a model to constantly learn to distinguish reality from its own evolving beliefs. A closely related idea is that a good generative model should be able to generate samples that no classifier can distinguish from data (GAN)
 
 ## Estimating the Partition Function
 
 - Most techniques upto now describe methods that avoid needing to compute the intractable partition function Z(θ) associated with an undirected graphical model, in this section we discuss several methods for directly estimating the partition function. Estimating the partition function can be important in evaluating the model, monitoring training performance, and comparing models to each other. Ratio of partition functions can be obtained using importance sampling. 
 
-- Two related strategies can be used for estimating partition functions for complex distributions over highdimensional spaces: annealed importance sampling and bridge sampling. Both start with the simple importance sampling strategy and both attempt to overcome the problem of the proposal p0 being too far from p1 by introducing intermediate distributions that attempt to bridge the gap between p0 and p1.
+- Two related strategies can be used for estimating partition functions for complex distributions over high-dimensional spaces: annealed importance sampling and bridge sampling. Both start with the simple importance sampling strategy and both attempt to overcome the problem of the proposal p0 being too far from p1 by introducing intermediate distributions that attempt to bridge the gap between p0 and p1.
 
 ### annealed importance sampling 
 
