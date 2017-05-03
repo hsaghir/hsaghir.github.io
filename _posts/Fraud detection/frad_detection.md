@@ -8,8 +8,22 @@
 
 - There are tons of startups providing analytics/ML solutions, but the main concern of the bank is data privacy. They are not comfortable giving customer data to third parties, their brand will be at risk if they do, and there might be some potential regulatory risks. 
 
+## [In the news]()
 
-## [Techniques]()
+[Orange tests DL to identify fraud](https://blogs.wsj.com/cio/2016/03/14/orange-tests-deep-learning-software-to-identify-fraud/)
+
+[DL infrastructure in production](https://insights.ubuntu.com/2016/04/25/making-deep-learning-accessible-on-openstack/)
+
+
+[How PayPal beats the bad guys with machine learning](http://www.infoworld.com/article/2907877/machine-learning/how-paypal-reduces-fraud-with-machine-learning.html)
+
+- PayPal uses three types of machine learning algorithms for risk management: linear, neural network, and deep learning. Experience has shown PayPal that in many cases, the most effective approach is to use all three at once. we “ensemble” them together!
+
+- detect fraud: "we can separate the good from the bad with one straight line". When linear fails, neural network. Also,tree-based, mimicking a human being when we have to make a judgment -- for example, we would say if it’s raining, I’ll take an umbrella.
+
+
+
+## [Literature Survey]()
 
 "What is Anomaly? Anomaly is an observation that doesn’t conform with prediction, which is highly subjective for operators or analysts who use this model as a tool to detect anomalies. For this reason, we first generate an anomaly score by applying the current observation to the learned predictive model and decide the current observation as an anomaly only if its anomaly score exceeds a certain threshold"
 
@@ -99,21 +113,9 @@ Two steps,
 
 
 
-
-
-## [In the news]()
-
-[Orange tests DL to identify fraud](https://blogs.wsj.com/cio/2016/03/14/orange-tests-deep-learning-software-to-identify-fraud/)
-
-[DL infrastructure in production](https://insights.ubuntu.com/2016/04/25/making-deep-learning-accessible-on-openstack/)
-
-
-[How PayPal beats the bad guys with machine learning](http://www.infoworld.com/article/2907877/machine-learning/how-paypal-reduces-fraud-with-machine-learning.html)
-
-- PayPal uses three types of machine learning algorithms for risk management: linear, neural network, and deep learning. Experience has shown PayPal that in many cases, the most effective approach is to use all three at once. we “ensemble” them together!
-
-- detect fraud: "we can separate the good from the bad with one straight line". When linear fails, neural network. Also,tree-based, mimicking a human being when we have to make a judgment -- for example, we would say if it’s raining, I’ll take an umbrella.
-
+## [Methodolgy]()
+- VAE for reconstructing the data. 
+- 
 
 
 ## [Data]()
