@@ -66,7 +66,16 @@
 - Reconstruct the signal. Element-wise reconstruction error is the equivalent of anomaly score for each window. The window contributing most to the error or whose error are above a threshold are somewhat anomalous. 
 
 
-3. []()
+3. [Structured Denoising Autoencoder for Fault Detection and Analysis]()
+Two steps, 
+
+- dimensionality reduction and reconstruction:  Structured denoising autoencoder
+
+- Structured denoising autoencoder: modified objective function of the denoising autoencoder to include an $$MxM$$ matrix of prior knowledge relationships between the elements of the input $$x_t$$. This matrix works as a regularizer and somehow constrains the manifold that the DA is able to learn. Difference with the Bayesian approach is that this method adds priors to the reconstruction errors while the Bayesian approach applies the priors to model parameters 
+
+
+
+- Contribution Analysis (CA): looking at the elements of the reconstruction error to find the one with most contribution to error. 
 
 
 4. [Ubalanced dataset for Fraud](http://rvc.eng.miami.edu/Paper/2015/Yan_ISM2015.pdf)
@@ -95,6 +104,7 @@
 ## [In the news]()
 
 [Orange tests DL to identify fraud](https://blogs.wsj.com/cio/2016/03/14/orange-tests-deep-learning-software-to-identify-fraud/)
+
 [DL infrastructure in production](https://insights.ubuntu.com/2016/04/25/making-deep-learning-accessible-on-openstack/)
 
 
@@ -103,3 +113,22 @@
 - PayPal uses three types of machine learning algorithms for risk management: linear, neural network, and deep learning. Experience has shown PayPal that in many cases, the most effective approach is to use all three at once. we “ensemble” them together!
 
 - detect fraud: "we can separate the good from the bad with one straight line". When linear fails, neural network. Also,tree-based, mimicking a human being when we have to make a judgment -- for example, we would say if it’s raining, I’ll take an umbrella.
+
+
+
+## [Data]()
+
+- About 2 million transactions a day. 
+- 2 years of transaction data, 200GB of data. 
+
+- Columns in the database in the order of 1000: every possible credit card event has columns associated to it (transaction types,  activating cards, - location, date, time, aggregate data, last time client made payment, system oriented, apple pay, etc). Therefore, the database is very spare since not all events happen at the same time. 
+
+
+- Fraud labeling process:
+
+1. client calls or fraud detection system flags.
+2. Fraud analyst confirms it. 
+
+- Fraud detection system is called Prism and is basically a rule base
+
+- If I want to shadow fraud analysts should coordinate with -> Mike Attey
