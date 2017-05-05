@@ -28,26 +28,16 @@
 "What is Anomaly? Anomaly is an observation that doesn’t conform with prediction, which is highly subjective for operators or analysts who use this model as a tool to detect anomalies. For this reason, we first generate an anomaly score by applying the current observation to the learned predictive model and decide the current observation as an anomaly only if its anomaly score exceeds a certain threshold"
 
 
-1. Unsupervised: 
+### Papers
 
-"Anomaly detection involves identifying the events which do not conform to an expected pattern in data. A common approach to anomaly detection is to identify outliers in a latent space learned from data"
+0. [A Comprehensive Survey of Data Mining-based Fraud Detection Research]()
 
-- Autoencoder, moving average, KL divergence (reconstruction cost)
-- Dimensionality reduction anomaly detection. 
+- related adversarial data mining fields/applications such as epidemic/outbreak detection, insider trading, intrusion detection, money laundering, spam detection, and terrorist detection
 
-- Maybe, anomalous events occur rarely in the training data, preventing the autoencoder from producing a good reconstruction at those events!? Therefore, the KL distance can be thresholded to find anomalous events? [cf](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC3193936/)
-
-- change point detection methods. 
-
-
-2. Supervised: 
-- RNN learns from labeled transactions points in a time series (predict anomaly occurance)
-- 
+- In fraud detection, misclassification cost is not balanced. For example, a false negative error is usually more costly than a false positive error. Therefore, the analysis of the ROC curve (plot of true positive vs. false positive) and maximizing the area under this curve (AUC) is required as opposed to simply improving accuracy.
 
 
 
-
-## Papers
 
 1. [A Data-driven Health Monitoring Method for Satellite Housekeeping Data based on Probabilistic Clustering and Dimensionality Reduction]()
 
@@ -110,6 +100,39 @@ Two steps,
 - We project each input vector into a much lower dimensional space (a few thousand dimensions) using a sparse projection matrix R with entries sampled iid from a distribution over {0, 1, −1}. Entries of 1 and -1 are equiprobable and $$P(Rij = 0) = 1− \frac{1}{\sqrt(d)}$$, where $$d$$ is the original input dimensionality. Another way to view the random projection in the context of neural network training is that the random projection step forms a layer with linear hidden units in which the weight matrix is not learned and is instead simply set to R.
 
 - Classifier (ensemble NN!?)
+
+
+
+### [Literature Synthesis]()
+
+
+
+
+1. Unsupervised: 
+
+"Anomaly detection involves identifying the events which do not conform to an expected pattern in data. A common approach to anomaly detection is to identify outliers in a latent space learned from data"
+
+- Autoencoder, moving average, KL divergence (reconstruction cost)
+- Dimensionality reduction anomaly detection. 
+
+- Maybe, anomalous events occur rarely in the training data, preventing the autoencoder from producing a good reconstruction at those events!? Therefore, the KL distance can be thresholded to find anomalous events? [cf](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC3193936/)
+
+- change point detection methods. 
+
+
+2. Supervised: 
+- RNN learns from labeled transactions points in a time series (predict anomaly occurance)
+- 
+
+
+#### Data
+
+- Almost no publicly available datasets for fraud detection (legal/competition)
+
+- Previous studies (pre 2010)
+
+<img src="/images/fraud_detection/Fraud_data_size_pre2010.png" alt="Scatter plot of the data size from 40 unique and published fraud detection papers (pre-2010) within common fraud types." width="350" height="350"> | <img src="/images/fraud_detection/dataset_balance.png" alt="Scatter plot of the percentage of fraud and percentage of test of entire data set. 19 unique and published fraud detection papers within common fraud types were used." width="350" height="350">
+
 
 
 
