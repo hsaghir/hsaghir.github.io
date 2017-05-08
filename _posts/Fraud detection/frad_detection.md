@@ -8,6 +8,9 @@
 
 - There are tons of startups providing analytics/ML solutions, but the main concern of the bank is data privacy. They are not comfortable giving customer data to third parties, their brand will be at risk if they do, and there might be some potential regulatory risks. 
 
+---
+
+
 ## [In the news]()
 
 [Orange tests DL to identify fraud](https://blogs.wsj.com/cio/2016/03/14/orange-tests-deep-learning-software-to-identify-fraud/)
@@ -21,12 +24,13 @@
 
 - detect fraud: "we can separate the good from the bad with one straight line". When linear fails, neural network. Also,tree-based, mimicking a human being when we have to make a judgment -- for example, we would say if it’s raining, I’ll take an umbrella.
 
-
+---
 
 ## [Literature Survey]()
 
 "What is Anomaly? Anomaly is an observation that doesn’t conform with prediction, which is highly subjective for operators or analysts who use this model as a tool to detect anomalies. For this reason, we first generate an anomaly score by applying the current observation to the learned predictive model and decide the current observation as an anomaly only if its anomaly score exceeds a certain threshold"
 
+---
 
 ### Papers
 
@@ -36,7 +40,7 @@
 
 - In fraud detection, misclassification cost is not balanced. For example, a false negative error is usually more costly than a false positive error. Therefore, the analysis of the ROC curve (plot of true positive vs. false positive) and maximizing the area under this curve (AUC) is required as opposed to simply improving accuracy.
 
-
+---
 
 
 1. [A Data-driven Health Monitoring Method for Satellite Housekeeping Data based on Probabilistic Clustering and Dimensionality Reduction]()
@@ -49,7 +53,7 @@
 
 - dim reduction: probabilistic PCA with mode-specific params assuming iid samples in the time series, $$X=Wh+b+noise$$ meaning that mode-specific $$W_k, \mu_k, \sigma_k$$, are used for each of the k modes. The noise is in the form of $$\sigma_k I$$. The prior on the latents is assumed to be in the form of $$p(h)=N(0,I)$$ for each mode and a switching categorical distribution on modes as a generalized Bernouli dist consisting of $$k$$ probability values for the $$k$$ modes, $p(k)=Cat(\pi)$. This translates to a mixture model of a type $$p(x_t;\theta)=\sum_k \pi_k . N(\mu_k, w_k w_k^T+\sigma_k I)$$.
 
--- I can use a VAE instead of the probabilistic PCA to get a low dim representation. How about the anomaly detection part?
+---
 
 - Anomaly detection: After learning params, the likelihood of a sample given the learned model indicates the probability of the sample being anomalous. Alternatively the log-likelihood can be used as an anomaly score, $$score(a_t)=-\log p(a_t|learned_model)$$ when the learned parameters are used in the model $$p(x_t;\theta)=\sum_k \pi_k . N(\mu_k, w_k w_k^T+\sigma_k I)$$.
 
@@ -60,6 +64,7 @@
 
 -- We can use time windows instead of every time point $$x_t$$. This way, the element-wise reconstruction error will indicate which time point in that window contributed more to the anomaly score. 
 
+---
 
 2. [Anomaly Detection from Multivariate Time-Series with Sparse Representation]()
 
@@ -69,6 +74,7 @@
 
 - Reconstruct the signal. Element-wise reconstruction error is the equivalent of anomaly score for each window. The window contributing most to the error or whose error are above a threshold are somewhat anomalous. 
 
+---
 
 3. [Structured Denoising Autoencoder for Fault Detection and Analysis]()
 Two steps, 
@@ -81,25 +87,7 @@ Two steps,
 
 - Contribution Analysis (CA): looking at the elements of the reconstruction error to find the one with most contribution to error. 
 
-
-4. [Ubalanced dataset for Fraud](http://rvc.eng.miami.edu/Paper/2015/Yan_ISM2015.pdf)
-
-- The minority class is actually class of interest which is the fraud instances.
-
-
-
-5. [Classification pipeline](George Dahl)
-
-- Neural net workflow for "Large-scale malware classification using random projections and neural networks":
-
-- Feature extraction
-- Feature selection
-
-- Dimensionality reduction using random projections: Even after feature selection, the input dimensionality is still quite large (179 thousand), although there is a lot of sparsity. Naive neural net training on such high dimensional input is too expensive. To make the problem more manageable, we used the very sparse random projections.
-
-- We project each input vector into a much lower dimensional space (a few thousand dimensions) using a sparse projection matrix R with entries sampled iid from a distribution over {0, 1, −1}. Entries of 1 and -1 are equiprobable and $$P(Rij = 0) = 1− \frac{1}{\sqrt(d)}$$, where $$d$$ is the original input dimensionality. Another way to view the random projection in the context of neural network training is that the random projection step forms a layer with linear hidden units in which the weight matrix is not learned and is instead simply set to R.
-
-- Classifier (ensemble NN!?)
+---
 
 
 
@@ -124,16 +112,7 @@ Two steps,
 - RNN learns from labeled transactions points in a time series (predict anomaly occurance)
 - 
 
-
-#### Data
-
-- Almost no publicly available datasets for fraud detection (legal/competition)
-
-- Previous studies (pre 2010)
-
-<img src="/images/fraud_detection/Fraud_data_size_pre2010.png" alt="Scatter plot of the data size from 40 unique and published fraud detection papers (pre-2010) within common fraud types." width="350" height="350"> | <img src="/images/fraud_detection/dataset_balance.png" alt="Scatter plot of the percentage of fraud and percentage of test of entire data set. 19 unique and published fraud detection papers within common fraud types were used." width="350" height="350">
-
-
+---
 
 
 ## [Methodolgy]()
@@ -157,3 +136,36 @@ Two steps,
 - Fraud detection system is called Prism and is basically a rule base
 
 - If I want to shadow fraud analysts should coordinate with -> Mike Attey
+
+
+4. [Ubalanced dataset for Fraud](http://rvc.eng.miami.edu/Paper/2015/Yan_ISM2015.pdf)
+
+- The minority class is actually class of interest which is the fraud instances.
+
+
+
+5. [Classification pipeline](George Dahl)
+
+- Neural net workflow for "Large-scale malware classification using random projections and neural networks":
+
+- Feature extraction
+- Feature selection
+
+- Dimensionality reduction using random projections: Even after feature selection, the input dimensionality is still quite large (179 thousand), although there is a lot of sparsity. Naive neural net training on such high dimensional input is too expensive. To make the problem more manageable, we used the very sparse random projections.
+
+- We project each input vector into a much lower dimensional space (a few thousand dimensions) using a sparse projection matrix R with entries sampled iid from a distribution over {0, 1, −1}. Entries of 1 and -1 are equiprobable and $$P(Rij = 0) = 1− \frac{1}{\sqrt(d)}$$, where $$d$$ is the original input dimensionality. Another way to view the random projection in the context of neural network training is that the random projection step forms a layer with linear hidden units in which the weight matrix is not learned and is instead simply set to R.
+
+- Classifier (ensemble NN!?)
+
+---
+
+#### Data
+
+- Almost no publicly available datasets for fraud detection (legal/competition)
+
+- Previous studies (pre 2010)
+
+<img src="/images/fraud_detection/Fraud_data_size_pre2010.png" alt="Scatter plot of the data size from 40 unique and published fraud detection papers (pre-2010) within common fraud types." width="350" height="350"> | <img src="/images/fraud_detection/dataset_balance.png" alt="Scatter plot of the percentage of fraud and percentage of test of entire data set. 19 unique and published fraud detection papers within common fraud types were used." width="350" height="350">
+
+
+
