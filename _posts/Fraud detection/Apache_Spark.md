@@ -85,23 +85,5 @@ sc=SC(conf)
 ```
 
 
-## Strategies for unbalanced classification problem 
-
-- Changing the performance metric:
-    + Use the confusio nmatrix to calculate Precision, Recall
-    + F1score (weighted average of precision recall)
-    + Use Kappa - which is a classification accuracy normalized by the imbalance of the classes in the data
-    + ROC curves - calculates sensitivity/specificity ratio.
-- Resampling the dataset
-    + Essentially this is a method that will process the data to have an approximate 50-50 ratio. 
-    + One way to achieve this is by OVER-sampling, which is adding copies of the under-represented class (better when you have little data)
-    + Another is UNDER-sampling, which deletes instances from the over-represented class (better when he have lot's of data)
-
-## blob
-The question I am trying to answer is whether a new transaction is a good transaction and should go through or is it a fradulent one, in which case it has to be stopped. Transaction data is fundamentally an unbalanced data problem with many good transactions in one class and a small number of fradulent ones in the other. So it is important to combine supervised and unsupervised learning methods to solve this unbalanced data problem. My work is focused on semi-supervised anomaly detection methods based on deep generative models to detect fradulent transactions. 
-
-## Per customer fraud detection (ANGEL - ANomaly Gaurde Event Luncher!?)
-- You basically download your transaction data into your Angel app and it gaurds you against fraud by looking for anomallies in your transaction data. e.g. your phone location indicates you are in Toronto while a transaction is reported on your card in EU. Angel will mark that as a very highly anormal transaction and will tell you about it. A Gaussian Process can tell when uncertainties are high and can query the user about it. 
-
 
 

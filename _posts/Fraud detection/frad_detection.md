@@ -1,7 +1,7 @@
 
 
 
-## [Business Problem: Fraud Detection]()
+## Business Problem: Fraud Detection
 - Fraud detection is a very big problem. For an organization like RBC that's in the order of 100s of millions per year. 
 
 - Currently RBC does not use any machine learning in their fraud detection unit. 
@@ -11,7 +11,7 @@
 ---
 
 
-## [In the news]()
+## In the news
 
 [Orange tests DL to identify fraud](https://blogs.wsj.com/cio/2016/03/14/orange-tests-deep-learning-software-to-identify-fraud/)
 
@@ -26,7 +26,117 @@
 
 ---
 
-## [Literature Survey]()
+## Literature Synthesis
+"Anomaly detection involves identifying the events which do not conform to an expected pattern in data."
+
+
+### Supervised: 
+- treats the problem as a binary classification problem. Classification operates based on the assumption that the a classifier can distrintuish between the normal/anomalous classes from the designated feature space. It requires accurately labeled data. The main challenge here is that the data is inherently unbalanced and needs appropriate methods to tackle that. Popular classifiers have been used in the literature for this purpose. 
+
+---
+#### Strategies for unbalanced classification problem 
+
+- Changing the performance metric:
+    + Use the confusio nmatrix to calculate Precision, Recall
+    + F1score (weighted average of precision recall)
+    + Use Kappa - which is a classification accuracy normalized by the imbalance of the classes in the data
+    + ROC curves - calculates sensitivity/specificity ratio.
+- Resampling the dataset
+    + Essentially this is a method that will process the data to have an approximate 50-50 ratio. 
+    + One way to achieve this is by OVER-sampling, which is adding copies of the under-represented class (better when you have little data)
+    + Another is UNDER-sampling, which deletes instances from the over-represented class (better when he have lot's of data)
+
+---
+
+### Semi-Supervised: 
+
+- Assumes that the data for only one class is available. The approach is to model only one class of the data and identify the other class based on their unconformity to the model. Most semi-supervised models can be used in an unsupervised way where the normal and anomalous data are not labeled. The assumption then would be that normal data is much more frequent than anomalous data. 
+
+#### Point Anomalies
+##### K-Nearest Neighbor
+- Key assumption is that normal data instances occur in dense neighborhoods while anomalies occur far from closest neighbors. 
+- Two main categories exits. techniques that use the distance of an instance to its k-th nearest neighbor as the anomaly score. 2) Techniques that compute relative density of each data point to compute its anomaly score. 
+
+##### Clustering
+- Based on the assumption that normal instances belong to a cluster in the data while anomalies do not belong to any cluster.
+
+##### Statistical Anomaly detection
+- These models fit a stat model to the data and then perform inference for any new point to see whether that data point belongs to this model or not. The underlying intuition is that an anomaly is data point that is unlikely under the generative process of the model. Assumptions are that normal data points occur in high probability regions while anomalies occur in low probability regions. Two main categories are,  Parametric techniques that assume a certain generative model for data generation such as Gaussian model based techniques, and Regression models for time series. Non-parametric techniques don't assume a generative process. Examples are Histogram-based, and Kernel-based methods. 
+
+##### Information theoretic anomaly detection
+- Based on the assumption that anomalies in data induce irregularities in the information content of the dataset as measured by entropy/complexity. 
+
+##### Spectral anomaly detection 
+- Based on the assumption that the data can be embedded into a lower dimension space where normal/anomalous points are significantly different. 
+
+- Autoencoder, moving average, KL divergence (reconstruction cost). anomalous events occur rarely in the training data, preventing the autoencoder from producing a good reconstruction at those events!? Therefore, the KL distance can be thresholded to find anomalous events? [cf](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC3193936/)
+
+#### Contextual anomalies
+- requires defining a context for each data point so that it can be evaluated in that context. The approach usually used is to use point anomaly detection techniques in the subset of data marked as context for that data point.  
+
+Some ways contextual attributes have been defined are:
+
+##### Spatial neighborhood
+- Given the location of each data point, the spatial neighbors can be used as context, for example the neighboring points in a sequence. 
+
+##### Graphs 
+- edges between nodes define the neighbors which are used as context. 
+
+##### Profile
+- The idea is that the data forms sub-clusters or sub-groups and these sub-groups can be used as context for finding anomalies. 
+
+##### change point detection method:
+- These methods can be used for defining contexts in which anomalies are assessed. The assumption would be that a change point occurs when the context changes and the anomaly has to be assessed based on the new dynamic regime (context). An alternative view is to use change point detection methods for detecting collective anomalies.
+
+
+---
+
+## Chosen Methodology
+
+### Internal Use Fraud detector
+- Model normal class using an autoencoder (i.e. VAE) 
+- The reconstruction error for new data points show the anomaly score of that point.
+
+- The uncertainty of a model about a data point might be useful as fraud score. For example, using a Gaussian process, when a point is outside the uncertainty bounds, it is an anomaly. This lends itself well to active learning as well.
+
+## Per customer fraud detection (ANGEL - ANomaly Guard Event Luncher!?)
+- Customer downloads their transaction data into the ANGEL app. ANGEL trains a model on customer data, warns user about anomalies in their transactions, and gets them to label the transaction as safe or not w/ a short description (Active Learning). An example scenario is when customer phone location indicates they are in Toronto while a transaction is reported on their card in EU. ANGEL might mark that as a very highly anomalous transaction and will prompts the user to label it as either good or bad. 
+- Bayesian optimization, Gaussian Processes, SVMs, uncertainty score based on a Bayesian approach (or using noise on hidden params) and other similar techniques can tell when uncertainties are high and can query the prompt the user to label the data point. 
+
+
+---
+
+
+## Data
+
+- Almost no publicly available datasets for fraud detection (legal/competition)
+
+- Previous studies (pre 2010)
+
+<img src="/images/fraud_detection/Fraud_data_size_pre2010.png" alt="Scatter plot of the data size from 40 unique and published fraud detection papers (pre-2010) within common fraud types." width="350" height="350"> | <img src="/images/fraud_detection/dataset_balance.png" alt="Scatter plot of the percentage of fraud and percentage of test of entire data set. 19 unique and published fraud detection papers within common fraud types were used." width="350" height="350">
+
+---
+### RBC Data
+
+- About 2 million transactions a day. 
+- 2 years of transaction data, 200GB of data. 
+
+- Columns in the database in the order of 1000: every possible credit card event has columns associated to it (transaction types,  activating cards, - location, date, time, aggregate data, last time client made payment, system oriented, apple pay, etc). Therefore, the database is very spare since not all events happen at the same time. 
+
+--- 
+
+#### Fraud labeling process:
+
+1. client calls or fraud detection system flags.
+2. Fraud analyst confirms it. 
+
+- Fraud detection system is called Prism and is basically a rule base
+
+- If I want to shadow fraud analysts should coordinate with -> Mike Attey
+
+---
+
+## Literature Survey
 
 "What is Anomaly? Anomaly is an observation that doesn’t conform with prediction, which is highly subjective for operators or analysts who use this model as a tool to detect anomalies. For this reason, we first generate an anomaly score by applying the current observation to the learned predictive model and decide the current observation as an anomaly only if its anomaly score exceeds a certain threshold"
 
@@ -88,62 +198,12 @@ Two steps,
 - Contribution Analysis (CA): looking at the elements of the reconstruction error to find the one with most contribution to error. 
 
 ---
-
-
-
-### [Literature Synthesis]()
-
-
-
-
-1. Unsupervised: 
-
-"Anomaly detection involves identifying the events which do not conform to an expected pattern in data. A common approach to anomaly detection is to identify outliers in a latent space learned from data"
-
-- Autoencoder, moving average, KL divergence (reconstruction cost)
-- Dimensionality reduction anomaly detection. 
-
-- Maybe, anomalous events occur rarely in the training data, preventing the autoencoder from producing a good reconstruction at those events!? Therefore, the KL distance can be thresholded to find anomalous events? [cf](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC3193936/)
-
-- change point detection methods. 
-
-
-2. Supervised: 
-- RNN learns from labeled transactions points in a time series (predict anomaly occurance)
-- 
-
----
-
-
-## [Methodolgy]()
-- VAE for reconstructing the data. 
-- 
-
-
-## [Data]()
-
-- About 2 million transactions a day. 
-- 2 years of transaction data, 200GB of data. 
-
-- Columns in the database in the order of 1000: every possible credit card event has columns associated to it (transaction types,  activating cards, - location, date, time, aggregate data, last time client made payment, system oriented, apple pay, etc). Therefore, the database is very spare since not all events happen at the same time. 
-
-
-- Fraud labeling process:
-
-1. client calls or fraud detection system flags.
-2. Fraud analyst confirms it. 
-
-- Fraud detection system is called Prism and is basically a rule base
-
-- If I want to shadow fraud analysts should coordinate with -> Mike Attey
-
-
 4. [Ubalanced dataset for Fraud](http://rvc.eng.miami.edu/Paper/2015/Yan_ISM2015.pdf)
 
 - The minority class is actually class of interest which is the fraud instances.
 
 
-
+---
 5. [Classification pipeline](George Dahl)
 
 - Neural net workflow for "Large-scale malware classification using random projections and neural networks":
@@ -157,15 +217,6 @@ Two steps,
 
 - Classifier (ensemble NN!?)
 
+
 ---
-
-#### Data
-
-- Almost no publicly available datasets for fraud detection (legal/competition)
-
-- Previous studies (pre 2010)
-
-<img src="/images/fraud_detection/Fraud_data_size_pre2010.png" alt="Scatter plot of the data size from 40 unique and published fraud detection papers (pre-2010) within common fraud types." width="350" height="350"> | <img src="/images/fraud_detection/dataset_balance.png" alt="Scatter plot of the percentage of fraud and percentage of test of entire data set. 19 unique and published fraud detection papers within common fraud types were used." width="350" height="350">
-
-
 
