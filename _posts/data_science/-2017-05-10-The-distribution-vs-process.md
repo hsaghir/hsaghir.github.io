@@ -9,9 +9,9 @@ image:
 
 - A probability distribution is the reciprocal of energy for a random variable telling how likely the values of that random variable are. You can think of a random variable as a piece of land and the probability distribution as the density of cloud above this land. 
 
-- A random process is a collection of random variables indexed by some mathematical set (each variable uniquly associated with an element of the set). Historically this set has been natural numbers (1,2,..) representing the evolution of some system over time. Each random variable takes values from a single mathematical space known as the state space. A random process can have many different realizations due to its randomness.
+- A random process is a collection of random variables uniquely indexed by some mathematical set. Historically this set has been natural numbers (1,2,..) representing the evolution of some system over time. All random variable takes values from a mathematical space known as the state space. A random process can have many different realizations due to its randomness.
 
-- When a process is associated with a ditribution, it usually means that the random variables in the process each have a probability distribution similar to that specific distribution (state space). If the random variables are indexed by the Cartesian plane or some higher-dimensional Euclidean space, then the collection of random variables is usually called a random field instead.
+- When a process is associated with a ditribution, it usually means that the random variables in the process each have a probability distribution similar to that specific distribution (state space). If the random variables are indexed by a higher-dimensional Euclidean space, then the collection of random variables is usually called a random field instead.
 
 - Based on their properties, stochastic processes can be divided into various categories, which include random walks, martingales, Markov processes, Lévy processes, Gaussian processes, and random fields as well as renewal processes and branching processes. 
 
