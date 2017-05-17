@@ -17,7 +17,7 @@
 
 - Spark normally runs on an existing big data cluster. These data clusters are managed through a resource manager software layer which assigns taks. These clusters are often also used for Hadoop jobs, and Hadoop's YARN resource manager will generally be used to manage that Hadoop cluster. Spark can also run just as easily on alternative cluster resource managers like Apache Mesos.
 
-- MapReduce is really a programming model. Hadoop MapReduce was an early cluster manager which strung multiple MapReduce jobs together to create a data pipeline. MapReduce reads and writes data to disk in-between task which is inefficient. Spark does all activities in memory (RAM) which is much faster. Hadoop now has YARN cluster manager and isn't dependent upon Hadoop MapReduce for cluster managment anymore. 
+- Hadoop MapReduce was an early cluster manager which strung multiple MapReduce jobs together to create a data pipeline. MapReduce reads and writes data to disk in-between task which is inefficient. Spark does all activities in memory (RAM) which is much faster. Hadoop now has YARN cluster manager and isn't dependent upon Hadoop MapReduce for cluster managment anymore. 
 
 - Spark is not a replacement for Hadoop. Nor is MapReduce dead. Spark can run on top of Hadoop, benefiting from Hadoop's cluster manager (YARN) and underlying storage (HDFS, HBase, etc.). Spark can also run completely separately from Hadoop, integrating with alternative cluster managers like Mesos and alternative storage platforms like Cassandra and Amazon S3.
 
@@ -90,8 +90,8 @@ sc=SC(conf)
 - Once data is loaded into an RDD, two basic operations can be carried out (that are logged and can be reversed):
 
     + Transformations, which creates a new RDD by changing the original through a map, filter, etc. Transformations are lazy meaning that they are remembered but not applied until the results are needed. By default each transformed RDD is recomputed each time we call an action on it. However, we can **persist** it for faster access if required. 
-
     + Actions, a computation on the RDD (e.g reduce, count, etc), that doesn't change the original data.
+
 ---
 
 
@@ -101,6 +101,36 @@ sc=SC(conf)
 - Reduce is an action. When run, it breaks down the map computation into tasks to run on separate machines. Each machine runs both its part of the map on its local data and a local reduction, returning the answer to the driver program. 
 
 
+## SQLContext
+- the entry point to all Spark SQL functionality is the SQLContext class. It needs to be instantiated like this if not already defined:
+
+```
+from pyspark.sql import SQLContext
+sqlContext=SQLContext(sc)
+```
+
+
+- SparkSQL can convert an RDD of Row objects to a dataframe. To create Row object we use the Row class which gets (column name, value) pairs and creates a row object. For example:
+
+```
+row_data= rdd_data.map(lambda r: Row(column0=r[0], column1=r[1]))
+```
+
+- We can convert this Row rdd to a dataframe and then register it as a sql table with name "table1" to be able to run sql queries
+
+```
+df=sqlContext.createDataFrame(row_data)
+df.registerTempTable('table1')
+```
+
+- A sample sql query:
+```
+query_df= sqlContext.sql("""SELECT column0 FROM table1 WHERE column0>5""")
+```
+
+- the result of a sql query is an RDD. 
+
+---
 
 ## Using other python files with PySpark
 - you can simply import other python files in pyspark using following:
@@ -109,6 +139,30 @@ SparkContext.addPyFile("module.py/.zip")
 ```
 
 
+
+
+
+
+
+
+
+
+
+
+---
+Big Data Engineer role:
+
+Main qualifications: 
+
+- Excellent knowledge of distributed systems and big data infrastructure including Hadoop, Spark, HBase, and Hive/Pig/SQL
+- Strong coding skills preferably in Python
+- Good knowledge of Python scientific stack. SciPy, Numpy, Pandas, jupyter, matplotlib
+- Good data modeling skills
+- Ability to quickly build a web app to collect and visualize data with Flask and D3 or an alternative workflow. 
+
+a plus if :
+- Knows Machine learning/deep learning
+- is familiar with a deep learning library i.e. keras/tensorflow/theano/pytorch/etc
 
 
 

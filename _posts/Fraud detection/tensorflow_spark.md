@@ -25,7 +25,7 @@ output_value=session.run(output, {x:3, y:4})
 ```
 
 ## Running Tensorflow with distributed file systems
-- If our data sits in Hadoop and we want to use Tensorflow, there are two ways, 1) we can use PySpark and run Tensorflow in a reduce operation, or better yet, 2) iterate over the resulting query and pass it into the local model as a placeholder. 
+- If our data sits in Hadoop and we want to use Tensorflow, there are two ways, 1) we can use PySpark and run Tensorflow in a reduce operation, or better yet, 2) iterate over the resulting query and pass it into the local model as a placeholder. This requires the conversion of the Spark dataframe (distributed) to pandas dataframe (local). Pandas is not a distributed computing library and it runs locally on local memory. So everything after coversion to pandas is completely local including tensorflow runs. 
 
 - The above requires conversion of data types from Hadoop HDFS, to Spark Tungesten binary, to Spark Java, to Python Pickle, to Tensorflow C++ object which is very costly. Tensorframe library does this data type conversion in one fell swoop.
 
