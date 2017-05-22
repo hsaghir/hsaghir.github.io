@@ -26,18 +26,26 @@ image:
 
 ## Expectation Maximization (EM)
 
-- Algorithmicly, EM is very similar to k-means. going back and forth between a soft clustering and computing the mean from clusters. 
+- EM is an algorithm that maximizes the ELBO for latent variable models by introducing an approximate posterior $$q$$. Algorithmically, EM is very similar to the learning process in which we repeatedly use an estimate of parameters to calculate an update; Then we use the update to calculate new values for our estimate of parameters. For example in k-means, we go back and forth between using the current cluster estimates to calculate the cluster means, then use the current means to do a soft clustering and compute an updated set of clusters. 
 
+-  Formally, EM consists of two steps that are repeated till convergence:
+    +  Expectation step: we set the approximate posterior $$q$$ to the the value of the posterior $$p$$ at that beginning of that step i.e. $$q= p(h \vert x;\theta^0)$$. 
+    +  Maximization step: We maximize the ELBO with respect to parameters using an optimization algorithm. 
+    +  Repeat!
 
+- This is similar to coordinate ascent for maximizing the ELBO; in the expectation step we maximize the ELBO w.r.t. $$q$$ using averages as an approximation of the expectation. Then we fix $$q$$ and  maximize the ELBO w.r.t. parameters. Repeat!
 
+- SGD on latent variable model can be seen as a special case of EM where the maximization step is taking a single gradient step. Other optimization algorithms such as the Newton method can take a larger M step all the way to to global maximum. 
 
+- Another insight of the EM algorithms is that we can continue to use the one value of $$q$$ even after an update to obtain larger M steps.
 
+## Maximum A Posteriori (MAP) inference 
+- MAP inference estimates the most likely value of missing values as point estimates instead of calculating their distributions. We can derive MAP estimate from the ELBO, if we restrict the approximate posterior family $$q$$ to a point (Dirac) distribution $$q~\delta(h-\mu)$$.
+- MAP inference is commonly used in DL as a learning method and a feature extractor mostly in sparse coding models. In sparse coding, the inference problem faces an explaining away situation that limits the factorization of the posterior. This makes the inference intractable. MAP inference is used to overcome that. 
 
+## Variational Inference
 
-
-
-
-
+- 
 
 
 
