@@ -66,6 +66,8 @@ image:
 
 - Multiplying weights by a noise $N(1,I)$ instead of zeroing out weights is an alternative that doesn't need weight scaling and has been shown to work well. Note that such noises are multiplicative (opposed to additive) since they appear in multiple layers, therefore, the network can't just take the easy way out of noise by making parameters bigger to damp the effect of noise. This way, noise keeps destroying learned information and leads to robustness. For example, if one neuron learns nose feature to distinguish a face, dropping it will force other neurons to learn other features (or redundant nose feature) to distinguish the face resulting in robustness.
 
+- Dropout drops neurons, so if we take outer product of dropout vectors of two consecutive layers, the resulting matrix is a filtering mask that is applied to the individual weights. DropConnect just samples this weight filter mask randomly from a Bernouli. An alternative is blackout where we assign random clusters of active and inactive elements on the filter mask for weight matrices.  
+
 ## Adversarial training
 - NNs can get very close to human level error rate in some cases, but they fail miserably on some carefully designed "adversarial" examples. These examples can be found using optimization by searching for a data point $x_prime$ close to point $x$, where, the output of the network for the two are very different. Training the network on such adversaial examples encourages the network to be locally constant in the neighborhood of the data manifold.
 
