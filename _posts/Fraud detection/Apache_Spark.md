@@ -5,6 +5,10 @@
 
 - Distributed computing consists of having multiple executors cooperate to do a job. Each executor has its own allocated cpu, memory and disk space. A resource manager breaks down a job and assigns responsibilities (functions) to each executor. Each executor applies its assigned function to its own data. This phase is called a "map". Then the resource manager combines the results from all executors. This is called a "Reduce" operation. 
 
+- Map/Reduce structure of working with big data usually admits only linear operations; nonlinear models don't really work well with the Map/Reduce workflow. In other words, there is a kind of tradeoff between amount of data and model complexity. A good way of getting passed this problem is to train complex models with more managable data sizes.
+
+<img src="/Users/hamid/Documents/hsaghir.github.io/images/fraud_detection/big_data_model_complexity.png" alt="Data vs. Model Complexity " width="350" height="350">
+
 ---
 
 ## Apache Spark

@@ -7,6 +7,22 @@ image:
   teaser: jupyter-main-logo.svg
 ---
 
+# MCMC 
+- All the problems in Bayesian statistics come down to an integration (i.e. expectation) and all inference methodologies try to estimate an integral in some way. 
+- A density function quantifies our beliefs about likelihood of events using a shape that puts more density on places with more likelihood. For example, imagine a 2d Gaussian, the shell of the bell in 3d space is the density function(quantified using a Gaussian function). While the density usually scales linearly with dimensions, the volume of space under this shell scales exponentially with dimensions. The probability mass is the integral of the product of the density and volume. Therefore, in higher dimensions, the mode of the density and the space with highest probability mass are not aligned due to this asymmetry in scaling. 
+- Therefore, it is important to quantify probability mass especially in higher dimensions (i.e. compute expectation integral) as opposed to just estimating density mode (i.e. MAP inference).  
+- There are a couple of ways to estimate the expectation integral i.e. the mass under the probability density shell. 
+  + Simple numerical integrations using a grid of squares in all dimensions is called quadrature and scales exponentially with number of dimensions.
+  + Monte Carlo estimate of the integral which means taking independent samples from the distribution and using an average to estimate the expectation (integral of probability mass). 
+    * The cost of this approach is constant and the variance of the Monte Carlo estimator doesn't on the number of dimensions. It works as far as we can get independent samples from the distribution but how do we get samples? 
+    * Turns out the independent sampling also scales exponentially with dimensions since we still have to explore the high dimensional landscape. 
+    * The trick to make Monte Carlo work is not to use independent samples, but rather dependent samples and take the correlation of samples into account in the Monte Carlo estimator. This is where a Markov Chain that has a stationary distribution at the target distribution comes in.
+    * A Markov chain is an operation; It take a distribution to another distribution. So if we set the Markov chain to preserve our posterior distribution (i.e. posterior at both input and output), we can get dependent samples by running the Markov chain. 
+    * The problem is we don't know how to start with the stationary distribution (posterior) that the Markov chain is supposed to preserve. If we knew, it'd be as easy as just running the Markov chain to explore it.
+    * So we end up starting with a random distribution and run the chain over and over till it converges to the stationary distribution where the probability mass is, at which point, further running the chain starts exploring the probability mass (meaning we can start collecting dependent samples from our posterior).
+    * The posterior distribution represented by an undirected graphical model  is a Markov chain by itself. We'll have to run the chain till it converges to get the posterior. 
+    * There are no sufficient conditions for convergence, so we have to apply all the necessary conditions (e.g. invariance). A solution is to run many differently initialized chains in parallel and compare. 
+
 
 # MCMC Using Hamiltonian Dynamics
 
