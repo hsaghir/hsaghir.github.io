@@ -26,31 +26,26 @@ image:
 
 # MCMC Using Hamiltonian Dynamics
 
-This is a long paper (50 pages) and I won't be able to read it all. I'm just
-hoping to understand enough of the Hamiltonian Dynamics part and to get
-intuition. Remember that MCMC originally came out of trying to simulate
-molecules, so there's some physics and chemistry background and terminology,
-which is what John Canny seems to like.  HMC originates from a 1987 paper.
-Hamiltonian/Hybrid Monte Carlo. Hamiltonian is more descriptive.
+- MCMC originally came out of trying to simulate molecules (1953 paper by Metropolis), so there's some physics and chemistry background and terminology. HMC originates from a 1987 paper. Hamiltonian/Hybrid Monte Carlo. Hamiltonian is more descriptive.
 
+- The eventual goal is inference which means calculating the expectation integral of some distribution. We do this by sampling from the distribution and using Monte Carlo to estimate the integral. Therefore, in MCMC, we have some probability distribution that we want to sample from. 
 
-## Intuition
+- To use HMC, we form a total energy surface (Hamiltonian function) using the probability distribution we want to sample from (i.e. potential energy) and a helping variable as the momentum (representing Kinetic energy; typically iid Gaussian). Position corresponds to the variables of interest since we want to sample from the probability distribution. The potential energy is minus the log of the probability density for position variables. Momentum variables, one for each position variable, will be introduced artificially.
 
-In MCMC, we have some probability distribution that we want to sample from. If
-we are doing MCMC via HMC, then *we must define* a "Hamiltonian function" with
-position and momentum terms. The position terms can be thought of the real
-parameters \theta, whereas the momentum terms are auxiliary variables used to
-help in computing trajectories.
+- One HMC step involves updating momentum variables based on a pre-defined schedule and then using the Kintetic and total energy (Hamiltonian) to calculate the potential energy update. This update is determined by computing a trajectory according to Hamiltonian dynamics, implemented with the leapfrog method. The potential energy update is then used in a accept/reject scheme using the Metropolis Hasting algorithm. This way we can explore the probability surface using the trajectories and then accept/reject the sample where we end up on the surface. 
 
-The *trajectories* are determined not by random walks, but by Hamiltonian
-dynamics, thus getting the best of both worlds: proposals that are distant
-(because we explore the state space more and don't get trapped in local modes)
-and highly likely (well, we always want this).
+- Think of HMC as a frictionless puck that slides over an energy surface. The state of this system consists of the position of the puck, given by a 2D vector q (used for sampling a point from the energy surface), and the momentum of the puck (its mass times its velocity), given by a 2D vector p (helper variable used for exploring the landscape). The potential energy, U(q), of the puck is proportional to the height of the surface at its current position, and its kinetic energy, K(p), is proportional to its squared momentum. 
+
+- On a flat part of the surface, the puck moves at a constant velocity, equal to momentum divided by mass. If it encounters a mountain, its momentum allows it to continue, with its kinetic energy decreasing and its potential energy increasing, until all the kintetic energy is converted to potential energy. At that point the puck will slide back down with potential energy converting back to kinetic energy. 
+
+## difference with MCMC 
+The *trajectories* are determined not by random walks, but by Hamiltonian dynamics by *discretizing* the differential equations. Thus getting the best of both worlds: proposals that are distant (because we explore the state space more and don't get trapped in local modes) and highly likely (well, we always want this).
 
 Method alternates between two steps:
 
 - Update momentum variables in a "simple" way.
 - Update position variables with a Metropolis-Hastings test.
+
 
 **Very helpful intuition**, in terms of a puck sliding along a surface. We have:
 
@@ -60,22 +55,9 @@ Method alternates between two steps:
 - Potential energy function (a.k.a. stored energy), proportional to height of
   puck, a function of q.
 - Kinetic energy function (a.k.a. energy in a "body" due to motion), equal to
-  |p|^2/(2*(mass_of_puck)), i.e. a function of p. Inversely related with
+  $$|p|^2/(2*(mass_of_puck))$$, i.e. a function of p. Inversely related with
   potential energy as puck moves along surfaces.
 
-In probabilistic language:
-
-> In nonphysical MCMC applications of Hamiltonian dynamics, the position will
-> correspond to the variables of interest. The potential energy will be minus
-> the log of the probability density for these variables. Momentum variables,
-> one for each position variable, will be introduced artificially.
-
-I.e. if we want to sample \theta, then \theta is the "position variable" or the
-"variable of interest" and we have to introduce momentum variables, which Neal
-says are usually Gaussians (whew!).
-
-Note: for practical implementations, we must *discretize* the differential
-equations.
 
 
 ## Math Notes
