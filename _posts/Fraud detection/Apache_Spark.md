@@ -170,10 +170,32 @@ a plus if :
 
 
 
+---
+I have been trying to work with a large dataset stored on Haddop/Spark to work with batches so that we can do stochastic learning with our favorite machine learning algorithms but it turns out that spark is not designed for stochastic processing meaning that one can not iterate through data in batches to feed to ML algorithm 
+
+a summary of my venture into the world of distributed processing. As most of you know we have been having some trouble with Spark-Tensorflow work flow. The problem stems from the differences in design paradigm of the two systems. 
+
+Spark is designed to efficiently perform operations on all of a large dataset in parallel. For example, when one wants to perform gradient descent using the whole dataset, one can parallelize it by calculating the gradient for partitions of the dataset, adding them all up and do an update calculated from the whole dataset. However, Spark doesn't work well if one wants to do sequential operations on batches of a dataset. For example, most modern machine learning algorithm use Stochastic Gradient Descent (SGD) as the optimization procedure for the learning. SGD takes in batches of data, calculates the gradient and perform update for the batch. 
+
+Stochastic optimization procedure is very important for training Deep Learning and Reinforcement Learning. 
 
 
+"Ray" is a python library for distributed computing as a replacement for "Spark" that can handle batch/stochastic processing for modern DL/RL algorithms. 
 
+Ray on github (currently on pre-Alpha):
+https://github.com/ray-project/ray
 
+An article on Ray:
+https://www.datanami.com/2017/03/28/meet-ray-real-time-machine-learning-replacement-spark/
 
+Michael Jordan (Berkeley) explains this new paradigm very briefly here:
+https://youtu.be/bIfB1fj8xGQ?t=28m38s
 
+---
 
+As Machine learning-assisted decision making is becoming commonplace (for example fraud detection), the ability to generate simple explanations for black-box systems becomes very important 
+
+https://arxiv.org/pdf/1606.09517.pdf
+https://arxiv.org/pdf/1704.03296.pdf
+
+https://blog.acolyer.org/2016/09/22/why-should-i-trust-you-explaining-the-predictions-of-any-classifier/
