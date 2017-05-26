@@ -177,7 +177,7 @@ a summary of my venture into the world of distributed processing. As most of you
 
 Spark is designed to efficiently perform operations on all of a large dataset in parallel. For example, when one wants to perform gradient descent using the whole dataset, one can parallelize it by calculating the gradient for partitions of the dataset, adding them all up and do an update calculated from the whole dataset. However, Spark doesn't work well if one wants to do sequential operations on batches of a dataset. For example, most modern machine learning algorithm use Stochastic Gradient Descent (SGD) as the optimization procedure for the learning. SGD takes in batches of data, calculates the gradient and perform update for the batch. 
 
-Stochastic optimization procedure is very important for training Deep Learning and Reinforcement Learning. 
+Stochastic optimization procedure is very important for training Deep Learning and Reinforcement Learning models. 
 
 
 "Ray" is a python library for distributed computing as a replacement for "Spark" that can handle batch/stochastic processing for modern DL/RL algorithms. 
