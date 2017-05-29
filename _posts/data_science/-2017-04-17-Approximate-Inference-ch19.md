@@ -59,5 +59,26 @@ image:
 
 - The beauty of the variational approach is that we do not need to specify a specific parametric form for $$q$$. We specify how it should factorize, but then the optimization problem determines the optimal probability distribution within those factorization constraints. For continuous latent variables, this means that we use a branch of mathematics called calculus of variations to perform optimization over a space of functions, and actually determine which function should be used to represent $$q$$.
 
-- 
+- Maximizing the ELBO is equivalent to minimizing the $$KL[q|p]$$. In maximum likelihood learning, we minimize KL(p_data|p_model) which is the opposite direction. KL[q|p] is chosen for computational reasons however the chosen direction has implication:
+
+- It's useful to think about the distance measure we talked about. KL-divergence measures a sort of distance between two distributions but it's not a true distance since it's not symmetric  $$KL(P|Q) = E_P[\log\ P(x) − \log\ Q(x)]$$. So which distance direction we choose to minimize has consequences. For example, in minimizing $$KL(p|q)$$, we select a $$q$$ that has high probability where $$p$$ has high probability so when $$p$$ has multiple modes, $$q$$ chooses to blur the modes together, in order to put high probability mass on all of them. 
+
+On the other hand, in minimizing $$KL(q \vert p)$$, we select a $$q$$ that has low probability where $$p$$ has low probability. When $$p$$ has multiple modes that are sufficiently widely separated, the KL divergence is minimized by choosing a single mode (mode collapsing), in order to avoid putting probability mass in the low-probability areas between modes of $$p$$. In VAEs we actually minimize $$KL(q \vert p)$$ so mode collapsing is a common problem. Additionally, due to the complexity of true distributions we also see blurring problem. These two cases are illustrated in the following figure from the [deep learning book](http://www.deeplearningbook.org/).
+
+### Discrete Latent Variables
+
+
+
+### Calculus of Variation
+
+
+### Continuous Latent Variables
+
+### Interactions between Learning and Inference
+
+## Learned approximate inference
+
+### Wake-Sleep
+
+### Other forms of learned inference
 
