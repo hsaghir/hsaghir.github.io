@@ -161,11 +161,11 @@ EDIT: (So I can google myself easier) The following is also indicative of this p
  
 ```
 java.lang.OutOfMemoryError : GC overhead limit exceeded
+Spark java.lang.OutOfMemoryError: Java heap space
+Executor heatrbeat timed out after ..
+
+org.apache.spark.storage.BlockFetvhException:Failed to fetch block from 1 locations
 ```
-
-
-
-
 
 
 
