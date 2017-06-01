@@ -55,7 +55,7 @@ image:
 
 -  Inference can be viewed as maximizing the ELBO with respect to $$q$$, and learning can be viewed as maximizing the ELBO with respect to parameters.
 
-- The core idea behind variational learning is that we maximize the ELBO over a restricted family of distributions such that the expectation $$E_q[log p(x, z)]$$ is computable. A typical way to do this is to introduce assumptions about how $$q$$ factorizes (for example mean field or a structured graph e.g. LDS).
+- The core idea behind variational learning is that we maximize the ELBO over a restricted family of distributions such that the expectation $$E_q[log p(x, z)]$$ in the ELBO is computable. This way we are basically replacing the real posterior with an approximation. A typical way to do this is to use a factorized $$q$$ (for example mean field for iid latents or a structured graph for an LDS).
 
 - The beauty of the variational approach is that we do not need to specify a specific parametric form for $$q$$. We specify how it should factorize, but then the optimization problem determines the optimal probability distribution within those factorization constraints. For continuous latent variables, this means that we use a branch of mathematics called calculus of variations to perform optimization over a space of functions, and actually determine which function should be used to represent $$q$$.
 
