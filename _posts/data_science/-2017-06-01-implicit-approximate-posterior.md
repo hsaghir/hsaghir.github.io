@@ -61,3 +61,11 @@ On the other hand, in minimizing $$KL(q \vert p)$$, we select a $$q$$ that has l
 
 ### Other forms of learned inference
 
+
+
+#### Capital markets:
+- 17% of the market
+- biggest dataset? 
+- revenue generating business / marketing / 
+- algos are rule-based right now (no learning
+- )

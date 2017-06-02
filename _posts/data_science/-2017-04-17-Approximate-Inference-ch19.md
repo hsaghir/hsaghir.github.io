@@ -67,7 +67,11 @@ On the other hand, in minimizing $$KL(q \vert p)$$, we select a $$q$$ that has l
 
 ### Discrete Latent Variables
 
+- In the discrete case, we define $$q$$ such that each of its factors are just defined by a lookup table over discrete states. Along with a factorization assumption (e.g. mean field), we can represent the variational distribution $$q$$ and optimize its parameters. Because this optimization must occur in the inner loop of a learning algorithm,it must be very fast.
 
+- a fast optimization algorithm is to find the fixed point (extrema) of the gradient of loss function using fixed point iteration. Fixed point iteration finds the fixed point of a function $$f(x)=0$$, by just formulating it as $$x=g(x)$$ and iterating on it. 
+
+- variational inference for binary sparse coding is a complete example (study later).
 
 ### Calculus of Variation
 
