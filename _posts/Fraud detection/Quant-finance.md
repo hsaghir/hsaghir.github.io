@@ -6,8 +6,14 @@
 <img src="/images/fraud_detection/quant-workflow.png" alt="Quant Workflow" width="350" height="350">
 
 
+#### Capital markets:
+- 17% of the market
+- biggest dataset? 
+- revenue generating business / marketing / 
+- algos are rule-based right now (no learning
+- )
 
-# captial market 
+# captial market (Algo trading - order execution)
 - customer comes in with a volume, type and time frame of an order (e.g. 20-50k shares of RBC in a time frame of a day)
 - there are two markets:
     + lit market (there is a bid and ask price)

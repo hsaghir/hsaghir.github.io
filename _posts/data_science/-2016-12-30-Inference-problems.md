@@ -41,17 +41,17 @@ Before getting into the nuts and bolts of solving the inference problem, it is u
 
 ## Inference Strategies:
 
-1. Exact inference
+### Exact inference
 Exact inference is not possible unless the priors are conjugate so that the posteriors are also conjugate and they can mathematically be derived exactly. Using the mean field assumption with conjugate priors can help with exact inference. The mean-field assumption is a fully factorized posterior. Each factor is the same family as the model’s complete conditional. if the prior is conjugate, probability propagation algorithms can be used, but in case of non-conjugate priors black box variational inference should be used.
 
-### Probability propagation and factor graphs:
+#### Probability propagation and factor graphs:
 In undirected graph case, there is one and only one path between each pair of nodes. In a directed trees, there is one node that hass no parent, root, and all other nodes have exactly one parent. 
 Here we introduce an algorithm for probabilistic inference known as the sum-product/belief-propagation applicable to tree-like graphs. This algorithm involves asimoke  update equation, i.e. a sum over a product of potentials, which is applied once for each outgoing edge at each node
 
-### Laplace approximation is an approximation of the posterior using simple functions.
+#### Laplace approximation is an approximation of the posterior using simple functions.
 
 
-2. Evidence estimation
+### Evidence estimation
 
 For most interesting models, the denominator of posterior is not tractable since it involves integrating out any global and local variables, z so the integral is intractable and requires approximation. 
 
@@ -61,7 +61,7 @@ Being able to estimate the evidence enables model scoring/ comparison/ selection
 
 Traditional solution to approximating the evidence and the posterior involves resampling techniques including Gibbs sampling which is a variant of MCMC based on sampling from the posterior. Gibbs sampling is based on randomness and sampling, has strict conjugacy requirements, require many iterations and sampling, and it's not very easy to gauge whether the Markov Chain has converged to start collecting samples from the posterior. There are other MCMC algorithms (like Metropolis Hastings) that do not require conjugacy but still suffer from the need for thousands of samplings and convergence measurement deficiency.
 
-## Variational Inference
+#### Variational Inference
 
 Variatonal inference turns the problem of inference into optimization. It started in 80s, by bringing ideas like mean field from statistical physics to probabilistic methods. In the 90s, Jordan et al developed it further to generalize to more inference problems and in parallel Hinton et al developed mean field for neural nets and connected it to EM which lead to VI for HMMs and Mixtures. Modern VI touches many areas like, probabilistic programming, neural nets, reinforcement learning, convex optimization, bayesian statistics and many applications. 
 
@@ -79,7 +79,7 @@ Baysian approach is a belief system that suggests every variable including param
 
 Note that the loss function (i.e. the distance measure) in optimization is the root of the all problems since optimization's only objective is to reduce the loss. If the loss is not properly defined, the model can't learn well and if the loss function does not consider the inherent noise of the data (i.e. regularization), the model will eventually overfit to noise in the data and reduce generalization. Therefore, the loss function (distance measure) is very important and the reason why GANs work so well is that they don't explicitly define a loss function and learn it instead! The reason that Bayesian approach prevents overfitting is because they don't optimize anything, but instead marginalise (integrate) over all possible choices. The problem then lies in the choice of proper prior beliefs regarding the model.
 
-### Variational inference details
+#### Variational inference details
 
 Variational Inference turns the inference into optimization. It posits a variational family of distributions over the latent variables,  and fit the variational parameters to be close (in KL sense or another divergence like BP, EP, etc) to the exact posterior. KL is intractable (only possible exactly if q is simple enough and compatible with the prior), so VI optimizes the evidence lower bound (ELBO) instead which is a lower bound on log p(x). Maximizing the ELBO is equivalent to minimizing the KL, note that the ELBO is not convex. The ELBO trades off two terms, the first term prefers q(.) to place its mass on the MAP estimate. The second term encourages q(.) to be diffuse.
 
@@ -110,7 +110,7 @@ If log p(x, z) is not z differentiable:
 
 
 
-### Advanced ideas in VI (Auxiliary Variational Method, Variational Inference with Normalizing Flows, Hierarchical Variational Models, Auxiliary Deep Generative Models):
+#### Advanced ideas in VI (Auxiliary Variational Method, Variational Inference with Normalizing Flows, Hierarchical Variational Models, Auxiliary Deep Generative Models):
 
 
 Mean-field or fully-factorised approximate posterior distributions q(z|x) is usually not sufficient for modelling real world data (Complex dependencies, Non-Gaussian distributions, Multiple modes) but traditionally we've been restricted to them due to limitations in solving the optimization problem. This is the same challenge encountered in the problem of specifying a model of the data (prior) itself which was restricted by our limitations in solving the inference problem (e.g. conjugate priors).
@@ -131,7 +131,7 @@ Another possible approach is using hierarchical approximate posteriors. The basi
 
 The Auxiliary-variable methods add exra latent variables in parallel to existing hiddens and don't change the original model. They capture structure of correlated variables because they turn the posterior into a mixture of distributions q(z|x, a). The richer posterior can be a mixture model, normalising flow, Gaussian process, etc but needs to have easy sampling for evaluation of bound and gradients. 
 
-### Variational inference from first principles 
+#### Variational inference from first principles 
 
 Given a model of latent and observed variables p(x, z), variational inference posits a family of distributions over its latent variables and then finds the member of that family closest to the posterior, p(z | x). This is typically formalized as minimizing a Kullback-Leibler (kl) divergence from the approximating family q(·) to the posterior p(·). However, while the kl(q k p) objective offers many beneficial computational properties, it is ultimately designed for convenience; it sacrifices many desirable statistical properties of the resultant approximation. When optimizing kl, there are two issues with the posterior approximation that we highlight. First, it typically underestimates the variance of the posterior. Second, it can result in degenerate solutions that zero out the probability of certain configurations of the latent variables. While both of these issues can be partially circumvented by using more expressive approximating families, they ultimately stem from the choice of the objective. Under the kl divergence, we pay a large price when q(·) is big where p(·) is tiny; this price becomes infinite when q(·) has larger support than p(·).
 
@@ -139,10 +139,10 @@ In "Operator Variational Inference", authors revisit variational inference from 
 of the resulting approximation.
 
 
-## MCMC inituition
+#### MCMC inituition
 We should explore the deformed posterior space generated by our prior surface and observed data to find the posterior mountain. However, we cannot naively search due to curse of dimensionality. The idea behind MCMC is to perform an intelligent search of the space. MCMC performs a task similar to repeatedly asking "How likely is this pebble (sample/trace) I found to be from the mountain (unknown distribution) I am searching for?", and completes its task by returning thousands of accepted pebbles in hopes of reconstructing the original mountain. MCMC searches by exploring nearby positions and moving into areas with higher probability (hill climbing). With the thousands of samples, we can reconstruct the posterior surface by organizing them in a histogram.
 
-## MCMC Algorithm
+#### MCMC Algorithm
 It's a method, for sampling from an untractable distribution that we don't know. MCMC involves setting up a random sampling process for navigating to different states based on the transition matrix of the markov chain until the dynamical system settles down on a final stable state (stationary distribution), i.e. start at state 0, randomly switch switch to another state based on transition matrix, repeat until convegence at which time we can sample from the unknown distribution. If the transition matrix has a transition probability >0 for every two state and each state has a self probability >0, then the convergence is gauranteed to a unique distribution.
 
 Therefore to sample from an unknown distribution p, we need to construct a markov chain T whose unique stationary distribution is p. Then we sample till we converge, at which time, we would be sampling from the unknown distribution. At that point we collect samples and compute our desired statistics using Monte Carlo resampling/simulation! MCMC for gaphical models are done through Gibbs chain! Gibbs (Boltzman) distribution:
@@ -162,7 +162,7 @@ B)Else: Do not move to new position. Return to Step 1.
 This way we move in the general drection towards the regions where the posterior distributions exist. Once we reach the posterior distribution, we can easily collect samples as they likely all belong to the posterior distribution.
 
 
-## HMC Algorithm
+#### HMC Algorithm
 Hamiltonian Monte Carlo use the intuition of the movement of a physical system. Instead of moving according to the transition matrix of a Markov chain, they move according to equations of motions of a physical system derived from the Hamiltonian of a problem. we obtain a new HMC sample as follows:
 
 1. sample a new velocity from a univariate Gaussian distribution
@@ -174,7 +174,7 @@ B)Else: Do not move to new position. Return to Step 1.
 5.After a large number of iterations, return all accepted positions.
 
 
-## Monte Carlo Resampling/Simulation:
+#### Monte Carlo Resampling/Simulation:
 - Suppose you have some dataset in hand.
 - We are interested in the real distribution that produced this data (density estimation).
 
@@ -184,7 +184,7 @@ B)Else: Do not move to new position. Return to Step 1.
 - The fundamental assumption is that all information about the real distribution contained in the original dataset is also contained in the distribution of these simulated samples.
 - Another way to think about this is that if the dataset you have in your hands is a reasonable representation of the population, then the parameter estimates produced from running a model on a series of resampled data sets will provide a good approximation of the distribution of that statistics in the population.
 
-## Resampling techniques(Bootstrap): 
+#### Resampling techniques(Bootstrap): 
 
 - Begin with a dataset of size N
 - Generate a simulated sample of size N by drawing from your dataset independently (uniformly) and with replacement.
@@ -196,14 +196,14 @@ This approach is better than assuming a normal distribution for statistics of in
 
 It doesn't work well in data with serial correlation in the residual (time series). Models with heteroskedasticity when the form of the heteroskedasticity is unknown. One approach here is to sample pairs (on Y and X) rather than leaving X fixed in repeated samples. Simultaneous equation models because you have to bootstrap all of the endogenous variables in the model.
 
-## Posterior sampling
+#### Posterior sampling
 - Instead of drawing one single number, we draw a vector of numbers (one for each coefficient)
 - Set a key variable in the model
 - Calculate a quantity of interest (e.g. Expectation) with each set of simulated coefficients
 - Update key variable
 - repeat
 
-## Non-parametric density estimation
+#### Non-parametric density estimation
 
 - Kernel density estimation(KDE): ntuitively, KDE has the effect of smoothing out each data point into a smooth bump, whose the shape is determined by the kernel function (Gaussian, spherical, etc). Then, KDE sums over all these bumps to obtain a density estimator. At regions with many observations, because there will be many bumps around, KDE will yield a large value. On the other hand, for regions with only a few observations, the density value from summing over the bumps is low, because only have a few bumps contribute to the density estimate. KDE has a smoothing parameter, $$h$$ that controls how the much effect each point has. When $$h$$ is too small, there are many wiggles in the density estimate. When $$h$$ is too large, we smooth out important features. When $$h$$ is at the correct amount, we can see a clear picture of the underlying density. We choose $$h$$ that minimizes the total amount of mean squared error of the density estimate from the real density. KDE can be used to estimate not only the underlying density function but also geometric (and topological) structures related to the density. Because geometric and topological structures generally involve the gradient and Hessian matrix (and it's eigen-decomposition) of the density function. Gradient and Hessian eigenvalues can determine local maxima (modes) of a density function. One can use the local modes to cluster data points; this is called mode clustering or mean-shift clustering. Level sets are regions for which the density value is equal to or above a particular level. Another interesting geometric structures are ridges. A cluster tree is formed by gradually decreasing level set value from a large number. As level sets decrease, a mode appears and with more decrease, new connected components will be created.
 
@@ -219,35 +219,36 @@ explore our density estimates.
 
 
 
-2. Density ratio estimation 
-In statistical pattern recognition, it is important to avoid density estimation (evidence marginal integral) since density estimation is often more difficult than pattern recognition itself. Following this idea—known as Vapnik’s principle, a statistical data processing framework that employs the ratio of two probability density functions has been developed recently and is gathering a lot of attention in the machine learning and data mining communities. The main idea is to estimate a ratio of real data distribution and model data distribution p(x)/q(x) instead of computing two densities that are hard. The ELBO in variational inference can be written in terms of the ratio. Introducing the variational posterior into the marginal integral of the joint results in the ELBO being $E[log p(x,z)- log q(z/x)]$. By subtracting emprical distribution on the observations, q(x) which is a constant and doesn't change optimization we have the ELBO using ratio as $E[log p(x,z)/q(x,z)]= E[log r(x,z)]$. The density ratio r(x) is the core quantity for hypothesis testing, motivated by either the Neyman-Pearson lemma or the Bayesian posterior evidence, appearing as the likelihood ratio or the Bayes factor, respectively. likelihood-free inference can be done through estimating density ratios and using them as the driving principle for learning in implicit generative models (transformation models). Four main ways of calculating the ratio:
+### Density ratio estimation 
+In statistical pattern recognition, it is important to avoid density estimation (evidence marginal integral) since density estimation is often more difficult than pattern recognition itself. Following this idea—known as Vapnik’s principle, a statistical data processing framework that employs the ratio of two probability density functions has been developed recently and is gathering a lot of attention in the machine learning and data mining communities. The main idea is to estimate a ratio of real data distribution and model data distribution $$\frac{p(x)}{q(x)}$$ instead of computing two densities that are hard. The ELBO in variational inference can be written in terms of the ratio. Introducing the variational posterior into the marginal integral of the joint results in the ELBO being $$E[log p(x,z)- log q(z|x)]$$. By subtracting emprical distribution on the observations, $$p(x)$$ which is a constant and doesn't change optimization we have the ELBO using ratio as $$E[\log \frac{p(x,z)}{q(x,z)}]= E[\log r(x,z)]$$. The density ratio $$r(x)$$ is the core quantity for hypothesis testing, motivated by either the Neyman-Pearson lemma or the Bayesian posterior evidence, appearing as the likelihood ratio or the Bayes factor, respectively. likelihood-free inference can be done through estimating density ratios and using them as the driving principle for learning in implicit generative models (transformation models). Four main ways of calculating the ratio:
 
-- Probabilistic classification: We can frame it as the problem of classifying the real data (p(x)) from the data produced from model (q(x)). We use a label of (+1) for the numerator and label (-1) for denumerator so the ratio will be r(x)=p(x|+1)/q(x|-1). Using Bayesian rule this will be $r(x)=(p(-1)/(p+1))*(p(+1|x)/p(-1|x))$. The first ratio is simply the ratio of the number of data in each class and the second ratio is given by the ratio of classification accuracy. simple and elegant! This is what happens in GAN. So if there are $N1$ data real points and $N2$ generated data points and the classifer classifies the real data points with probability $D$, then the ratio is $r(x)= (N2/N1) * (D/(D-1))$. Given the classifer, we can develop a loss function for training using logarithmic loss for binary classification. Using some simple math we get the GAN loss function as: 
+1. Probabilistic classification: We can frame it as the problem of classifying the real data $$p(x)$$ and the data produced by the model $$q(x)$$. We use a label of (+1) for the numerator and label (-1) for denumerator so the ratio will be $$r(x)=\frac{p(x|+1)}{q(x|-1)}$$. Using Bayesian rule this will be $$r(x)=(\frac{p(-1)}{p(+1)})*(\frac{p(+1|x)}{p(-1|x)})$$. The first ratio is simply the ratio of the number of data in each class and the second ratio is given by the ratio of classification accuracies. simple and elegant! 
 
-$L= \pi E[-log D(x,\phi)]+ (1-\pi) E[-log (1-D(G(z,\theta),\phi))], pi=p(+1|x)$
+- This is what happens in GAN. So if there are $N1$ data real points and $N2$ generated data points and the classifer classifies the real data points with probability $$D$$, then the ratio is $$r(x)= (N2/N1) * (D/(D-1))$$. Given the classifer, we can develop a loss function for training using logarithmic loss for binary classification. Using some simple math we get the GAN loss function as: 
 
-In practice, the expectations are computed by Monte Carlo integration using samples from p and q. This loss specifies a bi-level optimisation by forming a ratio loss and a
-generative loss, using which we performan alternating optimisation. The ratio loss is formed by extracting all terms in the loss related to the ratio function parameters $\phi$, and minimise the resulting objective. For the generative loss, all terms related to the model parameters $\theta$ are extracted, and maximized.
+$$L= \pi E[-log D(x,\phi)]+ (1-\pi) E[-log (1-D(G(z,\theta),\phi))], pi=p(+1|x)$$
 
-$min L_D= \pi E[-log D(x,\phi)]+ (1-\pi) E[-log (1-D(x,\phi))]$
+In practice, the expectations are computed by Monte Carlo integration using samples from $$p$$ and $$q$$. This loss specifies a bi-level optimisation by forming a ratio loss and a generative loss, using which we perform an alternating optimisation. The ratio loss is formed by extracting all terms in the loss related to the ratio function parameters $$\phi$$, and minimise the resulting objective. For the generative loss, all terms related to the model parameters $$\theta$$ are extracted, and maximized.
 
-$min L_G= E[log (1-D(G(z,\theta)))]$
+$$min L_D= \pi E[-log D(x,\phi)]+ (1-\pi) E[-log (1-D(x,\phi))]$$
 
-The ratio loss is minimised since it acts as a surrogate negative log-likelihood; the generative loss is minimised since we wish to minimise the probability of the negative (generated-data) class. We first train the discriminator by minimising L_D keeping G fixed, and then we fix D and take a gradient step to minimise L_G.
+$$min L_G= E[log (1-D(G(z,\theta)))]$$
 
-- moment matching: if all the infinite statistical moments of two distributions are the same the distributions are the same. So the idea is to set the moments of the numenator distribution (p(x)) equal to the moments of a transformed version of the denumerator (r(x)q(x)). This makes it possible to calculate the ratio r(x).
+The ratio loss is minimised since it acts as a surrogate negative log-likelihood; the generative loss is minimised since we wish to minimise the probability of the negative (generated-data) class. We first train the discriminator by minimising $$L_D$$ while keeping $$G$$ fixed, and then we fix $$D$$ and take a gradient step to minimise $$L_G$$.
 
-- Ratio matching: basic idea is to directly match a density ratio model r(x) to the true density ratio under some divergence. A kernel is usually used for this density estimation problem plus a distance measure (e.g. KL divergence) to measure how close the estimation of r(x) is to the true estimation. So it's variational in some sense. Loosely speaking, this is what happens in variational Autoencoders!
+2. moment matching: if all the infinite statistical moments of two distributions are the same the distributions are the same. So the idea is to set the moments of the numenator distribution (p(x)) equal to the moments of a transformed version of the denumerator (r(x)q(x)). This makes it possible to calculate the ratio r(x).
 
-- Divergence minimization: Another approach to two sample testing and density ratio estimation is to use the divergence between the true density p and the model q, and use this as an objective to drive learning of the generative model. f-GANs use the KL divergence as a special case and are equipped with an exploitable variational formulation (i.e. the variational lower bound). There is no discriminator in this formulation, and this role is taken by the ratio function. We minimise the ratio loss, since we wish to minimise the negative of the variational lower bound; we minimise the generative loss since we wish to drive the ratio to one.
+3. Ratio matching: basic idea is to directly match a density ratio model r(x) to the true density ratio under some divergence. A kernel is usually used for this density estimation problem plus a distance measure (e.g. KL divergence) to measure how close the estimation of r(x) is to the true estimation. So it's variational in some sense. Loosely speaking, this is what happens in variational Autoencoders!
 
-- Maximum mean discrepancy(MMD): is a nonparametric way to measure dissimilarity between two probability distributions. Just like any metric of dissimilarity between distributions, MMD can be used as an objective function for generative modelling.  The MMD criterion also uses the concept of an 'adversarial' function f that discriminates between samples from Q and P. However, instead of it being a binary classifier constrained to predict 0 or 1, here f can be any function chosen from some function class. MMD uses functions from a kernel Hilbert space as discriminatory functions. The discrimination is measured not in terms of binary classification accuracy as above, but as the difference between the expected value of f under P and Q. The idea is: if P and Q are exactly the same, there should be no function whose expectations differ under Q and P. In GAN, the maximisation over f is carried out via stochastic gradient descent, here it can be done analytically. One could design a kernel which has a deep neural network in it, and use the MMD objective!?
+4. Divergence minimization: Another approach to two sample testing and density ratio estimation is to use the divergence between the true density p and the model q, and use this as an objective to drive learning of the generative model. f-GANs use the KL divergence as a special case and are equipped with an exploitable variational formulation (i.e. the variational lower bound). There is no discriminator in this formulation, and this role is taken by the ratio function. We minimise the ratio loss, since we wish to minimise the negative of the variational lower bound; we minimise the generative loss since we wish to drive the ratio to one.
 
-3. Instead of estimating ratios, we estimate gradients of log densities. For this, we can use[ denoising as a surrogate task](http://www.inference.vc/variational-inference-using-implicit-models-part-iv-denoisers-instead-of-discriminators/). denoisers estimate gradients directly, and therefore we might get better estimates than first estimating likelihood ratios and then taking the derivative of those.
+5. Maximum mean discrepancy(MMD): is a nonparametric way to measure dissimilarity between two probability distributions. Just like any metric of dissimilarity between distributions, MMD can be used as an objective function for generative modelling.  The MMD criterion also uses the concept of an 'adversarial' function f that discriminates between samples from Q and P. However, instead of it being a binary classifier constrained to predict 0 or 1, here f can be any function chosen from some function class. MMD uses functions from a kernel Hilbert space as discriminatory functions. The discrimination is measured not in terms of binary classification accuracy as above, but as the difference between the expected value of f under P and Q. The idea is: if P and Q are exactly the same, there should be no function whose expectations differ under Q and P. In GAN, the maximisation over f is carried out via stochastic gradient descent, here it can be done analytically. One could design a kernel which has a deep neural network in it, and use the MMD objective!?
+
+6. Instead of estimating ratios, we estimate gradients of log densities. For this, we can use[ denoising as a surrogate task](http://www.inference.vc/variational-inference-using-implicit-models-part-iv-denoisers-instead-of-discriminators/). denoisers estimate gradients directly, and therefore we might get better estimates than first estimating likelihood ratios and then taking the derivative of those.
 
  
 
 
-# Causal inference
+## Causal inference
 
 - Two types of studies are possible, one is interventional studies where in a controlled environment, we introduce an intervention. Causality inference is directly possible due to the intervention. However, we might not have access to interventions. In such cases, we want to perform causal inference using only observation data. 

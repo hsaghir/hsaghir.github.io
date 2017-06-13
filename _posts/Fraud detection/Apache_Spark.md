@@ -216,3 +216,15 @@ https://arxiv.org/pdf/1606.09517.pdf
 https://arxiv.org/pdf/1704.03296.pdf
 
 https://blog.acolyer.org/2016/09/22/why-should-i-trust-you-explaining-the-predictions-of-any-classifier/
+
+ 
+---
+
+- spark heap (60% RDD cache - 4GB cache package data)
+- OOM -> driver/executor?  -- format of data (java object has a certain size) -- how many node? /how much memory for each node?
+- partition size 
+- how much time for execution vs shuffling?
+
+- garbage collection vs execution time -> partition more
+- shuffle size vs task number
+- IO time / shuffle time 
