@@ -4,7 +4,7 @@ title:  Understand PyTorch in 20 minutes
 comments: true
 categories: data_science
 image:
-  teaser: images/practical/pytorch_logo.png
+  teaser: practical/pytorch_logo.png
 ---
 
 So PyTorch is the new popular framework for deep learners. Here is my understanding of it. This is based on Justin Johnson's [great tutorial](https://github.com/jcjohnson/pytorch-examples). If you have more than 20 minutes go read that!
