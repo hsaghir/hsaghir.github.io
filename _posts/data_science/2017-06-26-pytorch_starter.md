@@ -1,23 +1,23 @@
 ---
 layout: article
-title:  Understand PyTorch in 20 minutes
+title:  Understand PyTorch code in 10 minutes
 comments: true
 categories: data_science
 image:
   teaser: practical/pytorch_logo.png
 ---
 
-So PyTorch is the new popular framework for deep learners. Here is my understanding of it. This is based on Justin Johnson's [great tutorial](https://github.com/jcjohnson/pytorch-examples). If you have more than 20 minutes go read that!
+So PyTorch is the new popular framework for deep learners and many new papers release code in PyTorch that one might want to inspect. Here is my understanding of it narrowed down to the most basics to help read PyTorch code. This is based on Justin Johnson's [great tutorial](https://github.com/jcjohnson/pytorch-examples). If you want to learn more or have more than 10 minutes for a PyTorch starter go read that!
 
 PyTorch consists of 4 main packages:
-1. torch: a general purpose array library similar to Numpy that can do computations on GPU when the type is cast to torch.cuda.TensorFloat
-2. torch.autograd: package for building a computational graph and obtain gradients 
+1. torch: a general purpose array library similar to Numpy that can do computations on GPU when the tensor type is cast to (torch.cuda.TensorFloat)
+2. torch.autograd: a package for building a computational graph and automatically obtaining gradients 
 3. torch.nn: a neural net library with common layers and cost functions
 4. torch.optim: an optimization package with common optimization algorithms like SGD,Adam, etc
 
 
 ##### 0. import stuff
-You can import pytorch stuff like this:
+You can import PyTorch stuff like this:
 
 ```python
 import torch # arrays on GPU
@@ -31,7 +31,7 @@ import torch.optim as optim # optimization package
 
 ##### 1.  the torch array replaces numpy ndarray ->provides linear algebra on GPU support
 
-PyTorch provides a multi-dimensional array like Numpy array that can be processed on GPU when it's datatype is cast as (torch.cuda.TensorFloat). This array and it's associated functions are general scientific computing tool and don't know anything about gradients, optimization or neural nets in general. 
+PyTorch provides a multi-dimensional array like Numpy array that can be processed on GPU when it's data type is cast as (torch.cuda.TensorFloat). This array and it's associated functions are general scientific computing tool. 
 
 
 confer [Torch for numpy users](https://github.com/torch/torch7/wiki/Torch-for-Numpy-users) for how it relates to numpy.
@@ -70,13 +70,13 @@ print d.view(2,-1) #-1 makes torch infer the second dim
 
 
 ##### 2. torch.autograd can make a computational graph -> auto-compute gradients
-The second feature is the autograd package which provides the ability to define a computational graph so that we can automatically compute gradients. In the computational graph, a node is an array and an edge is an operation on arrays. To make a computational graph, we make a node by wrapping an array inside (torch.aurograd.Variable()) function. Then all operations that we do on this node will be defined as edges and their results will be new nodes in the computational graph. Each node in the graph (i.e. Variable()), has a (node.data) property which is a multi-dimensional array and a (node.grad) property which is it's gradient with respect to some scalar value (node.grad is also a Variable()). After defining the computational graph this way, with a single command (loss.backward()) we can calculate gradients of loss with respect to all nodes in the graph. 
+The second feature is the autograd package which provides the ability to define a computational graph so that we can automatically compute gradients. In the computational graph, a node is an array and an edge is an operation the on array. To make a computational graph, we make a node by wrapping an array inside (torch.aurograd.Variable()) function. Then all operations that we do on this node will be defined as edges and their results will be new nodes in the computational graph. Each node in the graph has a (node.data) property which is a multi-dimensional array and a (node.grad) property which is it's gradient with respect to some scalar value (node.grad is also a .Variable()). After defining the computational graph, we can calculate gradients of loss with respect to all nodes in the graph with a single command (loss.backward()). 
 
 
-- make a Tensor a node in comp. graph using torch.autograd.Variable()
+- Convert a Tensor to a node in the computational graph using torch.autograd.Variable()
     + access its value using x.data
     + access its gradient using x.grad
-- do operations on the .Variable() to make edges of the graph
+- Do operations on the .Variable() to make edges of the graph
 
 
 ```python
@@ -125,7 +125,7 @@ print "the variable now has gradients:",x.grad
 
 The third feature is a high-level neural networks library (torch.nn) that abstracts away all parameter handling in layers of neural networks to make it easy to define a NN in a few commands (e.g. torch.nn.conv). This package also comes with popular loss functions (e.g. torch.nn.MSEloss). We start with defining a model container, for example a model with a sequence of layers using (torch.nn.Sequential) and then list the layers that we desire in a sequence. The library handles every thing else; we can access the parameters (Variable()) using (model.parameters()) 
 
-We can also define custom layers by subclassing (torch.nn.Module) and implementing a (forward()) function that accepts a (Variable()) as input and produces a (Variable()) as output. We can also do a dynamic network by defining a layer that morphs in time!
+We can also define custom layers by sub-classing (torch.nn.Module) and implementing a (forward()) function that accepts a (Variable()) as input and produces a (Variable()) as output. We can also do a dynamic network by defining a layer that morphs in time!
 
 
 
@@ -167,9 +167,9 @@ print "Loss:", L
     
 
 
-##### 4. torch.optim can do optimization -> we build a nn computational graph using torch.nn, compute gradients using torch.autograd and then feed these into torch.optim to update network parameters
+##### 4. torch.optim can do optimization -> we build a nn computational graph using torch.nn, compute gradients using torch.autograd, and then feed them into torch.optim to update network parameters
 
-The forth feature is an optimization package (torch.optim) that works in tandem with the NN library. This library contains more sophisticated optimizers like Adam, RMSprop, etc. We define an optimizer and pass network parameters and learning rate to it (opt=torch.optim.Adam(model.parameters(), lr=learning_rate)) and then we just call (opt.step()) to do a one step update on our parameters. 
+The forth feature is an optimization package (torch.optim) that works in tandem with the NN library. This library contains sophisticated optimizers like Adam, RMSprop, etc. We define an optimizer and pass network parameters and learning rate to it (opt=torch.optim.Adam(model.parameters(), lr=learning_rate)) and then we just call (opt.step()) to do a one step update on our parameters. 
 
 
 ```python
