@@ -74,7 +74,8 @@ On the other hand, in minimizing $$KL(q \vert p)$$, we select a $$q$$ that has l
 - variational inference for binary sparse coding is a complete example (study later).
 
 ### Calculus of Variation
-
+- Calculus of variation enables us to minimize functions using linear algebra and multivariate calculus. 
+- A function of functions is called a functional J[f]. We can take derivative of a functional (variational derivative) w.r.t. the individual values of the function f at any specific value x i.e. $$\frac{\delta J}{\delta f(x)}$$
 
 ### Continuous Latent Variables
 
