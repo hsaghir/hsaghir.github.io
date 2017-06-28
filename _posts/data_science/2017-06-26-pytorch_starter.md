@@ -123,10 +123,7 @@ print "the variable now has gradients:",x.grad
 
 ##### 3. torch.nn contains various NN layers (linear mappings of rows of a tensor) + (nonlinearities ) -> helps build a neural net computational graph without the hassle of manipulating tensors and parameters manually
 
-The third feature is a high-level neural networks library (torch.nn) that abstracts away all parameter handling in layers of neural networks to make it easy to define a NN in a few commands (e.g. torch.nn.conv). This package also comes with popular loss functions (e.g. torch.nn.MSEloss). We start with defining a model container, for example a model with a sequence of layers using (torch.nn.Sequential) and then list the layers that we desire in a sequence. The library handles every thing else; we can access the parameters (Variable()) using (model.parameters()) 
-
-We can also define custom layers by sub-classing (torch.nn.Module) and implementing a (forward()) function that accepts a (Variable()) as input and produces a (Variable()) as output. We can also do a dynamic network by defining a layer that morphs in time!
-
+The third feature is a high-level neural networks library (torch.nn) that abstracts away all parameter handling in layers of neural networks to make it easy to define a NN in a few commands (e.g. torch.nn.conv). This package also comes with popular loss functions (e.g. torch.nn.MSEloss). We start with defining a model container, for example a model with a sequence of layers using (torch.nn.Sequential) and then list the layers that we desire in a sequence. The library handles every thing else; we can access the parameters (Variable()) using (model.parameters())
 
 
 ```python
@@ -165,6 +162,22 @@ print "Loss:", L
      2.9838
     [torch.FloatTensor of size 1]
     
+
+We can also define custom layers by sub-classing (torch.nn.Module) and implementing a (forward()) function that accepts a (Variable()) as input and produces a (Variable()) as output. We can also do a dynamic network by defining a layer that morphs in time!
+
+- When defining a custom layer, 2 functions need to be implemented:
+    - \__init\__ function has to always be inherited first, then all parameters of the layer have to be defined here as the class variables (self.x)
+    - forward funtion is where we pass an input through the layer, perform operations on inputs using parameters and return the output. The input needs to be an autograd.Variable() so that pytorch can build the computational graph of the layer.
+
+```python
+class Log_reg_classifier(nn.Module):
+    def __init__(self, in_size,out_size):
+        super(Log_reg_classifier,self).__init__() #always call parent's init 
+        self.linear=nn.Linear(in_size, out_size) #layer parameters
+        
+    def forward(self,vect):
+        return F.log_softmax(self.linear(vect)) # 
+```
 
 
 ##### 4. torch.optim can do optimization -> we build a nn computational graph using torch.nn, compute gradients using torch.autograd, and then feed them into torch.optim to update network parameters
