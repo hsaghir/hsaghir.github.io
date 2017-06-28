@@ -148,9 +148,9 @@ z=F.relu(a)
 o=F.softmax(z)
 print "output of softmax as a probability distribution:", o.data.view(1,-1)
 
-# MSE loss between output and target
-loss_func=nn.MSELoss()
-L=loss_func(z,y)
+# loss function
+loss_func=nn.MSELoss() #instantiate loss function
+L=loss_func(z,y) # calculateMSE loss between output and target
 print "Loss:", L
 ```
 
@@ -186,11 +186,11 @@ The forth feature is an optimization package (torch.optim) that works in tandem 
 
 
 ```python
-# instance of optimizer with model params + learning rate
-optimizer=optim.SGD(linear_map.parameters(),lr=1e-2)
+
+optimizer=optim.SGD(linear_map.parameters(),lr=1e-2) # instantiate optimizer with model params + learning rate
 
 # epoch loop: we run following until convergence
-optimizer.zero_grad()
+optimizer.zero_grad() # make gradients zero
 L.backward(retain_variables=True)
 optimizer.step()
 print L
@@ -201,3 +201,29 @@ print L
     [torch.FloatTensor of size 1]
     
 
+Building a neural net is easy. Here is an example showing how things work together:
+
+```python
+
+# define model
+model = Log_reg_classifier(10,2)
+
+# define loss function
+loss_func=nn.MSELoss() 
+
+# define optimizer
+optimizer=optim.SGD(model.parameters(),lr=1e-1)
+
+# send data through model in minibatches for 10 epochs
+for epoch in range(10):
+    for minibatch, target in data:
+        model.zero_grad() # pytorch accumulates gradients, making them zero for each minibatch
+        
+        #forward pass
+        out=model(autograd.Variable(minibatch))
+        
+        #backward pass 
+        L=loss_func(out,target) #calculate loss
+        L.backward() # calculate gradients
+        optimizer.step() # make an update step
+```
