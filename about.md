@@ -5,7 +5,7 @@ permalink: /about/
 ---
 
 ## Hamidreza Saghir
-**Data Scientist**
+**Machine Learning Researcher**
 
 ![](https://sites.google.com/site/saghirhr/_/rsrc/1460200850594/home/10157226_742441232460822_8313447058095416731_n.jpg?height=213&width=320)
 
