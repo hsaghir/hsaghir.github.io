@@ -39,7 +39,7 @@ peer review refereed papers:
 
 - Saghir, Hamidreza, Tom Chau, and Azadeh Kushki. "Clustering of time-evolving scaling dynamics in a complex signal." Physical Review E 94.1 (2016): 012220. 
 
-- H. Saghir, T. Chau, A. Kushki, "Atypical autonomic nervous system complexity accompanies social cognition tasks in ASD", under review.
+- Saghir, Hamidreza, et al. "Atypical autonomic nervous system complexity accompanies social cognition task performance in ASD." Research in Autism Spectrum Disorders 39 (2017): 54-62.
 
 - H. Saghir, T. Chau, A. Kushki, "Moving deterended fluctuation analysis for inspecting time evolution of scale invariant structures in biomedical signals", IUPESM World Congress on Medical Physics and Biomedical Engineering 2015, Toronto, Ontario, Canada.
 
