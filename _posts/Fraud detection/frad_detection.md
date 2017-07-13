@@ -1,31 +1,3 @@
-
-
-
-## Business Problem: Fraud Detection
-- Fraud detection is a very big problem. For an organization like RBC that's in the order of 100s of millions per year. 
-
-- Currently RBC does not use any machine learning in their fraud detection unit. 
-
-- There are tons of startups providing analytics/ML solutions, but the main concern of the bank is data privacy. They are not comfortable giving customer data to third parties, their brand will be at risk if they do, and there might be some potential regulatory risks. 
-
----
-
-
-## In the news
-
-[Orange tests DL to identify fraud](https://blogs.wsj.com/cio/2016/03/14/orange-tests-deep-learning-software-to-identify-fraud/)
-
-[DL infrastructure in production](https://insights.ubuntu.com/2016/04/25/making-deep-learning-accessible-on-openstack/)
-
-
-[How PayPal beats the bad guys with machine learning](http://www.infoworld.com/article/2907877/machine-learning/how-paypal-reduces-fraud-with-machine-learning.html)
-
-- PayPal uses three types of machine learning algorithms for risk management: linear, neural network, and deep learning. Experience has shown PayPal that in many cases, the most effective approach is to use all three at once. we “ensemble” them together!
-
-- detect fraud: "we can separate the good from the bad with one straight line". When linear fails, neural network. Also,tree-based, mimicking a human being when we have to make a judgment -- for example, we would say if it’s raining, I’ll take an umbrella.
-
----
-
 ## Literature Synthesis
 "Anomaly detection involves identifying the events which do not conform to an expected pattern in data."
 
@@ -104,37 +76,6 @@ Some ways contextual attributes have been defined are:
 - Bayesian optimization, Gaussian Processes, SVMs, uncertainty score based on a Bayesian approach (or using noise on hidden params) and other similar techniques can tell when uncertainties are high and can query the prompt the user to label the data point. 
 
 
----
-
-
-## Data
-
-- Almost no publicly available datasets for fraud detection (legal/competition)
-
-- Previous studies (pre 2010)
-
-<img src="/images/fraud_detection/Fraud_data_size_pre2010.png" alt="Scatter plot of the data size from 40 unique and published fraud detection papers (pre-2010) within common fraud types." width="350" height="350"> | <img src="/images/fraud_detection/dataset_balance.png" alt="Scatter plot of the percentage of fraud and percentage of test of entire data set. 19 unique and published fraud detection papers within common fraud types were used." width="350" height="350">
-
----
-### RBC Data
-
-- About 2 million transactions a day. 
-- 2 years of transaction data, 200GB of data. 
-
-- Columns in the database in the order of 1000: every possible credit card event has columns associated to it (transaction types,  activating cards, - location, date, time, aggregate data, last time client made payment, system oriented, apple pay, etc). Therefore, the database is very spare since not all events happen at the same time. 
-
---- 
-
-#### Fraud labeling process:
-
-1. client calls or fraud detection system flags.
-2. Fraud analyst confirms it. 
-
-- Fraud detection system is called Prism and is basically a rule base
-
-- If I want to shadow fraud analysts should coordinate with -> Mike Attey
-
----
 
 ## Literature Survey
 
@@ -203,20 +144,8 @@ Two steps,
 - The minority class is actually class of interest which is the fraud instances.
 
 
----
-5. [Classification pipeline](George Dahl)
-
-- Neural net workflow for "Large-scale malware classification using random projections and neural networks":
-
-- Feature extraction
-- Feature selection
-
-- Dimensionality reduction using random projections: Even after feature selection, the input dimensionality is still quite large (179 thousand), although there is a lot of sparsity. Naive neural net training on such high dimensional input is too expensive. To make the problem more manageable, we used the very sparse random projections.
-
-- We project each input vector into a much lower dimensional space (a few thousand dimensions) using a sparse projection matrix R with entries sampled iid from a distribution over {0, 1, −1}. Entries of 1 and -1 are equiprobable and $$P(Rij = 0) = 1− \frac{1}{\sqrt(d)}$$, where $$d$$ is the original input dimensionality. Another way to view the random projection in the context of neural network training is that the random projection step forms a layer with linear hidden units in which the weight matrix is not learned and is instead simply set to R.
-
-- Classifier (ensemble NN!?)
 
 
----
+
+
 
