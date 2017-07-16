@@ -74,14 +74,35 @@ On the other hand, in minimizing $$KL(q \vert p)$$, we select a $$q$$ that has l
 - variational inference for binary sparse coding is a complete example (study later).
 
 ### Calculus of Variation
-- Calculus of variation enables us to minimize functions using linear algebra and multivariate calculus. 
-- A function of functions is called a functional J[f]. We can take derivative of a functional (variational derivative) w.r.t. the individual values of the function f at any specific value x i.e. $$\frac{\delta J}{\delta f(x)}$$
+- Calculus of variation enables us to apply linear algebra and multivariate calculus to the space of functions. For example, when we want to find the probability density function of some random variables, we want to optimize an objective to give us a function and not just an optimal point. 
 
-### Continuous Latent Variables
+- In regular calculus the objective is a function and solution is a point where the function takes an optimal value. In variational calculus, the objective is a function of functions and the solution is a function where the objective takes the optimal value. 
+
+- A function of functions is called a functional J[f]. We can apply much of the tools we have for functions to functionals. For example, we can take partial derivative of a functional w.r.t. the individual values of the functions i.e. $$\frac{\delta J}{\delta f(x)}$$
+
+- Derivate of a functional is similar to partial derivative of a function with an infinite dimension argument.  Individual values of the functions constitute the infinite dimension vector of arguments. 
+
+- To optimize a function with respect to a vector, we take the gradient of the function with respect to the vector and solve for the point where every element of the gradient is equal to zero. Likewise, we can optimize a functional by solving for the function where the functional derivative at every point is equal to zero.
+
+- An example problem: finding a probability density function with a cetrain mean and variance for which the entropy is maximum. We form the Lagrangian functional by imposing constraints that the density function be integrated to one, mean and variance be fixed. We calculate the partial derivative of the functional w.r.t. the density function $$p(x)$$ and equal to zero. We obtain the density function to be of exponential type and by choosing certain values for the lagrange multipliers we arrive at the Normal distribution as the maximum entropy distribution among all possible density functions!
+
+### Continuous Latent Variables (modern Variation inference)
+- In grapical models inference, we need to use variational calculus to maximize the ELBO functional (a function of possible density functions).
+
+- Using a mean-field (factorized graph) assumption for the density function, we can maximize the ELBO using variational calculus. We are not making any assumptions about the components of the factorized graph to be of the exponential family but by only assuming a mean-field factorization for the graphical model we arrive at a solution for the ELBO functional in the form of the exponential family. 
+
+- Therefore, this is why we throw the exponential family of distributions at the posterior and learn the parameters in variational inference.
+
+- [Rezende, Mohammed 2016] Most applications of variational inference employ simple families of posterior approximations in order to allow for efficient inference, focusing on mean-field or other simple structured approximations. This restriction has a significant impact on the quality of inferences made using variational methods. In Normalizing flows a simple initial density is transformed into a more complex one by applying a sequence of invertible transformations until a desired level of complexity is attained. We use this view of normalizing flows to develop categories of finite and infinitesimal flows and provide a unified view of approaches for constructing rich posterior approximations
 
 ### Interactions between Learning and Inference
+- Using approximate inference (ways to deal with the intractable partition function) as part of a learning algorithm (parameter estimation) has side effects. The training algorithm tends to adapt the model in a way that makes the approximating assumptions underlying the approximate inference algorithm become more true.
+- For example, If we train the model with a unimodal approximate posterior, we will obtain a model with a true posterior $$p(z|x)$$ that is far closer to unimodal than we would have obtained by training the model with exact inference.
 
 ## Learned approximate inference
+- Inference can be thought of as an optimization problem (through ELBO). we can think of the optimization process as a function f that maps an input to an approximate distribution. We can approximate it with a neural network that implements an approximation. 
+- For example, the inference network in a VAE infers the posterior from a data point. 
+
 
 ### Wake-Sleep
 
