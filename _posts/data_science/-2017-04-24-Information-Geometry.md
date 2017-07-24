@@ -9,18 +9,26 @@ image:
 
 - Information geometry applies the techniques of differential geometry (Riemannian geometrey) to probability theory. It studies the properties of manifolds of probability density functions. Goes back to 1945 when Fisher proposed that a statistical model can be considered as a manifold with Fisher information as the metric. In 1970s notions of statistical curvature, and flat connection were introduced and it was shown that a well-defined divergence function induces a Riemannian metric and a pair of dual connections. Later, alpha-connections and dually-flat manifolds were studied.
 
-## Riemannian geometry
--
+## Differential Geometry
+- Main theme in differential geometrey is to characterize the global properties of manifolds.
 
-## Information geometry
+- A differentiable manifold is a generalization of a smooth curve or surface to n-dimensional space.
+
+## Riemannian geometry
+
+
+
+
+
+## Information geometry in ML
 1. starting point is to consider a family of probability distributions (parameterized by $$\theta$$) as a smooth manifold. each distribution in the family is a point on this manifold.
 
 2. Then the tools of differential geometry (Riemannian geometry in particular) can be used to study geometrical properties of this manifold. The Riemannian geometric analysis makes better sense than the trivial Euclidean geometry, as some interesting and desirable properties of distribution families cannot be derived from Euclidean geometry.
 
-3. we need to introduce some structures to the manifold, most importantly the Riemannian metric tensor and affine connections. these structures are induced by properly defined divergence functions between distributions (in other words, a divergence function determines the geometry of a statistical manifold). different divergences define different Riemannian geometries.
+3. we need to introduce some structures to the manifold, most importantly the Riemannian metric tensor and affine connections. these structures are induced by properly defined divergence functions between distributions (in other words, a divergence function determines the geometry of a statistical manifold). Different divergences define different Riemannian geometries.
 
 
-- For example, first on distribution families side, some families like the exponential and mixture families, are simple geometric structures, making the analysis easier. Second we choose to use Riemannian geometry for its desirable properties, and third we structure the manifold with some divergences like f-­divergence and Bregman divergence, as they can help derive some nice and desirable geometric properties of distribution families.
+- For example, first on distribution families side, some families like the exponential and mixture families, as simple geometric structures(making the analysis easier). Second we choose to use Riemannian geometry for its desirable properties, and third we structure the manifold with some divergences like f-­divergence and Bregman divergence, as they can help derive some nice and desirable geometric properties of distribution families.
 
 ### Divergence functions and geometry
 

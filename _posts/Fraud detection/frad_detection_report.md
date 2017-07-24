@@ -115,3 +115,49 @@ So I ran a couple of experiments to see why:
 - While the tree based classifiers can perfectly classify the data. This is probably due to the binary encoding of categorical variable that makes the problem completely nonlinear and tough for linear classifiers. However, the results of the tree-based algorithms show that there are some columns in the data that are highly correlated with the class. I suspect that if such columns are one-hot encoded instead of binary encoding, linear classifiers will also return perfect classification score.
 
 These experiments further strengthen my hypothesis that there are some categorical columns in the data that are highly correlated with fraud. The next step for me would be to see exactly what columns and values correlate with fraud to further understand the correlation.
+
+---
+### Data leakage solved
+
+- So I performed joins on the hadoop dataset again and downloaded the data again with the columns that I had chosen (117/964 columns). I removed columns with high percentage of missing values and encoded the data again. In the process of encoding I found the reason for label leakage.
+
+- the label leakage issue was caused by the two classes being encoded to binary dummy variables separately in my code resulting in same categories being encoded to two separate codes. This resulted in the classes having  different encoding and thus the classifier was able to tell all instances apart. After fixing this issue, removing missing-value-heavy columns and a using fresh new set of data, the label leakage problem was solved. The classification results are very good as follows with about 100k training samples in a balanced dataset (i.e. 50% fraud + 50% good transactions). Test and validation sets each have 50k balanced samples. 
+ 
+accuracy: 0.953424228791
+('f1:', 0.95309762560583666)
+('precision:', 0.95356122669158261)
+('recall:', 0.95306584292927599)
+('TPR' = 0.9683)
+('TNR' = 0.9387)
+
+- I performed a feature importance analysis and the features that come up as important make a lot of sense. The top 10 features are as follows:
+
+[('lg3_transaction_amount', 0.048593633073846253),
+('lg3_pos_entry_mode_1', 0.046413134597429372),
+('lg3_chip_contactless_flag_0', 0.033354790771903599),
+('lg3_prior_available_money', 0.029687734257986521),
+('lg3_source_amount', 0.02944274734365614),
+('lg3_outstanding_auth', 0.028880774759200225),
+('lg3_dh_tran_type_0', 0.028122791104801533),
+('lg3_cash_limit', 0.025143854777954174),
+('lg3_cvv_cvc_response_2', 0.024062528825336153),
+('lg3_tmp_merch_1', 0.021094125403098629),
+('lg3_current_balance', 0.019684078659600555),
+
+- Althought this classification accuracy seems very good with very simple feature engineering, it is important to note that the dataset is balanced and not really reflective of reality. In real life the dataset is more like (i.e. fraud 0.1% - 99.9% good transactions ). My next step will be to get a supervised baseline for the unbalanced dataset, after which I will start implementing semi-supervised methods to see if they can improve the performance from baseline. 
+
+- Regarding vetting the features, it will be important to know what features are present when the transaction data comes in real-time since only these features can be used in predicting a fraud score for each transaction. 
+
+---
+## Unbalanced data:
+- In fraud detection, the metrics of importance are actually first how many of the fraud instances the model is able to correctly label as fraud i.e. specificity or 'True negative rate' and second how many of good transactions is the model able to label as good i.e. sensitivity or 'True positive rate'. 
+
+- While in the balanced data problem the model performance is very good at $$TPR = 96.83% $$ and $$TNR = 93.87%$$, in the unbalanced classification problem where the negative to positive class ration is $$\frac{fraud}{good} = 0.001$$, the model's performance is detecting fraud samples is underwhelming at $$TNR = 48.44 % $$ (as follows). 
+
+('f1:', 0.8203)
+('precision:', 0.9730)
+('recall:', 0.7422)
+('TPR:', 0.9999)
+('TNR:', 0.4844)
+
+
