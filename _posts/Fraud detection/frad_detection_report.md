@@ -160,4 +160,9 @@ accuracy: 0.953424228791
 ('TPR:', 0.9999)
 ('TNR:', 0.4844)
 
+- I believe this concludes the first phase of the fraud project by establishing a supervised baseline of 50% (unbalanced) fraud detection rate. I am now going to switch my attention to strategies for improving this rate using oversampling (supervised) and anomaly-detection (semi-supervised methods.)
+
+---
+# Metric area under the ROC curve
+- The area measures discrimination, that is, the ability of the test to correctly classify those with and without the disease. Consider the situation in which patients are already correctly classified into two groups. You randomly pick on from the disease group and one from the no-disease group and do the test on both. The patient with the more abnormal test result should be the one from the disease group. The area under the curve is the percentage of randomly drawn pairs for which this is true (that is, the test correctly classifies the two patients in the random pair).
 

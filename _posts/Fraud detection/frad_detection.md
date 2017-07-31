@@ -3,13 +3,13 @@
 
 
 ### Supervised: 
-- treats the problem as a binary classification problem. Classification operates based on the assumption that the a classifier can distrintuish between the normal/anomalous classes from the designated feature space. It requires accurately labeled data. The main challenge here is that the data is inherently unbalanced and needs appropriate methods to tackle that. Popular classifiers have been used in the literature for this purpose. 
+- treats the problem as a binary classification problem. Classification operates based on the assumption that the a classifier can distrintuish between the normal/anomalous classes from the designated feature space. It requires accurately labeled data. The main challenge here is that the data is inherently unbalanced and needs app1ropriate methods to tackle that. Popular classifiers have been used in the literature for this purpose. 
 
 ---
 #### Strategies for unbalanced classification problem 
 
 - Changing the performance metric:
-    + Use the confusio nmatrix to calculate Precision, Recall
+    + Use the confusion nmatrix to calculate Precision, Recall
     + F1score (weighted average of precision recall)
     + Use Kappa - which is a classification accuracy normalized by the imbalance of the classes in the data
     + ROC curves - calculates sensitivity/specificity ratio.
@@ -164,5 +164,7 @@ General strategies:
         + mean / mode
         + Hot deck: clustering the dataset; and replacing each instance of missing value with cluster mean/mode. Cold deck: similar but the data source must be different from the current dataset. 
         + model: predict the attributes with missing values from other parts of the dataset. This is possible since in most cases attributes are not completely independent. A drawback: might introduce bias since predicted missing values might depend more on other parts of the dataset than the actual attribute with missing values.
+
+
 
 

@@ -228,7 +228,7 @@ explore our density estimates.
 
 
 
-### Density ratio estimation 
+### Density ratio estimation (including adversarial training)
 In statistical pattern recognition, it is important to avoid density estimation (evidence marginal integral) since density estimation is often more difficult than pattern recognition itself. Following this idea—known as Vapnik’s principle, a statistical data processing framework that employs the ratio of two probability density functions has been developed recently and is gathering a lot of attention in the machine learning and data mining communities. The main idea is to estimate a ratio of real data distribution and model data distribution $$\frac{p(x)}{q(x)}$$ instead of computing two densities that are hard. The ELBO in variational inference can be written in terms of the ratio. Introducing the variational posterior into the marginal integral of the joint results in the ELBO being $$E[log p(x,z)- log q(z|x)]$$. By subtracting emprical distribution on the observations, $$p(x)$$ which is a constant and doesn't change optimization we have the ELBO using ratio as $$E[\log \frac{p(x,z)}{q(x,z)}]= E[\log r(x,z)]$$. The density ratio $$r(x)$$ is the core quantity for hypothesis testing, motivated by either the Neyman-Pearson lemma or the Bayesian posterior evidence, appearing as the likelihood ratio or the Bayes factor, respectively. likelihood-free inference can be done through estimating density ratios and using them as the driving principle for learning in implicit generative models (transformation models). Four main ways of calculating the ratio:
 
 1. Probabilistic classification: We can frame it as the problem of classifying the real data $$p(x)$$ and the data produced by the model $$q(x)$$. We use a label of (+1) for the numerator and label (-1) for denumerator so the ratio will be $$r(x)=\frac{p(x|+1)}{q(x|-1)}$$. Using Bayesian rule this will be $$r(x)=(\frac{p(-1)}{p(+1)})*(\frac{p(+1|x)}{p(-1|x)})$$. The first ratio is simply the ratio of the number of data in each class and the second ratio is given by the ratio of classification accuracies. simple and elegant! 
@@ -256,6 +256,27 @@ The ratio loss is minimised since it acts as a surrogate negative log-likelihood
 6. Instead of estimating ratios, we estimate gradients of log densities. For this, we can use[ denoising as a surrogate task](http://www.inference.vc/variational-inference-using-implicit-models-part-iv-denoisers-instead-of-discriminators/). denoisers estimate gradients directly, and therefore we might get better estimates than first estimating likelihood ratios and then taking the derivative of those.
 
  
+
+### Energy-based training
+
+"Optimizing the Latent Space of Generative Networks" is a new paper from FAIR that describes the GLO model (Generative Latent Optimization).
+
+Slightly less short story: GLO, like GAN and VAE, is a way to train a generative model under uncertainty on the output.
+
+Short story: GLO is a generative model in which a set of latent variables is optimized at training time to minimize a distance between a training sample and a reconstruction of it produced by the generator. This alleviates the need to train a discriminator as in GAN.
+
+A generative model must be able to generate a whole series of different outputs, for example, different faces, or different bedroom images.
+Generally, a set of latent variables Z is drawn at random every time the model needs to generate an output. These latent variables are fed to a generator G that produces an output Y(e.g. an image) Y=G(Z).
+
+Different drawings of the latent variable result in different images being produced, and the latent variable can be seen as parameterizing the set of outputs.
+
+In GAN, the latent variable Z is drawn at random during training, and a discriminator is trained to tell if the generated output looks like it's been drawn from the same distribution as the training set.
+In GLO, the latent variable Z is optimized during training so as to minimize some distance measure between the generated sample and the training sample Z* = min_z = Distance(Y,G(Z)). The parameters of the generator are adjusted after this minimization. The learning process is really a joint optimization of the distance with respect to Z and to the parameters of G, averaged on a training set of samples.
+
+After training, Z can be sampled from their allowed set to produce new samples. Nice examples are shown in the paper.
+
+GLO belongs to a wide category of energy-based latent variable models: define a parameterized energy function E(Y,Z), define a "free energy" F(Y) = min_z E(Y,Z). Then find the parameters that minimize F(Y) averaged over your training set, making sure to put some constraints on Z so that F(Y) doesn't become uniformly flat (and takes high values outside of the region of high data density). This basic model is at the basis of sparse modeling, sparse auto-encoders, and the "predictive sparse decomposition" model. In these models, the energy contains a term that forces Z to be sparse, and the reconstruction of Y from Z is linear. In GLO, the reconstruction is computed by a deconvolutional net.
+
 
 
 ## Causal inference
