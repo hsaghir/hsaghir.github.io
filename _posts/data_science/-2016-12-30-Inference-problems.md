@@ -257,7 +257,7 @@ The ratio loss is minimised since it acts as a surrogate negative log-likelihood
 
  
 
-### Energy-based training
+### Energy-based training (alternative to GAN)
 
 "Optimizing the Latent Space of Generative Networks" is a new paper from FAIR that describes the GLO model (Generative Latent Optimization).
 
