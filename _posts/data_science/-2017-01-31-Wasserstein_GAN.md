@@ -16,3 +16,6 @@ image:
 - The key theoretical problem is then finding proper measures of distance or divergence between distributions that we can use in our cost functions. Distance measures impact convergence in the learning process as the transformation function learns to morph the high-dim space into a shape that is similar to the real-data distribution. If the distance between successive transformations and the final distribution tends to zero we will have convergence. A distance that has a weaker topology (more continuous!?) makes it easier for a sequence of disributions to converge. 
 
 - The WGAN paper introduces the Earth Mover (EM) distance and adopts it to learning in GANs which solve many problems of GAN (don't need maintaining careful balance of generator/classifier, doesn't require careful design of net architecture, solves mode collapsing, can continously estimate EM distance by training discriminator to optimality)!
+
+
+

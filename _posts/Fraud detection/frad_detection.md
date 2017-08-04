@@ -8,6 +8,7 @@
 ---
 #### Strategies for unbalanced classification problem 
 
+- http://www.kdnuggets.com/2016/08/learning-from-imbalanced-classes.html/2
 - Changing the performance metric:
     + Use the confusion nmatrix to calculate Precision, Recall
     + F1score (weighted average of precision recall)
@@ -17,6 +18,17 @@
     + Essentially this is a method that will process the data to have an approximate 50-50 ratio. 
     + One way to achieve this is by OVER-sampling, which is adding copies of the under-represented class (better when you have little data)
     + Another is UNDER-sampling, which deletes instances from the over-represented class (better when he have lot's of data)
+        * undersampling the majority class to e.g. 70% ratio instead of e.g. very imbalanced 99.99% in each minibatch independently. after many epochs model has a chance to see all the complete set of majority samples. (Alternatively, up-sample the minority class and shuffle. build the next minibatch with the next 30 minority samples, add 70 majority samples at random, do sgd update). This way, Each epoch see all the minority samples exactly once and a different subsample of the majority class.
+    + stratified sampling: (uniformly) sample the class first, then within it, i.e. GroupKfold
+    
+- Cascade a high precision classifier that trims e.g. 70% of the easy samples from the majority class and pass the remaining to the final classifier [confer](https://www.eecs.tufts.edu/~dsculley/papers/adversarial-ads.pdf)
+- train as usual and then after training: tune class-specific thresholds/ and biases. Works well for the trivial binary classification case.
+- penalized methods e.g. SVM. 
+- Training cost sensitive classifier (Vowpal Wabbit).(importance weight for each sample?)
+- learn models with losses like precision at fixed recall and similar losses.[confer](https://arxiv.org/abs/1608.04802)
+- 1/class_freq to weight the loss computations. class_weights = 1 / np.bincount(self.y_target)
+ 
+- [Class Imbalance, Redux](https://pdfs.semanticscholar.org/a8ef/5a810099178b70d1490a4e6fc4426b642cde.pdf)
 
 ---
 
