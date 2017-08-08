@@ -7,26 +7,8 @@ image:
   teaser: jupyter-main-logo.svg
 ---
 
-![alt text](/images/VAE_intuitions/latent_var_model.png "a latent variable model")
 
-## Problem setup (generative model):
--  Let's assume our data as $$X = {x_1,x_2,...,x_n}$$. We are interested in performing inference, two-sample tests, prediction, generate more data like it, understand it, etc. Similar to what we do in all areas of science, we try to model the data to be able to answer such questions.  
-
--  We use probability theory to start with the modelling process. Let's assume each variable, $$x_i$$, as a random variable (meaning that it is actually a distribution and the possible values are random draws from the said distribution). In this setup, the model is the joint probability distribution of all random variables, i.e. $$p(x_1,x_2, .., x_n) = \prod_i p(x_i)p(x_i|x_m)$$ where $$m$$ means all variables except for $$i$$. 
-
-- Finding the true joint distribution is no easy task. We appeal to modelling to find a good approximation for this joint distribution. There are two approaches we can take to solving this. 
-    + non-parametric modelling
-    + parametric modelling
-
-## Non-parametric modelling
-
-- Won't be focusing on non-parametric methods in this post but here is an example non-parametric approach to finding the joint distribution.
-
-- Kernel Density Estimation:  Let's assume that variables are all independent and identically distributed (iid), and let's further assume a form of a kernel density function as the distribution of a random variable. The joint distribution will simply be the product of all kernel density functions. This is called non-parametric since the method can grow in complexity with data and not because it doesn't have parameters 
-
-## Parametric modelling 
--  The first prior we encode into our modelling process is that we assume the data is coming from a generative process that we define. 
-
+# a latent variable model example (VAE)
 -  A simple generative model: Let's also assume a set of latent variables $$Z = {z_1, z_2,...,z_n}$$. 
 
 ![alt text](/images/VAE_intuitions/vae_latent_var_model.png "a simple vae latent variable model")
@@ -35,74 +17,14 @@ $$ Z ~ p(Z) = N(0,I) ;  X ~ p(X|Z) = N(\mu, \sigma^2)$$
 
 - Now with this assumed generative model, we want to fit the model to data and infering the latent variables, $$z_i$$ from the visible variables $$x_i$$. The Bayes rule has a way for performing inference through the notion of posterior. The idea is that we have some initial belief, we see data, then our beliefs evolve to posterior beliefs based on our observations. This is formulized as $$p(z|x) = \frac{p(x|z)p(z)}{p(x)}$$ where $$p(z)$$ is the prior on latent variables, $$p(z|x)$$ is the posterior belief on latent variables after observations, $$p(x|z)$$ is the likelihood of observations under the model, and $$p(x)$$ is the marginalized likelihood of observations under the model alternatively called evidence (when we inegrate out all latent variables). 
 
-- The way parametric modelling works is that we usually assume a functional form for the beliefs or probability distributions. This functional form is called density function that is usually parameterized using a few parameters (e.g. Gaussian distributions is parameterized using sufficient statistics parameters, mean and variance).  
+## Variational inference
 
-- We can also treat the parameters in a Bayesian way and assume a density and parameterize the parameters and again treat the parameters of the parameters as belief and parameterize them and so on in an endless loop of Bayesian utopia! However, like all other good things, this endless loop has to stop somewhere as well which means that we have to be practical Bayesians. 
+- Variational Inference turns the inference into optimization. It posits a variational family of distributions over the latent variables,  and fit the variational parameters to be close (in KL sense or another divergence like BP, EP, etc) to the exact posterior. KL is intractable (only possible exactly if q is simple enough and compatible with the prior), so VI optimizes the evidence lower bound (ELBO) instead which is a lower bound on log p(x). Maximizing the ELBO is equivalent to minimizing the KL, note that the ELBO is not convex. The ELBO trades off two terms, the first term prefers q(.) to place its mass on the MAP estimate. The second term encourages q(.) to be diffuse.
 
-- Let's get back to the Bayesian formula. If we write the probability distributions as parameterized density functions, we will end up with an equation with unknown parameters. So the inference task is now transformed into the problem of finding parameter values from observations. 
+### Stochastic optimization
+- What we need for optimization is actually the gradient of the ELBO not the ELBO itself. Using pathwise gradient (reparameterization trick) we can calculate the gradient without evaluating the ELBO
 
-- There are multiple schools of thoughts for how the parameter set should be chosen:
-    + The simplest and most obvious school of thought is that parameters are not distributions and should be chosen in a way that will maximize the likelihood of observations under the model. This gives rise to the maximum likelihood parameter learning concept. 
-
-    + The Bayesian school of thought obviously believes that the parameters are distributions themselves and thus we need to infer distributions for parameters too and not just learn single values.
-
-    +  Another school of thought tries to balance the above two ideas by professing that although the parameter maybe distributions but we want to be practical so instead of infering a distribution for each parameter we choose the single parameter values that will maximize the posterior belief of latent values. This gives rise to the Maximum a Poseriori (MAP) inference concept. 
-
-
-- Vanilla maximum likelihood learning and MAP inference are simple and fast but too biased and approximate. So we usually would like to have one more level of full Bayesian goodness and obtain distributions. If we take the Bayesian school of thought and try to infer the posterior belief of latent variables, we need to be able to calculate the marginal likelihood term $$p(x)$$. Unfortunately, this term involves an integration which is intractable for most interesting models. 
-
-- Since the posterior $$p(z|x)$$ is intractable in this model, we need to use approximate inference for latent variable inference and parameter learning. Two common approaches are:
-    + MCMC inference: assymptotically unbiased but it's expensive, hard to assess the Markov chain convergence and manifests large variance in gradient estimation.
-    + Variational inference: fast, and low variance in gradient with reparameterization trick. well suited to the use of deep neural nets for parameterizing conditional distributions. Also well-suited to using deep neural networks to amortize the inference of local latent variables $${z_1,..., z_n}$$ with a single deep neural network. 
-
-### Variational inference
-
-- Variational Inference turns inference into optimization. Given a model of latent and observed variables $$p(X, Z)$$, variational inference posits a family of distributions over its latent variables and then finds the member of that family closest to the posterior, $$p(Z|X)$$. This is typically formalized as minimizing the Kullback-Leibler (KL) divergence from the approximating family $$q(·)$$ to the posterior $$p(·)$$.
-
-
-#### ELBO
-- The ELBO is an equivalent objective to KL divergence between the true and variational posteriors. Since the KL divergence is intractable, we instead minimize the ELBO equivalent objective.
-
-- The ELBO is determined from introducing a variational distribution, $$q$$, to the marginal log likelihood, i.e. $$\log \ p(x)=\log \int_z p(x,z) * \frac{q(z|x)}{q(z|x)}$$. We use the log likelihood to be able to use the concavity of the $$\log$$ function and employ Jensen's equation to move the $$\log$$ inside the integral i.e. $$\log \ p(x) > \int_z \log\ (p(x,z) * \frac{q(z|x)}{q(z|x)})$$ and then use the definition of expectation on $$q$$ (the nominator $$q$$ goes into the definition of the expectation on $$q$$ to write that as the ELBO) $$\log \ p(x) > ELBO(z) = E_q [- \log\ q(z|x) + \log \ p(x,z)]$$. The difference between the ELBO and the marginal $$p(x)$$ which converts the inequality to an equality is the distance between the real posterior and the approximate posterior i.e. $$KL[q(z|x)\ | \ p(z|x)]$$. Alternatively, the distance between the ELBO and the KL term is the log-normalizer $$p(x)$$. Replace the $$p(z|x)$$ with Bayesian formula to see how. 
-
-Now that we have a defined a loss function, we need the gradient of the loss function, $$\delta E_q[-\log q(z \vert x)+p(x,z)]$$ to be able to use it for optimization with SGD. The gradient isn't easy to derive analytically but we can estimate it using MCMC to directly sample from $$q(z \vert x)$$ and estimate the gradient. This approach generally exhibits large variance since MCMC might sample from rare values.
-
-This is where the re-parameterization trick we discussed above comes in. We assume that the random variable $$z$$ is a deterministic function of $$x$$ and a known $$\epsilon$$ ($$\epsilon$$ are iid samples) that injects randomness $$z=g(x,\epsilon)$$. This re-parameterization converts the undifferentiable random variable $$z$$, to a differentiable function of $$x$$ and a decoupled source of randomness. Therefore, using this re-parameterization, we can estimate the gradient of the ELBO as $$\delta E_\epsilon [\delta -\log\ q(g(x,\epsilon) \vert x) + \delta p(x,g(x,\epsilon))]$$. This estimate to the gradient has been empirically shown to have much less variance and is called "Stochastic Gradient Variational Bayes (SGVB)". The SGVB is also called a black-box inference method (similar to MCMC estimate of the gradient) which simply means it doesn't care what functions we use in the generative and inference network as long as we can calculate the gradient at samples of $$\epsilon$$. We can use SGVB with a separate set of parameters for each observation however that's costly and inefficient. We usually choose to "amortize" the inference with deep networks (to learn a single complex function for all observation to latent mappings). All the terms of the ELBO are differentiable now if we choose deep networks as our likelihood and approximate posterior functions. Therefore, we have an end-to-end differentiable model. Following depiction shows amortized SGVB re-parameterization in a VAE.
-
-<img src="/images/VAE_intuitions/vae_structure.jpg" alt="Simple VAE structure with reparameterization" width="350" height="350">
-
-
-#### Stochastic optimization in Variational inference/learning
-- Stochastic variational inference (SVI) scales VI to massive data. Additionally, SVI enables VI on a wide class of difficult models and enable VI with elaborate and flexible families of approximations. Stochastic Optimization replaces the gradient with cheaper noisy estimates and is guaranteed to converge to a local optimum. Example is SGD where the gradient is replaced with the gradient of a stochastic sample batch. The variational inferene recipe is:
-1. Start with a model
-2. Choose a variational approximation (variational family)
-3. Write down the ELBO and compute the expectation (integral). 
-4. Take ELBO derivative 
-5. Optimize using the SGD update rule
-
-We usually get stuck in step 3, calculating the expectation (integral) since it's intractable. We refer to black box variational Inference to compute ELBO gradients without calculating its expectation. The way it works is to combine steps 3 and 4 above to calculate the gradient of expectation in a single step using variational methods instead of exact method of 3 then 4. Three main ideas for computing the gradient are score function gradient, pathwise gradients, and amortised inference. 
-
-- Score function gradient: The problem is to calculate the gradient of an expectation of a funtion $$ \nabla_\theta (E_q(z) [f(z)])=\nabla_\theta( \int q(z)f(z))$$ with respect to parameters $$\theta$$. The function here is ELBO but gradient is difficult to compute since the integral is unknown or the ELBO is not differentiable. To calculate the gradient, we first take the $$\nabla_\theta$$ inside the integral to rewrite it as $$\int \nabla_\theta(q(z)) f(z) dz$$ since only the $$q(z)$$ is a function of $$\theta$$. Then we use the log derivative trick (using the derivative of the logarithm $d (log(u))= d(u)/u$) on the (ELBO) and re-write the integral as an expectation $$\nabla_\theta (E_q(z) [f(z)]) = E_q(z) [\nabla_\theta \log q(z) f(z)]$$. This estimator now only needs the dervative $$\nabla \log q_\theta (z)$$ to estimate the gradient. The expectation will be replaced with a Monte Carlo Average. When the function we want derivative of is log likelihood, we call the derivative $\nabla_\theta \log ⁡p(x;\theta)$ a score function. The expected value of the score function is zero.[](http://blog.shakirm.com/2015/11/machine-learning-trick-of-the-day-5-log-derivative-trick/)
-
-- The form after applying the log-derivative trick is called the score ratio. This gradient is also called REINFORCE gradient or likelihood ratio. We can then obtain noisy unbiased estimation of this gradients with Monte Carlo. To compute the noisy gradient of the ELBO we sample from variational approximate q(z;v), evaluate gradient of log q(z;v), and then evaluate the log p(x, z) and log q(z). Therefore there is no model specific work and and this is called black box inference. The problem with this approach is that sampling rare values can lead to large scores and thus high variance for gradient. There are a few methods that help with reducing the variance but with a few more non-restricting assumptions we can find a better method with low variance i.e. pathwise gradients. 
-
-- Pathwise Gradients of the ELBO: This method has two more assumptions, the first is assuming the hidden random variable can be reparameterized to represent the random variable z as a function of deterministic variational parameters $v$ and a random variable $\epsilon$, $z=f(\epsilon, v)$. The second is that log p(x, z) and log q(z) are differentiable with respect to z. With reparameterization trick, this amounts to a differentiable deterministic variational function. This method generally has a better behaving variance. 
-
-In summary, for variational inference, if log p(x, z) is z-differentiable:
-- Try out an approximation q that is reparameterizable (end to end differentiable model)
-If log p(x, z) is not z differentiable:
-- Use score function estimator with control variates
-- Add further variance reductions based on experimental evidence
-
-### Parameterization using deep nets and amortizing inference
-
-- we represent the conditional distribution with a deep neural network $$p_\theta (x|z) = N(DNN_\theta (x))$$ to enable arbitarily complex distribution on $$X$$. 
-
-- To optimize the ELBO, Traditional VI uses coordinate ascent which iteratively update each parameter, holding others fixed. Classical VI is inefficient since they do some local computation for each data point. Aggregate these computations to re-estimate global structure and Repeat. In particular, variational inference in a typical model where a local latent variable is introduced for every observation (z->x) would involve introducing variational distributions for each observation, but doing so would require a lot of parameters, growing linearly with observations. Furthermore, we could not quickly infer x given a previously unseen observation. We will therefore perform amortised inference where we introduce an inference network for all observations instead.
-
-- Amortised inference: Pathwise gradients would need to estimate a value for each data sample in the training. The basic idea of amortised inference is to learn a mapping from data to variational parameters to remove the computational cost of calculation for every data point. In stochastic variation inference, after random sampling, setting local parameters also involves an intractable expectation which should be calculated with another stochastic optimization for each data point. This is also the case in classic inference like an EM algorithm, the learned distribution/parameters in the E-step is forgotten after the M-step update. In amortised inference, an inference network/tree/basis function might be used as the inference function from data to variational parameters to amortise the cost of inference. So in a sense, this way there is some sort of memory in the inferene and the learned params are not forgotten each time but rather updated in each step and thus they amortise the cost of inference. Amortized inference is faster, but admits a smaller class of approximations, the size of which depends on the flexibility of f.
-
-#### Variational Autoencoder, where is the autoencoder?
+### Variational Autoencoder, where is the autoencoder?
 
 - Generative (directed latent variable) models can represent complex distributions over data. Deep neural nets can represent arbitarily complex functions. Let's combine them and use DNNs to parameterize and represent conditional distributions and that will give us a VAE. (sufficient statistics of conditional distributions are represented with deep neural net functions)
 
@@ -164,7 +86,5 @@ $$\log p(X) >= E_q[\log \frac{p(X,Y,Z1,Z2)}{q(Y,Z1,Z2|X)}]; \n \log p(X) >= E_q[
 
 - If we plug the factorizations of the generative and the inference models into the ELBO, we can derive a more simplified version.
 
-## Stochastic optimization
-- What we need for optimization is actually the gradient of the ELBO not the ELBO itself. Using pathwise gradient (reparameterization trick) we can calculate the gradient without evaluating the ELBO
 
 
