@@ -118,7 +118,7 @@ Note that the loss function (i.e. the distance measure) in optimization (i.e. ma
 - Vanilla maximum likelihood learning and MAP inference are simple and fast but too biased and approximate. So we usually would like to have one more level of full Bayesian goodness and obtain distributions. If we take the Bayesian school of thought and try to infer the posterior belief of latent variables, we need to be able to calculate the marginal likelihood term $$p(x)$$. Unfortunately, this term involves an integration which is intractable for most interesting models. 
 
 - Since the posterior $$p(z|x)$$ is intractable in this model, we need to use approximate inference for latent variable inference and parameter learning. Two common approaches are:
-    + MCMC inference: assymptotically unbiased but it's expensive, hard to assess the Markov chain convergence and manifests large variance in gradient estimation.
+    + MCMC inference: assymptotically unbiased but it's expensive, hard to assess the Markov chain convergence and manifests large variance in gradient estimation. 
     + Variational inference: fast, and low variance in gradient with reparameterization trick. well suited to the use of deep neural nets for parameterizing conditional distributions. Also well-suited to using deep neural networks to amortize the inference of local latent variables $${z_1,..., z_n}$$ with a single deep neural network. 
 
 ## Model vs Action
