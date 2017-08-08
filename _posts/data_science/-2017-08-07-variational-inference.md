@@ -53,10 +53,9 @@ To optimize the ELBO, Traditional VI uses coordinate ascent which iteratively up
 4. Take ELBO derivative 
 5. Optimize using the SGD update rule
 
-- We usually get stuck in step 3, calculating the expectation (integral) since it's intractable. However, what we need for optimization is actually the gradient of the ELBO not the ELBO itself. Using pathwise gradient (reparameterization trick) we can calculate the gradient without evaluating the ELBO
+- We usually get stuck in step 3, calculating the expectation (integral) since it's intractable. However, what we need for optimization is actually the gradient of the ELBO not the ELBO itself. We refer to black box variational Inference to compute ELBO gradients without calculating its expectation. The way it works is to combine steps 3 and 4 above to calculate the gradient of expectation in a single step using variational methods instead of exact method of 3 then 4. 
 
-- We refer to black box variational Inference to compute ELBO gradients without calculating its expectation. The way it works is to combine steps 3 and 4 above to calculate the gradient of expectation in a single step using variational methods instead of exact method of 3 then 4. Three main ideas for computing the gradient are score function gradient, pathwise gradients, and amortised inference. 
-
+- This is a general problem in optimization where we want to evaluate the gradient of expectation of a parameterized function, $$f_\theta$$, w.r.t. a parameterized distribution, $$q_\psi$$. The gradient is with respect to the parameters of the distribution $$\nabla_\psi E_{q_\psi (z)}[f_\theta (z)] = \nabla \int q_\psi (z) f_\theta (z)$$. There are two main ways for evaluating the gradient depending on whether we differentiate the function (pathwise gradients) or the distribution density function (score function gradient).
 
 - Score function gradient: The problem is to calculate the gradient of an expectation of a funtion $$ \nabla_\theta (E_q(z) [f(z)])=\nabla_\theta( \int q(z)f(z))$$ with respect to parameters $$\theta$$. The function here is ELBO but gradient is difficult to compute since the integral is unknown or the ELBO is not differentiable. To calculate the gradient, we first take the $$\nabla_\theta$$ inside the integral to rewrite it as $$\int \nabla_\theta(q(z)) f(z) dz$$ since only the $$q(z)$$ is a function of $$\theta$$. Then we use the log derivative trick (using the derivative of the logarithm $d (log(u))= d(u)/u$) on the (ELBO) and re-write the integral as an expectation $$\nabla_\theta (E_q(z) [f(z)]) = E_q(z) [\nabla_\theta \log q(z) f(z)]$$. This estimator now only needs the dervative $$\nabla \log q_\theta (z)$$ to estimate the gradient. The expectation will be replaced with a Monte Carlo Average. When the function we want derivative of is log likelihood, we call the derivative $\nabla_\theta \log ⁡p(x;\theta)$ a score function. The expected value of the score function is zero.[](http://blog.shakirm.com/2015/11/machine-learning-trick-of-the-day-5-log-derivative-trick/)
 
@@ -79,26 +78,39 @@ If log p(x, z) is not z differentiable:
 - Amortised inference: Pathwise gradients would need to estimate a value for each data sample in the training. The basic idea of amortised inference is to learn a mapping from data to variational parameters to remove the computational cost of calculation for every data point. In stochastic variation inference, after random sampling, setting local parameters also involves an intractable expectation which should be calculated with another stochastic optimization for each data point. This is also the case in classic inference like an EM algorithm, the learned distribution/parameters in the E-step is forgotten after the M-step update. In amortised inference, an inference network/tree/basis function might be used as the inference function from data to variational parameters to amortise the cost of inference. So in a sense, this way there is some sort of memory in the inferene and the learned params are not forgotten each time but rather updated in each step and thus they amortise the cost of inference. Amortized inference is faster, but admits a smaller class of approximations, the size of which depends on the flexibility of f.
 
 
-#### Advanced ideas in VI (Auxiliary Variational Method, Variational Inference with Normalizing Flows, Hierarchical Variational Models, Auxiliary Deep Generative Models):
+## Advanced ideas in VI (Auxiliary Variational Method, Variational Inference with Normalizing Flows, Hierarchical Variational Models, Auxiliary Deep Generative Models):
 
 
+### Limitations of mean-field VI (Gaussian posterior)
 Mean-field or fully-factorised approximate posterior distributions q(z|x) is usually not sufficient for modelling real world data (Complex dependencies, Non-Gaussian distributions, Multiple modes) but traditionally we've been restricted to them due to limitations in solving the optimization problem. This is the same challenge encountered in the problem of specifying a model of the data (prior) itself which was restricted by our limitations in solving the inference problem (e.g. conjugate priors).
 
 However, advances in probabilistic modelling (probabilistic programming), scalable inference through stochastic optimization, and blackbox variational inference (non-conjugate models, Monte Carlo gradient estimators, and amortised inference) have recently enabled us to design more flexible models and approximate posterior distributions q(z|x) for our models. So the goal is to build richer approximate posterior distributions and maintain the computational efficiency and scalability. A few examples follow.
 
 - In Gaussian Approximate Posteriors, Structure of covariance $\sum$ describes dependency. Mean field assumption (i.e. diagonal covariance matrix as in a VAE) is least expressive but computatoinally efficient. Full covariance is richest, but computationally expensive. There are ideas around using linear algebra to efficiently decompose the covariance matrix, for example using a tri-diagonal covariance for an LDS approximate posterior. A limitation of Gaussian variational distributions is that the posterior is always Gaussian which doesn't always reflect real world distributions. 
 
+### Designing richer approximate posteriors
+- In order to design richer approximate posteriors, we can introduce new variables that help to form a richer approximate posterior (where q(z|x) is the marginalization of those new variables). We need to be able to adapt bound (ELBO) to compute entropy or a bound, and maintain computational efficiency to be linear in number of latent variables. There are two main approaches for doing this. First is change-of-variables including Normalising flows and invertible transforms. The second is auxiliary variables which involves Entropy bounds, and Monte Carlo sampling.
+
+#### transformations (normalizaing, autoregressive and NVP flows)
+In approximations using Change-of-variables, the distribution flows through a sequence of **deterministic invertible** transforms. We begin with an initial distribution q0(z0|x) and apply a sequence of K invertible functions $$f_k$$ that will reshape the posterior to more complex shapes. We employ a class of transformations for which the determinant of the Jacobian can be computed in linear time.
+
+We Begin with a fully-factorised Gaussian and improve by change of variables. Triangular Jacobians allow for computational efficiency. These include Planar flow, real NVP, and inverse autoregressive flow. These models have a linear time computation of the determinant and its gradient. 
+
+$$\log q_K(z_K) =  \log q_0(z_K) - \prod_i ^ K \log(J_i(z_{i-1}))^-1$$
+
+Replacing the above into the ELBO for the new approximate posterior gives the ELBO for the transformed posterior:
+
+$$E_q0 [\log p(x,z_K)] - E_q0[\log q_0(z_0)] + E_q0 [\sum \log(J_i(Z_{i-1}))]$$
+
 - Autoregressive posterior distributions impose an ordering and non-linear dependency on all preceding hidden variables. Therfore the Joint-distribution is non-Gaussian and very expressive, although conditional distributions are Gaussian. For example compare Gaussian mean field posterior (VAE) vs. auto-regressive posterior (DRAW).
+
+#### hierarchical approximate posteriors
+Another possible approach is using hierarchical approximate posteriors. The basic idea is to use a hierarchical model for the approximate posterior (We can use latent variables, like with density models). In that case, the new variables are stochastic variables rather than deterministic in the change-of-variables approach and both continuous and discrete latent variables can be modelled.
+
+The Auxiliary-variable methods add exra latent variables in parallel to existing hiddens and don't change the original model. They capture structure of correlated variables because they turn the posterior into a mixture of distributions q(z|x, a). The richer posterior can be a mixture model, normalising flow, Gaussian process, etc but needs to have easy sampling for evaluation of bound and gradients. 
 
 - More Structured posteriors introduce additional variables that induce dependencies, but that remain tractable and efficient for example and LDS/HMM/etc assumption on the posterior in an SVAE.
 
-- In order to design richer approximate posteriors, we can introduce new variables that help to form a richer approximate posterior (where q(z|x) is the marginalization of those new variables). We need to be able to adapt bound (ELBO) to compute entropy or a bound, and maintain computational efficiency to be linear in number of latent variables. There are two main approaches for doing this. First is change-of-variables including Normalising flows and invertible transforms. The second is auxiliary variables which involves Entropy bounds, and Monte Carlo sampling.
-
-In approximations using Change-of-variables, the distribution flows through a sequence of invertible transforms. We begin with an initial distribution q0(z0|x) and apply a sequence of K invertible functions fk that will reshape the posterior to more complex shapes. We Begin with a fully-factorised Gaussian and improve by change of variables. Triangular Jacobians allow for computational efficiency. These include Planar flow, real NVP, and inverse autoregressive flow. These models have a linear time computation of the determinant and its gradient. 
-
-Another possible approach is using hierarchical approximate posteriors. The basic idea is to use a hierarchical model for the approximate posterior (We can use latent variables, like we density models). In that case, the new variables are stochastic variables rather than deterministic in the change-of-variables approach and both continuous and discrete latent variables can be modelled.
-
-The Auxiliary-variable methods add exra latent variables in parallel to existing hiddens and don't change the original model. They capture structure of correlated variables because they turn the posterior into a mixture of distributions q(z|x, a). The richer posterior can be a mixture model, normalising flow, Gaussian process, etc but needs to have easy sampling for evaluation of bound and gradients. 
 
 #### Variational inference from first principles (Operator variational inference)
 
