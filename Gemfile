@@ -6,4 +6,6 @@ gem "jekyll-sitemap"
 gem "jekyll-gist"
 gem "jekyll-feed"
 gem "jekyll-twitter-plugin"
+gem 'github-pages'
+
 
