@@ -5,7 +5,7 @@ description: "Intuitions for Machine Learning and deep Learning"
 logo: Aneuron.jpg # 120x120 px default image used for Twitter summary card
 teaser: teaser.jpg # 400x250 px default teaser image used in image archive grid
 locale: en
-url: hsaghir.github.io
+url:
 feed:
   path: atom.xml
 
