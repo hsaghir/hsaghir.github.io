@@ -44,7 +44,7 @@ This is where the re-parameterization trick we discussed above comes in. We assu
 
 #### Stochastic optimization in Variational inference/learning
 
-To optimize the ELBO, Traditional VI uses coordinate ascent which iteratively update each parameter, holding others fixed. Classical VI is inefficient since they do some local computation for each data point. Aggregate these computations to re-estimate global structure and Repeat. In particular, variational inference in a typical model where a local latent variable is introduced for every observation (z->x) would involve introducing variational distributions for each observation, but doing so would require a lot of parameters, growing linearly with observations. Furthermore, we could not quickly infer x given a previously unseen observation. We will therefore perform amortised inference where we introduce an inference network for all observations instead.
+To optimize the ELBO, Traditional VI uses coordinate ascent which iteratively update each parameter, holding others fixed. Classical VI is inefficient since they do some local computation for each data point. Aggregate these computations to re-estimate global structure and Repeat. In particular, variational inference in a typical model where a local latent variable is introduced for every observation (z->x) would involve introducing variational distributions for each observation, but doing so would require a lot of parameters, growing linearly with observations. Furthermore, we could not quickly infer x given a previously unseen observation. We will therefore perform amortised inference where we introduce an inference network for all observations instead.
 
 - Stochastic variational inference (SVI) scales VI to massive data. Additionally, SVI enables VI on a wide class of difficult models and enable VI with elaborate and flexible families of approximations. Stochastic Optimization replaces the gradient with cheaper noisy estimates and is guaranteed to converge to a local optimum. Example is SGD where the gradient is replaced with the gradient of a stochastic sample batch. The variational inferene recipe is:
 1. Start with a model
@@ -64,10 +64,10 @@ To optimize the ELBO, Traditional VI uses coordinate ascent which iteratively up
 - Pathwise Gradients of the ELBO: This method has two more assumptions, the first is assuming the hidden random variable can be reparameterized to represent the random variable z as a function of deterministic variational parameters $v$ and a random variable $\epsilon$, $z=f(\epsilon, v)$. The second is that log p(x, z) and log q(z) are differentiable with respect to z. With reparameterization trick, this amounts to a differentiable deterministic variational function. This method generally has a better behaving variance. 
 
 In summary, for variational inference, if log p(x, z) is z-differentiable:
-- Try out an approximation q that is reparameterizable (end to end differentiable model)
-- If log p(x, z) is not z differentiable:
-    + Use score function estimator with control variates
-    + Add further variance reductions based on experimental evidence
+- Try out an approximation q that is reparameterizable (end to end differentiable model)
+If log p(x, z) is not z differentiable:
+- Use score function estimator with control variates
+- Add further variance reductions based on experimental evidence
 
 ### Parameterization using deep nets and amortizing inference
 
