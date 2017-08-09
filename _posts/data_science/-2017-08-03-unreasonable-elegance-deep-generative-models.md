@@ -47,7 +47,7 @@ At the beginning, the probability of choosing a component in the mixture is base
 ## Parametric modelling 
 -  The first prior we encode into our modelling process is that we assume the data is coming from a generative process that we define. 
 
-- Second, the way parametric modelling works is that we usually assume a functional form for the beliefs or probability distributions. This functional form is called density function that is usually parameterized using a few parameters (e.g. Gaussian distributions is parameterized using sufficient statistics parameters, mean and variance).  
+- Second, the way parametric modelling works is that we usually assume a functional form for the beliefs or probability distributions. This functional form is called density function that is usually parameterized using a few parameters (e.g. Gaussian distributions is parameterized using sufficient statistics parameters, mean and variance).
 
 - We can also treat the parameters in a Bayesian way and assume a density and parameterize the parameters and again treat the parameters of the parameters as belief and parameterize them and so on in an endless loop of Bayesian utopia! However, like all other good things, this endless loop has to stop somewhere as well which means that we have to be practical Bayesians. 
 
@@ -120,6 +120,12 @@ Note that the loss function (i.e. the distance measure) in optimization (i.e. ma
 - Since the posterior $$p(z|x)$$ is intractable in this model, we need to use approximate inference for latent variable inference and parameter learning. Two common approaches are:
     + MCMC inference: assymptotically unbiased but it's expensive, hard to assess the Markov chain convergence and manifests large variance in gradient estimation.
     + Variational inference: fast, and low variance in gradient with reparameterization trick. well suited to the use of deep neural nets for parameterizing conditional distributions. Also well-suited to using deep neural networks to amortize the inference of local latent variables $${z_1,..., z_n}$$ with a single deep neural network. 
+
+
+## Bayesian network vs Parameterization network
+As can be seen, the probabilistic graphical model (Bayesian network), the generative model factorization, the inference model factorization, the ELBO objective, and even the variational inference procedure, don't include any information about how the conditional distributions in the graph are parameterized. Therefore, in implementation we can seperate these two parts and have two parts in the deep generative model implementation code:
+1. The graphical model, inference and generative network factorizations, the ELBO, and even the variational inference procedures. 
+2. The parameterizations using neural network
 
 ## Model vs Action
 - We can build a generative model by pairing a model, inference scheme and build an algorithms for density estimation of the model. There are therefore, two distinct things we might be interested in, first is building a model. Second is what to do with this model. If we want to make decisions and act upon the model then we face the problem of reinforcement learning. We build a model first and then put it in an environment to take actions and get rewards in order to evolve. 
