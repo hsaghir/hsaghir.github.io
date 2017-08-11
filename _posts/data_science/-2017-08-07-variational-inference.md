@@ -69,6 +69,16 @@ If log p(x, z) is not z differentiable:
 - Use score function estimator with control variates
 - Add further variance reductions based on experimental evidence
 
+
+##### Reparameterization trick
+The reparameterization trick helps with a low variance estimate of the gradient for continuous variables. However, encounters problems for discrete and categorical variables since we cannot backpropagate gradients through discrete nodes in the computational graph. The Gumbel-softmax trick helps in the reparameterization of categorical variables:
+- a nice reparameterization for a discrete (or categorical) variable comes from the Gumbel distribution. The reparameterized categorical variable is a function of a sample from the Gumbel distribution i.e. $$y \approx \argmax_k (\log \alpha_k + G_k)$$. 
+    + Draw a sample noise from Gumble distribution by transforming a sample from the uniform distribution i.e. $$G = -\log(-\log(U))$$ where $$U \approx Unif[0,1]$$
+    + add it to category weights $$\log \alpha_k$$ 
+    + take the value that produces the maximum as a categorical sample
+- Althought the resulting reparameterized function is not continuous, it can be approximated with the softmax function indexed with a temperature parameter. 
+    + apply softmax to the produced values from Gumble instead of just taking the maximum. 
+
 ### Parameterization using deep nets and amortizing inference
 
 - we represent the conditional distribution with a deep neural network $$p_\theta (x|z) = N(DNN_\theta (x))$$ to enable arbitarily complex distribution on $$X$$. 
