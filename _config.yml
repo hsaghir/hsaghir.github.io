@@ -5,7 +5,7 @@ description: "Intuitions for Machine Learning and deep Learning"
 logo: Aneuron.jpg # 120x120 px default image used for Twitter summary card
 teaser: teaser.jpg # 400x250 px default teaser image used in image archive grid
 locale: en
-url:
+url: https://hsaghir.github.io
 feed:
   path: atom.xml
 
@@ -31,9 +31,9 @@ owner:
   name: Hamidreza Saghir
   email: saghir.hr@gmail.com
   twitter: hrsaghir
-  google:
-    ad-client:
-    ad-slot:
+#  google:
+#    ad-client:
+#    ad-slot:
   bio: Machine Learning Researcher - PhD Candidate at University of Toronto
   avatar: avatar.jpg # 160x160 px image for author byline
   disqus-shortname: hsaghir-github-io
