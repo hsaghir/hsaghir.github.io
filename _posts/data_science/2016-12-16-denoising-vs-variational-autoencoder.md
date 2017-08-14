@@ -102,6 +102,4 @@ references:
 
 [2] Rezende, Danilo Jimenez, Shakir Mohamed, and Daan Wierstra. "Stochastic backpropagation and approximate inference in deep generative models." arXiv preprint arXiv:1401.4082 (2014).
 
-[3] https://hips.seas.harvard.edu/blog/2013/01/24/complexity-of-inference-in-bayes-nets/
-
-[4] https://www.cs.princeton.edu/courses/archive/fall11/cos597C/lectures/variational-inference-i.pdf
+[3] https://www.cs.princeton.edu/courses/archive/fall11/cos597C/lectures/variational-inference-i.pdf
