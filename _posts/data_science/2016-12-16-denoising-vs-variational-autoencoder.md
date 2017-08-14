@@ -17,7 +17,7 @@ I start with a short history. Over the past two decades, researchers have been t
 
 Using graphical models language we can explicitly articulate the hidden structure that we believe is generating the data. For example, if we assume that there is a hidden variable $$z_i$$ for each observable data point $$x_i$$ that is the cause for generating that point, we can make a model like this:
 
-![alt text](/images/VAE_intuitions/vae_semi_M1.png "a simple vae latent variable model")
+<img src="/images/VAE_intuitions/vae_semi_M1.png" alt="a simple vae latent variable model" width="350" height="350">
 
 Since data points, $$X$$, are observed while the $$Z$$ nodes are unknown, we want to "infer" the hidden variables $$z_i$$ from known data points. The solid line shows the data generation path and the dashed line shows the inference path.
 
