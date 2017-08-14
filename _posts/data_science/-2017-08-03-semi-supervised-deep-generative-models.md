@@ -7,48 +7,45 @@ image:
   teaser: jupyter-main-logo.svg
 ---
 
+## Background
+- Data surrounds us, however, most of it is unlabeled data. Anotating data is a very energy-gobbling and time-consuming effort. Therefore, labeled data is few and expensive.
 
-# a latent variable model example (VAE)
--  A simple generative model: Let's also assume a set of latent variables $$Z = {z_1, z_2,...,z_n}$$. 
+- Supervised learning works very well, however, it requires a lot of labeled data which is scarce. Semi-supervised learning, transfer learning, and few shot learning are promising approaches for overcoming this problem. 
 
-![alt text](/images/VAE_intuitions/vae_latent_var_model.png "a simple vae latent variable model")
-
-$$ Z ~ p(Z) = N(0,I) ;  X ~ p(X|Z) = N(\mu, \sigma^2)$$
-
-- Now with this assumed generative model, we want to fit the model to data and infering the latent variables, $$z_i$$ from the visible variables $$x_i$$. The Bayes rule has a way for performing inference through the notion of posterior. The idea is that we have some initial belief, we see data, then our beliefs evolve to posterior beliefs based on our observations. This is formulized as $$p(z|x) = \frac{p(x|z)p(z)}{p(x)}$$ where $$p(z)$$ is the prior on latent variables, $$p(z|x)$$ is the posterior belief on latent variables after observations, $$p(x|z)$$ is the likelihood of observations under the model, and $$p(x)$$ is the marginalized likelihood of observations under the model alternatively called evidence (when we inegrate out all latent variables). 
-
-## Variational inference
-
-- Variational Inference turns the inference into optimization. It posits a variational family of distributions over the latent variables,  and fit the variational parameters to be close (in KL sense or another divergence like BP, EP, etc) to the exact posterior. KL is intractable (only possible exactly if q is simple enough and compatible with the prior), so VI optimizes the evidence lower bound (ELBO) instead which is a lower bound on log p(x). Maximizing the ELBO is equivalent to minimizing the KL, note that the ELBO is not convex. The ELBO trades off two terms, the first term prefers q(.) to place its mass on the MAP estimate. The second term encourages q(.) to be diffuse.
-
-### Stochastic optimization
-- What we need for optimization is actually the gradient of the ELBO not the ELBO itself. Using pathwise gradient (reparameterization trick) we can calculate the gradient without evaluating the ELBO
-
-### Variational Autoencoder, where is the autoencoder?
-
-- Generative (directed latent variable) models can represent complex distributions over data. Deep neural nets can represent arbitarily complex functions. Let's combine them and use DNNs to parameterize and represent conditional distributions and that will give us a VAE. (sufficient statistics of conditional distributions are represented with deep neural net functions)
-
-- In a VAE both the inference and generative networks are deep neural networks which is similar to a regular autoencoder. 
-
-- Note that in the above derivation of the ELBO, the first term is the entropy of the variational posterior and second term is log of joint distribution. However we usually write joint distribution as $$p(x,z)=p(x|z)p(z)$$ to rewrite the ELBO as $$ E_q[\log\ p(x|z)+KL(q(z|x)\ | \ p(z))]$$. This derivation is much closer to the typical machine learning literature in deep networks. The first term is log likelihood (i.e. reconstruction cost) while the second term is KL divergence between the prior and the posterior (i.e a regularization term that won't allow posterior to deviate much from the prior). Also note that if we only use the first term as our cost function, the learning with correspond to maximum likelihood learning that does not include regularization and might overfit.
+- We focus on the former. Supervised learning addresses the problem of classification when only a small number of labeled examples are available. The idea is to employ both labeled and unlabeled data in our modelling process. Although unlabeled data might not be able to help in discriminative tasks, theoretically, it can be useful in finding the right representation for the data. 
+    + The simplest approach is self-training, where the model is fed the data it has confidently classified data. This can reinforce poor predictions. most existing methods not really scalable.
+        * Transductive SVM -> use distance to margin as confidence?
+    + Graph-based -> propagate the label information from labeled nodes to unlabeled nodes (MAP inference?)
+    + neural net based -> train a classifier using an autoencoder (or other unsupervised embeddings) as a regularizer. 
+    + Manifold tangent classifier -> trains contrastive autoencoders to learn the manifold on which the data lies. Follows this with TangentProp to train a classifier that is approximately invariant to local perturbations along the manifold. (Tangent prop has an additional derivative of weights penalty term for known invariances in the data)
+    + Manifold learning using graph-based methods + SVM kernel (rbf) method.
 
 
-## Semi-Supervised learning with deep generative models
-- Three approaches for semi-supervised learning with VAE models are proposed in the paper, i.e. M1, M2, (M1 + M2)
-
-    + M1 is a simple VAE model for unsupervised feature learning. The learned features are used for training a separate classifier. Approximate samples from the posterior distribution over the latent variables p(z|x) are used as features to train a classifier that predicts class labels y from data in a lower dimensional space. 
+## Representation learning with VAE
+M1 is a simple VAE model for unsupervised feature learning. The learned features are used for training a separate classifier. Approximate samples from the posterior distribution over the latent variables p(z|x) are used as features to train a classifier that predicts class labels y from data in a lower dimensional space. 
 
 <img src="/images/VAE_intuitions/vae_semi_M1.png" alt="semi-supervised model inference" width="350" height="350">
 
-    + M2 is a probabilistic model that describes the data as being generated by a latent categorical class variable $$y$$ in addition to a continuous latent variable $$z$$. In this model, the VAE acts as a regularizer for the classifier. Therefore, The total ELBO will be the sum of the ELBO of the classifier and the ELBO of the VAE regularizer. Depending on whether the label is present or not for an instance, the total ELBO will have two forms which are also summed to form the semi-supervised total ELBO.
+Let observations be $$X = {x_1, x_2, .., x_n}$$. We assume a simple generative model with a set of latent variables $$Z = {z_1, z_2,...,z_n}$$. 
+
+$$ Z ~ p(Z) = N(0,I) ;  X ~ p(X|Z) = N(\mu, \sigma^2)$$
+
+![alt text](/images/VAE_intuitions/vae_semi_M1.png "a simple vae latent variable model")
+
+- Variational Inference turns the inference into optimization. It posits a variational family of distributions over the latent variables,  and fit the variational parameters to be close (in KL sense or another divergence like BP, EP, etc) to the exact posterior. KL is intractable (only possible exactly if q is simple enough and compatible with the prior), so VI optimizes the evidence lower bound (ELBO) instead which is a lower bound on log p(x). Maximizing the ELBO is equivalent to minimizing the KL, note that the ELBO is not convex. The ELBO trades off two terms, the first term prefers q(.) to place its mass on the MAP estimate. The second term encourages q(.) to be diffuse.
+
+- Note that in the above derivation of the ELBO, the first term is the entropy of the variational posterior and second term is log of joint distribution. However we usually write joint distribution as $$p(x,z)=p(x|z)p(z)$$ to rewrite the ELBO as $$ E_q[\log\ p(x|z)+KL(q(z|x)\ | \ p(z))]$$. This derivation is much closer to the typical machine learning literature in deep networks. The first term is log likelihood (i.e. reconstruction cost) while the second term is KL divergence between the prior and the posterior (i.e a regularization term that won't allow posterior to deviate much from the prior). Also note that if we only use the first term as our cost function, the learning with correspond to maximum likelihood learning that does not include regularization and might overfit.
+
+- What we need for optimization is actually the gradient of the ELBO not the ELBO itself. Using pathwise gradient (reparameterization trick) we can calculate the gradient without evaluating the ELBO
+
+## Conditional VAE
+
+
+## Semi-supervised learning with VAEs
+
+- M2 is a probabilistic model that describes the data as being generated by a latent categorical class variable $$y$$ in addition to a continuous latent variable $$z$$. In this model, the VAE acts as a regularizer for the classifier. Therefore, The total ELBO will be the sum of the ELBO of the classifier and the ELBO of the VAE regularizer. Depending on whether the label is present or not for an instance, the total ELBO will have two forms which are also summed to form the semi-supervised total ELBO.
 
 <img src="/images/VAE_intuitions/vae_semi_M2.png" alt="semi-supervised model inference" width="350" height="350">
-
-    + (M1+M2) This model stacks M1 and M2 models. First we learn features  unsupervised in M1 and then we feed M1 learned features to M2 and learn a semi-supervised model.
-
-<img src="/images/VAE_intuitions/vae_semi_M1_M2.png" alt="semi-supervised model inference" width="350" height="350">
-
-### M2 model
 
 - In a traditional classifier we predict labels, $$y$$, from data, $$x$$, i.e. $$p(y|x)$$. In M2 semi-supervised model, the label $$y$$ is considered to be a categorical latent variable since for some data points the label is known and for other points it's unknown. The model has other latent variables $$Z$$. If we can calculate the joint distribution $$p(X,Y,Z)$$, we can then calculate the conditional of label given data i.e. $$p(y|x)$$ as a semi-supervised classifier. 
 
@@ -65,7 +62,11 @@ $$ Z ~ p(Z) = N(0,I) ;  X ~ p(X|Z) = N(\mu, \sigma^2)$$
     + fourth we sample $$Z$$ from the normal distribution
     + fifth we generate $$X$$ from $$Y, Z$$ using the decoder network.
 
-### M1+M2 model (ELBO derivation)
+### Stacking a VAE and a SS-VAE (ELBO derivation)
+
+(M1+M2) This model stacks M1 and M2 models. First we learn features  unsupervised in M1 and then we feed M1 learned features to M2 and learn a semi-supervised model.
+
+<img src="/images/VAE_intuitions/vae_semi_M1_M2.png" alt="semi-supervised model inference" width="350" height="350">
 
 - The joint probability distribution of the model is $$p(X,Y,Z1,Z2) = p(Z2)p(Y)p(Z1|Z2,Y)p(X|Z1)$$. Perform inference on latent variables in this model we use variational inference. 
 - First step in variational inference is throwing a variational family of distributions, $$q(Y,Z1,Z2|X)$$, as the approximate posterior and minimize its ditance with the true posterior $$p(Y,Z1,Z2|X)$$. The simplest distance of choice is KL divergence i.e. $$D_KL = E_q [\log \frac{q(Y,Z1,Z2|X)}{P(Y,Z1,Z2|X)}]$$. 
