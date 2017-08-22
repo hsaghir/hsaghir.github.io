@@ -43,6 +43,18 @@ However, If we assume that both train and test sets are iid samples (independant
 
 - We can perform classification using the linear regression approach by using a logistic sigmoid on the output of linear regression to squash it into [0,1] interval which can be interpreted as probability of either class 0 or 1. Optimizing the maximum likelihood (negative log likelihood) loss is done via SGD.
 
+### Cross-entropy and Softmax
+One way to interpret cross-entropy is to see it as negative log-likelihood for the data $$y_i^'$$, under a model $$y_i$$. i.e. $$-log p(data|model)$$
+
+$$H_{y^'} (y) = \sum_i (y_i^')\log(y_i)$$
+
+Due to the $$\log$$ for the model output, if the model assigns zero probability to a class while the real probability is non-zero. The model is doing very bad and the distance between the model distribution and the real distribution is infinity $$\log(0)$$.
+
+To avoid this problem people use sigmoid or "softmax" functions at the output of the model so as to leave at least some chance for every option.
+
+$$softmax(x) = \frac{\exp(x_i)}{\sum_i \exp(x_i)}$$
+###
+
 - Linear support vector machines are linear classifiers similar to logistic regression but use their wx+b as a hyperplane separating the two class instead of probabilities. SVMs try to find the hyperplane with the maximum seperation between classes (i.e. maximum k where wx+b>k for class 1 and wx+b<-k for class -1). Another way to think about this is to put a bubble around each data point in data space; as we increase the radius of these bubbles, the set of possible solutions that don't violate the data bubbles and seperate the two classes decreases until a single solution is found which is the optimum solution with maximum bubble radius possible. Note that in this analogy, only the data points from the two classes that are close to each other will determine the decision boundry. Other points are simply having fun with their bubbles far away from the hyperplane. These critical points are called support vectors. 
 
 - A breakthrough in statistical theory of machine learning by Vapnik and Chernovsky (VC) was the finding that the test error is bounded by the training error plus a monotonicly increasing funtion of a quantity called VC dimension. VC dimension is the minimum of data dimensionality and a ratio of bubbles {a bubble around all data over the bubble of support vectors}. This is extremely important since if we can reduce the bubble ratio, we can get around the curse of dimensionality in data! Therefore, there are two ways in which we can minimize the ratio. 1) is to keep the numerator fixed by constraining the scale of the scale of the data to be one and the maximize the margine. 2) is to keep the denominator fixed by imposing the constraint that margin be one, [therefore the the output of the model (wx+b) would be bigger than one for class one and smaller than -1 for class -1; if d is labels +1 or -1 then $d(wx+b)>1$], and minimize the data coefficients (w) to best rescale the data bubble. So the optimization problem accordint to (2) would be $min: L=1/2 w^Tw subject to d(wx+b)>1$. This can be rewritten using lagrange multipliers as $min: J(w, b, \alpha)= 1/2 w^Tw - \sum(\alpha_i d_i (w^Tx_i+b)) + \sum(\alpha_i))$ where $\alpha_i$ are lagrange multipliers for data samples $x_i$. Imagine a horse seat; This objective has to be minimized wrt (w, b) to get to minimum of the seat and maximized wrt $\alpha$ to get to the top of the seat (saddle point). 

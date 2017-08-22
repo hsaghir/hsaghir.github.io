@@ -7,7 +7,7 @@ image:
   teaser: practical\Deep_RBM.png
 ---
 
-Theano might look intimidating, but there are a few concepts that if understood, would make the engineering involved in deep learning more tangible. The first is the concept of tensors and operations on them. A tensor is simply a multi-dimensional array. For example a 1d tensor is a vector and a 2d tensor is a matrix. We also want to do efficient operations on tensors such as addition, multiplication, etc . Tensors are useful in deep learning since we usually want to work with multi-dimensional data (e.g. images are 2d plus color channels i.e. 3d) and we also want to send a number of data points into the model at a time (batch which adds another dimension). 
+Theano might look intimidating, but there are a few concepts that if understood, would make the engineering involved in deep learning more tangible. The first is the concept of tensors and operations on them. A tensor is simply a multi-dimensional array. For example a 1d tensor is a vector and a 2d tensor is a matrix. We also want to do efficient operations on tensors such as addition, multiplication, etc . Tensors are useful in deep learning since we usually want to work with multi-dimensional data (e.g. images are 2d plus color channels i.e. 3d) and we also want to send a number of data points into the model at a time (minibatch which adds another dimension). 
 
 Making these operations on a tensor object efficient needs careful use of computational resources. This is usually done by hardware manufacturers that write highly efficient code libraries (e.g. BLAS, cuBLAS, cuDNN) to provide the capability to perform such operations on their chips. The architecture of GPUs, in particular, allow them to perform multiple operations in parallel and thus are highly in demand for deep learning applications. theano explicitly distinguishes between CPU and GPU operations and thus we need to know which one we want to use. 
 
@@ -43,4 +43,4 @@ predictions=model_pred(test_X) # testing the model!
 
 ```
 
-This is the meat of a making a model with theano! There are of course details in the actual implementations that I skipped in the interest of understanding but you can easily figure them out by looking at [this](http://deeplearning.net/tutorial/logreg.html) working theano example!
+This is the meat of making a model with theano! There are of course details in the actual implementations that I skipped in the interest of understanding but you can easily figure them out by looking at [this](http://deeplearning.net/tutorial/logreg.html) working theano example.
