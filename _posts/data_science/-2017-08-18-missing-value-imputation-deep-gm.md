@@ -9,13 +9,13 @@ image:
 
 
 
-## Strategies for handling missing data'
+## Strategies for handling missing data
 
 
 Missing data classes:
     - Missing completely at random (CR): The probability of an instance having a missing value doens't depend on the known values or the missing data
-    - Missing at semi-random (SR): The probability of an instance having a missing value only depends on known values and not the missing values. 
-    - not missing at random (NR): when the probability of an instance have a missing value depends on the value of that attribute. 
+    - Missing at semi-random (SR): The probability of an instance having a missing value only depends on known values and not the missing values.
+    - not missing at random (NR): when the probability of an instance have a missing value depends on the value of that attribute.
 
 General strategies: 
     - Ignoring and discarding the data (only CR since discarding a non-random missing value biases the results)
