@@ -13,6 +13,8 @@ Traditional methods of time-series analysis are mainly concerned with decomposin
 
 After detrending and removing periodicity, traditional time series analysis are concerned with infering the parameters of the assumed noise model. The stochastic approach to time series makes the assumption that a time series is a realization of a stochastic process (i.e. a noise model). This stochastic process can be modeled with a generative model and the statistical time-series modeling is concerned with inferring the properties of the probability model which generated the observed time series.
 
+[confer this for Gaussian latent variable models GLMs](http://www.flutterbys.com.au/stats/tut/tut12.9.html)
+
 This is a generative modeling problems. Three main approaches to generative modeling include 
 
 1. Autoregressive models

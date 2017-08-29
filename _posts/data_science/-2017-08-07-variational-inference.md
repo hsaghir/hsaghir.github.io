@@ -29,7 +29,13 @@ Variational Inference turns Bayesian inference into optimization. Given a model 
 
 $p(x)> E[log p(x|z)] - KL[q(z|x)||p(z)]$ 
 
+
+-  The gap in the Jensen’s inequality is exactly the KL divergence. Therefore minimizing the Kullback-Leibler (KL) divergence is equivalent to maximizing the ELBO.
+
 The ELBO is a lower bound to the marginal or model evidence. The first term measures how well samples from q(z|x) are able to explain the data x (Reconstruction cost). The second term ensures that the explanation of the data q(z|x) doesn’t deviate too far from prior beliefs p(z) which is a mechanism for realising Ockham’s razor (Regularization).
+
+- In mean-field variational family, the latent variables are mutually independent and each latent variable $$z_j$$ is governed by its own variational factor, the density $$q_j(z_j)$$ in the total variational density $$q(z) = \prod_j q_j(z_j)$$. One way to expand the family is to add dependencies between the variables. this is called structured variational inference. Another way to expand the family is to consider mixtures of variational densities, i.e., additional latent variables within the variational family.
+
 
 #### ELBO derivation
 

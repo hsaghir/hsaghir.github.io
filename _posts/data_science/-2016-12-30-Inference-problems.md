@@ -9,8 +9,11 @@ image:
 
 Inference about the unknowns is done by finding the posterior P(z|x) through the Bayesian rule $$P(z|x)=\frac{P(x,z)}{P(x)}$$. To calculate the posterior we need $$P(x)$$ which is the probability that the model assings to the data. It is calculated by summing out all possible configurations of the hidden variables using the model $$P(x)= \int_x P(x,z)$$. For most interesting problems this integral is intractable so the exact inference problem (calculating the posterior) faces a problem. To solve the inference problem two approximation approaches are taken:
 
-1. Approximate the integral $$P(x)= \int_x P(x,z)$$ using numerical methods like Quadrature(doesn't work in high dimensions) or MCMC. 
-2. Bypass the calculation of the integral involved in calculation of exact posterior by approximating the posterior directly. We pick a family of distributions over the latent variables with its own parameters and maximize the ELBO to fit the family as closely as possible to the real posterior. We use this approximate posterior as a proxy for the real one.
+1. Approximate the integral $$P(x)= \int_x P(x,z)$$ using numerical methods like Quadrature(doesn't work in high dimensions) or MCMC. MCMC can provide samples from exact posterior but is time-consuming and convergence assessment is difficult. 
+
+2. Deterministic alternatives include the Laplace approximation, variational methods, and expectation propagation (EP).
+
+    + Variational methods bypass the calculation of the integral involved in calculation of exact posterior by approximating the posterior directly. We pick a family of distributions over the latent variables with its own parameters and maximize a distance (usually KL) between the exact and the variational posteriors to fit the family as closely as possible to the real posterior. We use this approximate posterior as a proxy for the real one. 
 
 Here is a list of strategies for solving the inference problem:
 
