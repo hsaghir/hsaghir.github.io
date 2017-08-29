@@ -19,18 +19,27 @@ In mean-field variational family, the latent variables are mutually independent 
 - Danilo Rezende and Shakir Mohamed introduced the normalizing flows framework [3], which constructs an expressive approximate distribution by composing invertible maps.
 
     + [Variational Inference with Normalizing Flows](http://proceedings.mlr.press/v37/rezende15.pdf) 
-        + blog post [casmls](https://casmls.github.io/general/2016/09/25/normalizing-flows.html)
+        *  blog post [casmls](https://casmls.github.io/general/2016/09/25/normalizing-flows.html)
+        * A normalizing flow describes the transformation of a probability density through a sequence of invertible mappings. By repeatedly applying the rule for change of variables, the initial density ‘flows’ through the sequence of deterministic invertible mappings. At the end of this sequence we obtain a valid probability distribution and hence this type of flow is referred to as a normalizing flow.
+        * We can understand the effect of invertible flows as a sequence of expansions or contractions on the initial density.
+        * With an appropriate choice of transformations fK, we can initially use simple factorized distributions such as an independent Gaussian, and apply normalizing flows of different lengths to obtain increasingly complex and multi-modal distributions.
+        * if we start from an initial density q0(z) and evolve its samples z0 through the infinite transformations i.e. (a Langevin stochastic differential equation), the resulting points will be distributed according to Boltzmann distribution, i.e. the true posterior.
+        * Hamiltonian Monte Carlo can also be described in terms of a normalizing flow on an augmented space with dynamics resulting from the Hamiltonian.
+        * To allow for scalable inference using finite normalizing flows, we must specify a class of invertible transformations that can be used as an efficient mechanism for computing the determinant of the Jacobian. 
+        * Three class of normalizing flows are used. 1) Flows with linear-time computation of the Jacobian. 2) Volume-preserving flows with Jacobian-determinant equal to one while still allowing for rich posteriors (e.g. Non-linear Independent Components Estimation (NICE)). 3) infinitesimal flows i.e. stochastic differential equations (e.g. Hamiltonian variational approximation or [train a dynamical system to invert a random walk](http://www.inference.vc/icml-paper-unsupervised-learning-by-inverting-diffusion-processes/))
+        * deterministic layers are used to map the data to the **parameters** of the flow (u,w,b). Each transformation $$uh(W^T z_{t-1}+b)$$ can be interpreted as an MLP with a bottleneck hidden layer with a single unit (w and u are vector weights and h is nonlinearity). Since information goes through the single bottleneck, a long chain of transformations is required to capture high-dimensional dependencies.
 
     + [Improved Variational Inference with Inverse Autoregressive Flow](https://arxiv.org/pdf/1606.04934.pdf)
         1. Start with fully-factorized Gaussian approximate posterior and use the VAE reparameterization trick to get y = mu + epsilon*sigma. Mu and sigma are inferred through the encoder network.
         2. Let the encoder approximate L(x) and use that to update y.
-        3. "One step of linear IAF then turns the fully-factorized distribution of y into an arbitrary multivariate Gaussian distribution: z = L(x)·y". apply a step of IAF, and you can turn your fully-factored Gaussian into a conditional multivariate Gaussian which you then fit by optimizing the variational lower bound
+        3. "One step of linear IAF then turns the fully-factorized distribution of y into an arbitrary multivariate Gaussian distribution: z = L(x)·y". apply a step of IAF, and you can turn your fully-factored Gaussian into a conditional multivariate Gaussian which you then fit by optimizing the variational lower bound.
 
         you're not really changing the KL term on the latents from the VAE (so you're still optimizing mu and sigma to make y look like a standard normal), but by throwing the "lower triangular inverse Cholesky matrix" into the mix, we add an additional set of parameters L(x) that allow us to transform the (posterior?) distribution over the latents into a multivariate Gaussian without actually having to directly optimize or specify the multivariate Gaussian. 
     + [Density estimation using Real NVP](https://arxiv.org/pdf/1605.08803v1.pdf)
 
 
     + [Made: masked autoencoder for distribution estimation]()
+        * Autoregressive autoencoder
 
 
 
