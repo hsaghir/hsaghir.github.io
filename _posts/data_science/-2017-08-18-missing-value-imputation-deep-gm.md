@@ -9,6 +9,10 @@ image:
 
 
 
+## Lit review
+
+- [Semantic Image Inpainting with Deep Generative Models](https://arxiv.org/pdf/1607.07539.pdf)
+
 ## Strategies for handling missing data
 
 

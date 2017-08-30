@@ -16,7 +16,7 @@ In mean-field variational family, the latent variables are mutually independent 
 
 
 ## deterministic transformations of the posterior
-- Danilo Rezende and Shakir Mohamed introduced the normalizing flows framework [3], which constructs an expressive approximate distribution by composing invertible maps.
+- Danilo Rezende and Shakir Mohamed introduced the normalizing flows framework [3], which constructs an expressive approximate distribution by composing invertible maps. [blog](https://tonghehehe.com/blog/2017/1/1/vae)
 
     + [Variational Inference with Normalizing Flows](http://proceedings.mlr.press/v37/rezende15.pdf) 
         *  blog post [casmls](https://casmls.github.io/general/2016/09/25/normalizing-flows.html)
@@ -61,7 +61,7 @@ In our approach, we first specify a simple class of approximations — e.g. Gaus
 
 ## Implicit posteriors (GAN)
 
-Implicit distributions (transformation models) like GANs can help solve the restricted mean field assumption.
+Implicit distributions (transformation models) like GANs can help solve the restricted mean field assumption. [IWAE-AAE](https://casmls.github.io/general/2017/04/24/iwae-aae.html)
     + [ALI - BiGAN](https://arxiv.org/abs/1606.00704, https://arxiv.org/abs/1701.04722)
 
     + [Deep and Hierarchical Implicit Models](https://arxiv.org/abs/1702.08896)

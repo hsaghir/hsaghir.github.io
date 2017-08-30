@@ -90,4 +90,16 @@ $$\log p(X) >= E_q[\log \frac{p(X,Y,Z1,Z2)}{q(Y,Z1,Z2|X)}]; \n \log p(X) >= E_q[
 - If we plug the factorizations of the generative and the inference models into the ELBO, we can derive a more simplified version.
 
 
+## Semi-Supervised learning with GANs
+- [Salimans 2016](https://arxiv.org/abs/1606.03498) and [Odena 2016](https://arxiv.org/abs/1606.01583) Usually for discriminator we only have two labels (i.e. real/fake).  and independantly replaced the output of the discriminator with several different categories (i.e. real cat/real dog/fake)
+    + With labeled data you train the discriminator with the right label
+    + With unlabeled data, you say the sum of probabilities of all real classes should be high
+    + With fake image, you say the probability of the fake class should be high
+
+- [Good Semi-supervised Learning that Requires a Bad GAN](https://arxiv.org/abs/1705.09783): Semi-supervised learning methods based on GANs work well, but it is not clear 1) how the discriminator benefits from joint training with a generator, and 2) why good semi-supervised classification performance and a good generator cannot be obtained at the same time. Theoretically, we show that given the discriminator objective, good semisupervised learning indeed requires a bad generator, and propose the definition of a preferred generator.
+
+
+- [PixelGAN autoencoder](https://arxiv.org/abs/1706.00531) decoder is a PixelCNN conditioned on a latent code, and the encoder is an adversarial autoencoder with GAN loss to impose a prior on the latent code. semi-supervised learning can be done using a PixelGAN with a categorical prior. First the PixelGAN is trained on unlabeled data then the decoder is refined using labeled data.
+
+
 

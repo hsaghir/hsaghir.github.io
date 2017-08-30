@@ -11,7 +11,42 @@ image:
 
 If generative models had a motto, it has to be this quote from Richard Feynman. Generative models try to solve unsupervised learning. 
 
-Generative models can be used to explore variations in data, to reason about the structure and behaviour of the world, and ultimately, for decision-making. Deep generative models have widespread applications including those in density estimation, image denoising and in-painting, data compression, scene understanding, representation learning, 3D scene construction, semisupervised classification, and hierarchical control, amongst many others.
+The basic goal of generative models is to perform density estimation meaning that we want to take in a bunch of training data and fit a probability density function to it. We Write down a parameterized density function (a function that assigns a probability to all data points) and find parameters that maximize the likelihood that the density function assigns to data. Most of the time though we can't write the likelihood explicitly so we end up maximizing other functions that approximate likelihood (e.g. ELBO).
+    + Explicit density: 
+        * tractable denisty:
+            - Autoregressive models/Fully visible belief nets (MADE/NADE/PixelRNN/PixelCNN/Wavenet )
+            - Deterministic trasformations/Change of variable models (nonlinear ICA/real NVP/normalizing flows)
+        * approximate density:
+            - variational inference (e.g. VAE)
+            - MCMC variations (e.g. RBM)
+
+    + Implicit density:
+        * Direct:
+            - Generative Adversarial Nets (GAN)
+                + In GAN, the latent variable Z is drawn at random during training, and a discriminator is trained to tell if the generated output looks like it's been drawn from the same distribution as the training set.
+
+            - Generative Latent Optimization(GLO): 
+                + In GLO, the latent variable Z is optimized during training so as to minimize some distance measure between the generated sample and the training sample Z* = min_z = Distance(Y,G(Z)). The parameters of the generator are adjusted after this minimization. The learning process is really a joint optimization of the distance with respect to Z and to the parameters of G, averaged on a training set of samples. After training, Z can be sampled from their allowed set to produce new samples. Nice examples are shown in the paper.
+        * Markov chain:
+            - Generative Stochastic Networks(GSN)
+                + In GSN, a Markov chain is built to sample data and is modified incrementally as it produces samples from the model using MCMC variations.
+
+
+
+
+Generative models can be used for:
+    + Data augmentation and generating simulated training data to improve classification (Apple did this for eye gaze data [Shrivastava 2016])
+    + Missing data imputation/Semi-supervised learning: [Yeh et al 2016](https://arxiv.org/abs/1607.07539) used generative models to do image inpainting
+    + Train model to learn multiple correct answers: [Lotter et al 2016] use generative models to predict next frame video prediction. based on the rotation of the face, multiple answers might be correct. If we train using MSE loss, multiple futures are combined to a single answer and result in a blurry average of all. Using adversarial loss they were able to capture the distribution over all possible future images and generate a sharp prediction.
+    + Realistic generation tasks: generate media and special effects (art applications). [Zhu et al 2016] created iGAN where the model will find the nearest neighbor picture from a simple drawing. CycleGAN translates horses to zebras in an unsupervised fashion and Image synthesis creates a picture conditioned on a sentence.
+    + simulation by prediction: instead of using a computational model for simulating a phenomenon, [de Olivera et al 2017] use generative models to predict the output of the simulator conditioned on simulation parameters.
+    + Learn useful embeddings: for example word embeddings. [Radford et al 2015] use DCGAN to find embedding for images that enables linear algebra on images. This can be useful for image search, information retrieval etc. [Chen et al 2016] introduce infoGAN to learn controlable and interpretable latent codes. 
+        * [Nguyen et al 2016 ] introduce PPGN and combine adversarial training, moment matching, denoising autoencoders (DAE) and Monte Carlo sampling (Langevin sampling) to generate high quality high-res images conditioned on category or caption on ImageNet.
+            - Basic idea is that they have a variation of a Markov chain that follows the gradient of the log density (Langevin sampling). It uses a DAE to estimate the gradient instead of explicitly computing the gradient (synthetic gradient?). And finally use a special DAE that has been trained with multiple losses including a GAN loss to obtain best results. 
+
+
+
+explore variations in data, to reason about the structure and behaviour of the world, and ultimately, for decision-making. Deep generative models have widespread applications including those in image denoising and in-painting, data compression, scene understanding, representation learning, 3D scene construction, semisupervised classification, and hierarchical control, amongst many others.
 
 ## Statistical modelling
 
