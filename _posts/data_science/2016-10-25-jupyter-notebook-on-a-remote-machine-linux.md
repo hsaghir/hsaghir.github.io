@@ -35,3 +35,17 @@ localhost:8888
 ```
 
 To close the SSH tunnel simply do ctrl-c. 
+
+
+
+### Windows
+- If you are using windows on your home computer but have linux on your remote machine, you can use putty to ssh into your work computer. 
+
+- Download putty
+- set ssh connection:
+    + Host Name: user@IP
+    + port: 22
+- set putty/connections/SSH/tunnels
+    + source: local port:8889
+    + Destination: remote server: localhost:8080
+
