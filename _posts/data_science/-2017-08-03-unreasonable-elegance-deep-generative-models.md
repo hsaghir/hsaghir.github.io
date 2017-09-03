@@ -15,6 +15,11 @@ The basic goal of generative models is to perform density estimation meaning tha
     + Explicit density: 
         * tractable denisty:
             - Autoregressive models/Fully visible belief nets (MADE/NADE/PixelRNN/PixelCNN/Wavenet )
+                + [Frey 1996] used logistic regression for conditionals
+                + [Bengios 2000] used neural nets for conditionals
+                + [Larochelle 2011] used neural nets with weight sharing (NADE) for images
+                + We need to pick an ordering of dimensions to use such models but since density is explicit they are easy to train. 
+                    * PixelCNN: uses dilated convolutions to model conditionals in the chain rule to p(X). The conditional is also assumed over color channels. Each conditional outputs a multinomial distribution for the value of each pixel. Uses a stack of dilated convolutions which can be parallelized in training. Generation is still slow though.
             - Deterministic trasformations/Change of variable models (nonlinear ICA/real NVP/normalizing flows)
         * approximate density:
             - variational inference (e.g. VAE)
