@@ -6,6 +6,8 @@ categories: data_science
 image:
   teaser: jupyter-main-logo.svg
 ---
+
+# [First Lecture]
 course focus is uncertainty in function approximation (applications: improving exploration/generalization)
 
 why uncertainty?
@@ -91,5 +93,52 @@ lessons learned:
     + for each arm we do a Bayesian model and estimate a posterior, 
     + sample a bunch from each model, and pick the max. 
     + if these are the current posteriors over the three arms, which one will it pick next?
+
+
+#[second lecture]
+
+- Linear Regression:
+    + Linear regression w/ **basis function**
+        * Applying a (nonlinear kernel/ feature map/feature engineering) to feature space before passing through linear regression, we can do nonlinear regression.
+        * Neural nets learn the basis function
+
+    + Alternatively, Linear regression w/ **smoothing spline**
+        * Fit an arbitrary function but encourage it to be smooth. This is called smoothing spline. Cost is MSE + a regularizer with integral of squared second order derivative of the fitted funtion (F). If the regularizer coefficient is zero, we get overfitting. Infinity coefficient gives us linear regression.
+        * Fitted function F is unconstraied, but by solving the variational optimization problem, we find that the optimal F can be expressed as a linear combnination of data-dependant basis functions. $$F(x) = \sum w_i \phi_i(x)$$. $$i$$ are data points!
+        * Putting the optimal F into the regularizer, the regularizer can be written as a quadratic function of the weights of bases $$W$$.
+        * Therefore, we can optimize the above costs directly over functions (variational optimization) and obtain a analytic solution. 
+        * Kernel regression -> variational optimization over functions (Splines)
+
+- Occam's Razor: Intuitive Bayesian interpolation -> More complex functions can explain more datasets, therefore, they should be assigning less probability to each. Simpler models, can explain less datasets, so the ones that it can explain are assigned more probability. Therefore, less complex models that can explain the data are better. 
+    + Baysian Occam's Razor is formulated in terms of Bayesian information criterion. BIC is an asymptotic, with lots of data, approximation of the integral of marginal likelihood over possible models. It is calculated as $$0.5 D \log N$$ where D is the dimension of parameter space and N is number of data points. 
+
+- There is a Bayesian version of all theses. To define a Bayesian analogue of smoothing splines, let's convert it to a Bayesian basis function regression problem:
+    + The likelihood is easy
+    + We'd like a prior that prefers smoothness (similar to smoothing splines)
+- The only requirement of the kernel for co-variance of GP is that the co-variance maotrix mush be positive semi-definite. 
+
+
+## Choosing GP/SVM Kernels:
+- the choice of kernel (a.k.a. covariance function) determines almost all the generalization properties of a GP model. You are the expert on your modeling problem - so you're the person best qualified to choose the kernel!
+    + The Gaussian (radial basis) kernel. It is very common and has some nice properties. It is universal, and you can integrate it against most functions that you need to. Every function in its prior has infinitely many derivatives. It also has only two parameters
+
+    + Rational Quadratic Kernel: equivalent to adding together many SE kernels with different lengthscales. GP priors with this kernel expect to see functions which vary smoothly across many lengthscales.
+
+    + The periodic kernel allows one to model functions which repeat themselves exactly. Its parameters are easily interpretable. The period p simply determines the distnace between repititions of the function. The lengthscale (variance) determines the lengthscale function in the same way as in the SE kernel.
+
+    + Locally Periodic Kernel: A SE kernel times a periodic results in functions which are periodic, but which can slowly vary over time. 
+
+    + Linear kernel: If you use just a linear kernel in a GP, you're simply doing Bayesian linear regression. works in O(N) time. it's non-stationary. A stationary covariance function is one that only depends on the difference in position of its two inputs, and not their absolute location.
+
+    + Mattern Kernel is similar to Gaussian kernerl but less smooth (seems to be able to model long-correlations and self-similarity)
+
+    + Combining kernels: 
+        * sum of two kernels is a kernel (it's the sum of functions of the kernels, so we can sample from the first and then sample from the second and then add them up. Assumes linear combinations and non-interactions between the two componentes). The multiplication of two kernels is a kernel. This is useful in high dimensional problems where we can assume non-interactions and factorizations between dimensions.
+        * multiplications of kernels: Intuitively, kernels are like similarity functions. mulitplication is like AND of similarity functions while addition is like OR of similarity function.
+
+
+
+- There is a simple way to do GP regression over categorical variables. Simply represent your categorical variable as a by a one-of-k encoding. Then, simply put a product of SE kernels on those dimensions. This is the same as putting one SE ARD kernel on all of them. The lengthscale hyperparameter will now encode whether, when that coding is active, the rest of the function changes. If you notice that the estimated lengthscales for your categorical variables is short, your model is saying that it's not sharing any information between data of different categories. 
+
 
 
