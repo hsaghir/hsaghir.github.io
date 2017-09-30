@@ -39,12 +39,12 @@ confer [Torch for numpy users](https://github.com/torch/torch7/wiki/Torch-for-Nu
 
 ```python
 # 2 matrices of size 2x3 into a 3d tensor 2x2x3
-d=[[[1., 2.,3.],[4.,5.,6.]],[[7.,8.,9.],[11.,12.,13.]]]
-d=torch.Tensor(d) # array from python list
-print "shape of the tensor:",d.size()
+d = [ [[1., 2.,3.], [4.,5.,6.]], [[7.,8.,9.], [11.,12.,13.]] ]
+d = torch.Tensor(d) # array from python list
+print "shape of the tensor:", d.size()
 
 # the first index is the depth
-z=d[0]+d[1]
+z = d[0] + d[1]
 print "adding up the two matrices of the 3d tensor:",z
 ```
 
@@ -70,18 +70,18 @@ print d.view(2,-1) #-1 makes torch infer the second dim
 
 
 ##### 2. torch.autograd can make a computational graph -> auto-compute gradients
-The second feature is the autograd package which provides the ability to define a computational graph so that we can automatically compute gradients. In the computational graph, a node is an array and an edge is an operation the on array. To make a computational graph, we make a node by wrapping an array inside (torch.aurograd.Variable()) function. Then all operations that we do on this node will be defined as edges and their results will be new nodes in the computational graph. Each node in the graph has a (node.data) property which is a multi-dimensional array and a (node.grad) property which is it's gradient with respect to some scalar value (node.grad is also a .Variable()). After defining the computational graph, we can calculate gradients of loss with respect to all nodes in the graph with a single command (loss.backward()). 
+The second feature is the autograd package that provides the ability to define a computational graph so that we can automatically compute gradients. In the computational graph, a node is an array and an edge is an operation on the array. To make a computational graph, we make a node by wrapping an array inside the **torch.aurograd.Variable()** function. All operations that we do on this node from then on will be defined as edges in the computational graph. The edges of the graph also result in new nodes in the computational graph. Each node in the graph has a **.data** property which is a multi-dimensional array and a **.grad** property which is it's gradient with respect to some scalar value (**.grad** is also a **.Variable()** itself). After defining the computational graph, we can calculate gradients of the loss with respect to all nodes in the graph with a single command i.e. **loss.backward()**. 
 
 
-- Convert a Tensor to a node in the computational graph using torch.autograd.Variable()
-    + access its value using x.data
-    + access its gradient using x.grad
-- Do operations on the .Variable() to make edges of the graph
+- Convert a Tensor to a node in the computational graph using *torch.autograd.Variable()*
+    + access its value using *x.data*
+    + access its gradient using *x.grad*
+- Do operations on the *.Variable()* to make edges of the graph
 
 
 ```python
 # d is a tensor not a node, to create a node based on it:
-x= autograd.Variable(d, requires_grad=True)
+x = autograd.Variable(d, requires_grad=True)
 print "the node's data is the tensor:", x.data.size()
 print "the node's gradient is empty at creation:", x.grad # the grad is empty right now
 ```
@@ -93,9 +93,9 @@ print "the node's gradient is empty at creation:", x.grad # the grad is empty ri
 
 ```python
 # do operation on the node to make a computational graph
-y= x+1
-z=x+y
-s=z.sum()
+y = x + 1
+z = x + y
+s = z.sum()
 print s.creator
 ```
 
@@ -123,12 +123,12 @@ print "the variable now has gradients:",x.grad
 
 ##### 3. torch.nn contains various NN layers (linear mappings of rows of a tensor) + (nonlinearities ) -> helps build a neural net computational graph without the hassle of manipulating tensors and parameters manually
 
-The third feature is a high-level neural networks library (torch.nn) that abstracts away all parameter handling in layers of neural networks to make it easy to define a NN in a few commands (e.g. torch.nn.conv). This package also comes with popular loss functions (e.g. torch.nn.MSEloss). We start with defining a model container, for example a model with a sequence of layers using (torch.nn.Sequential) and then list the layers that we desire in a sequence. The library handles every thing else; we can access the parameters (Variable()) using (model.parameters())
+The third feature is a high-level neural networks library **torch.nn** that abstracts away all parameter handling in layers of neural networks to make it easy to define a NN in a few commands (e.g. **torch.nn.conv**). This package also comes with a set of popular loss functions (e.g. **torch.nn.MSEloss**). We start with defining a model container, for example, a model with a sequence of layers using **torch.nn.Sequential** and then list the layers that we desire in a sequence. The library handles every thing else; we can access the parameter nodes **Variable()** using **model.parameters()**
 
 
 ```python
 # linear transformation of a 2x5 matrix into a 2x3 matrix
-linear_map=nn.Linear(5,3)
+linear_map = nn.Linear(5,3)
 print "using randomly initialized params:", linear_map.parameters
 ```
 
@@ -138,18 +138,18 @@ print "using randomly initialized params:", linear_map.parameters
 
 ```python
 # data has 2 examples with 5 features and 3 target
-data=torch.randn(2,5) # training
-y=autograd.Variable(torch.randn(2,3)) # target
+data = torch.randn(2,5) # training
+y = autograd.Variable(torch.randn(2,3)) # target
 # make a node
-x=autograd.Variable(data, requires_grad=True)
+x = autograd.Variable(data, requires_grad=True)
 # apply transformation to a node creates a computational graph
-a=linear_map(x)
-z=F.relu(a)
-o=F.softmax(z)
+a = linear_map(x)
+z = F.relu(a)
+o = F.softmax(z)
 print "output of softmax as a probability distribution:", o.data.view(1,-1)
 
 # loss function
-loss_func=nn.MSELoss() #instantiate loss function
+loss_func = nn.MSELoss() #instantiate loss function
 L=loss_func(z,y) # calculateMSE loss between output and target
 print "Loss:", L
 ```
@@ -163,17 +163,17 @@ print "Loss:", L
     [torch.FloatTensor of size 1]
     
 
-We can also define custom layers by sub-classing (torch.nn.Module) and implementing a (forward()) function that accepts a (Variable()) as input and produces a (Variable()) as output. We can also do a dynamic network by defining a layer that morphs in time!
+We can also define custom layers by sub-classing **torch.nn.Module** and implementing a **forward()** function that accepts a **Variable()** as input and produces a **Variable()** as output. We can even make a dynamic network by defining a layer that morphs in time!
 
 - When defining a custom layer, 2 functions need to be implemented:
-    - \__init\__ function has to always be inherited first, then all parameters of the layer have to be defined here as the class variables (self.x)
-    - forward funtion is where we pass an input through the layer, perform operations on inputs using parameters and return the output. The input needs to be an autograd.Variable() so that pytorch can build the computational graph of the layer.
+    - *\__init\__* function has to always be inherited first, then define parameters of the layer here as the class variables i.e. *self.x*
+    - forward funtion is where we pass an input through the layer, perform operations on inputs using parameters and return the output. The input needs to be an **autograd.Variable()** so that pytorch can build the computational graph of the layer.
 
 ```python
 class Log_reg_classifier(nn.Module):
     def __init__(self, in_size,out_size):
         super(Log_reg_classifier,self).__init__() #always call parent's init 
-        self.linear=nn.Linear(in_size, out_size) #layer parameters
+        self.linear = nn.Linear(in_size, out_size) #layer parameters
         
     def forward(self,vect):
         return F.log_softmax(self.linear(vect)) # 
@@ -182,16 +182,16 @@ class Log_reg_classifier(nn.Module):
 
 ##### 4. torch.optim can do optimization -> we build a nn computational graph using torch.nn, compute gradients using torch.autograd, and then feed them into torch.optim to update network parameters
 
-The forth feature is an optimization package (torch.optim) that works in tandem with the NN library. This library contains sophisticated optimizers like Adam, RMSprop, etc. We define an optimizer and pass network parameters and learning rate to it (opt=torch.optim.Adam(model.parameters(), lr=learning_rate)) and then we just call (opt.step()) to do a one step update on our parameters. 
+The forth feature is an optimization package **torch.optim** that works in tandem with the NN library. This library contains sophisticated optimizers like Adam, RMSprop, etc. We define an optimizer and pass network parameters and learning rate to it (i.e. **opt=torch.optim.Adam(model.parameters(), lr=learning_rate)**) and then we just call **opt.step()** to do a one-step update on our parameters. 
 
 
 ```python
 
-optimizer=optim.SGD(linear_map.parameters(),lr=1e-2) # instantiate optimizer with model params + learning rate
+optimizer = optim.SGD(linear_map.parameters(), lr = 1e-2) # instantiate optimizer with model params + learning rate
 
 # epoch loop: we run following until convergence
 optimizer.zero_grad() # make gradients zero
-L.backward(retain_variables=True)
+L.backward(retain_variables = True)
 optimizer.step()
 print L
 ```
@@ -209,10 +209,10 @@ Building a neural net is easy. Here is an example showing how things work togeth
 model = Log_reg_classifier(10,2)
 
 # define loss function
-loss_func=nn.MSELoss() 
+loss_func = nn.MSELoss() 
 
 # define optimizer
-optimizer=optim.SGD(model.parameters(),lr=1e-1)
+optimizer = optim.SGD(model.parameters(),lr=1e-1)
 
 # send data through model in minibatches for 10 epochs
 for epoch in range(10):
@@ -220,10 +220,10 @@ for epoch in range(10):
         model.zero_grad() # pytorch accumulates gradients, making them zero for each minibatch
         
         #forward pass
-        out=model(autograd.Variable(minibatch))
+        out = model(autograd.Variable(minibatch))
         
         #backward pass 
-        L=loss_func(out,target) #calculate loss
+        L = loss_func(out,target) #calculate loss
         L.backward() # calculate gradients
         optimizer.step() # make an update step
 ```
