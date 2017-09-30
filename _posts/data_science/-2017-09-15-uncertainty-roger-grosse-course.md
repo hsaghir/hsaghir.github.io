@@ -140,5 +140,40 @@ lessons learned:
 
 - There is a simple way to do GP regression over categorical variables. Simply represent your categorical variable as a by a one-of-k encoding. Then, simply put a product of SE kernels on those dimensions. This is the same as putting one SE ARD kernel on all of them. The lengthscale hyperparameter will now encode whether, when that coding is active, the rest of the function changes. If you notice that the estimated lengthscales for your categorical variables is short, your model is saying that it's not sharing any information between data of different categories. 
 
+# [third lecture]
+
+## Bayesian Neural networks
+- variance of gaussian priors on weights and biases are hyperparameter.sss
+- Estimating hessian?
+
+## priors for infinite networks
+- a Bayesian neural nets (BNN) with a signle hidden layer and infinite neurons converge to a GP.
+
+- Computation for GP involves matrix (covariance) inversion, while computation for BNNs involves integration (MCMC). 
+
+## HMC
+- neeed to compute integrals for marginals or expectations in Bayesian inference.
+- probabilistic integration involves conversion on integral to a averaged sum of samples. So we now need sampling algos.
+
+- Metropolis Hastings sampling:
+    + propose a state (e.g. take current state, add noise, return new state)
+    + decide whether to accept/reject with some probability ()
+    + drawbacks: 
+        * Balance between exploring space and exploiting high probability mass locations. 
+        * random walk to generate new states is not very efficient. 
+
+- In low dimensions, most probability mass is close to the center (e.g. a 2d Gaussian), however, in high dimensions, most probability mass is away from the center and actually close to the shell. This is a motivation for HMC, where we want to navigate the shell without spending too much time in the center.
+
+## Stochastic gradient Langevin dynamics
+
+- Langevin is a special case of HMC + adding the right amount of noise to a standard SGD gradient. seamless transition between optimization and
+Bayesian posterior sampling. 
+
+- uses that for Bayesian Learning
+- Langevin gradient-> full batch gradient + noise!
+-  the iterates will converge to samples from the true posterior distribution as we anneal the stepsize
+
+
+
 
 
