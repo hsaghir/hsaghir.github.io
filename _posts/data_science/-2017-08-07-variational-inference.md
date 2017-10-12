@@ -136,11 +136,22 @@ The Auxiliary-variable methods add exra latent variables in parallel to existi
 
 Given a model of latent and observed variables p(x, z), variational inference posits a family of distributions over its latent variables and then finds the member of that family closest to the posterior, p(z | x). This is typically formalized as minimizing a Kullback-Leibler (kl) divergence from the approximating family q(·) to the posterior p(·). However, while the kl(q k p) objective offers many beneficial computational properties, it is ultimately designed for convenience; it sacrifices many desirable statistical properties of the resultant approximation. When optimizing kl, there are two issues with the posterior approximation that we highlight. First, it typically underestimates the variance of the posterior. Second, it can result in degenerate solutions that zero out the probability of certain configurations of the latent variables. While both of these issues can be partially circumvented by using more expressive approximating families, they ultimately stem from the choice of the objective. Under the kl divergence, we pay a large price when q(·) is big where p(·) is tiny; this price becomes infinite when q(·) has larger support than p(·).
 
-In "Operator Variational Inference", authors revisit variational inference from its core principle as an optimization problem. We use operators—mappings from functions to functions—to design variational objectives, explicitly trading off computational properties of the optimization with statistical properties of the approximation. We use operators to formalize the basic properties needed for variational inference algorithms. We further outline how to use them to define new variational objectives; as one example, we design a variational objective using a Langevin-Stein operator. the Langevin-Stein objective enjoys two good properties. First, it is amenable to data subsampling, which allows inference to scale to massive data. Second, it permits rich approximating families, called variational programs, which do not require analytically tractable densities. This greatly expands the class of variational families and the fidelity
-of the resulting approximation.
+In "Operator Variational Inference", authors revisit variational inference from its core principle as an optimization problem. We use operators—mappings from functions to functions—to design variational objectives, explicitly trading off computational properties of the optimization with statistical properties of the approximation. We use operators to formalize the basic properties needed for variational inference algorithms. We further outline how to use them to define new variational objectives; as one example, we design a variational objective using a Langevin-Stein operator. the Langevin-Stein objective enjoys two good properties. First, it is amenable to data subsampling, which allows inference to scale to massive data. Second, it permits rich approximating families, called variational programs, which do not require analytically tractable densities. This greatly expands the class of variational families and the fidelity of the resulting approximation.
 
 
-# To read
+### Local reparameterization trick
+- in practice the performance of stochastic gradient descent crucially depends on the variance of the gradients. If this variance is too large, stochastic gradient descent will fail to make much progress in any reasonable amount of time. The total contribution to the variance by variance of each minibatch ELBO is inversely proportional to the minibatch size M. However, the total contribution by the covariances does not decrease with M. In practice, this means that the variance of ELBO in SGVB estimator can be dominated by the covariances for even moderately large M.
+
+- We therefore propose an alternative estimator for which we have Cov [Li,Lj ]=0, so that the variance of our stochastic gradients scales as 1/M. We then make this new estimator computationally efficient by not sampling epsilon directly, but only sampling the intermediate variables f(epsilon) through which the epsilon influences the SGVB ELBO estimate.  By doing so, the global uncertainty in the weights is translated into a form of local uncertainty that is independent across examples and easier to sample. Whenever a source of global noise can be translated to local noise in the intermediate states of computation (epsilon -> f(epsilon)), a local reparameterization can be applied to yield a computationally and statistically efficient gradient estimator.
+
+### Variational inference for Bayesian Neural Networks
+
+
+
+
+
+
+# References
 
 [1] Kingma, D. P., & Welling, M. (2014). Auto-Encoding Variational Bayes. In International Conference on Learning Representations.
 

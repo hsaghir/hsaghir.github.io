@@ -37,6 +37,13 @@ Simultaneous Perturbation Stochastic Approximation (SPSA) is an algorithm for ap
 
 SPSA estimates the objective gradient at each step using a stochastic variant of the finite difference approximation. Forming the ordinary finite difference approximation is expensive in high dimensions, since it requires 2d evaluations of the objective (where d is the dimensionality of the problem). In contrast, SPSA is able to function with exactly 2 objective evaluations at each step, regardless of the dimensionality.
 
+### Local re-parameterization trick
+- in practice the performance of stochastic gradient descent crucially depends on the variance of the gradients. If this variance is too large, stochastic gradient descent will fail to make much progress in any reasonable amount of time. If we calculate the Variance of the log likelihood part of the ELBO, we get two terms, one that depends on the variances of individual datapoints in a minibatch and one that depends on the covariance of variances of data points in the minibatch.
+
+- The total contribution to the variance by variance of each minibatch ELBO is inversely proportional to the minibatch size M. However, the total contribution by the covariances does not decrease with M. In practice, this means that the variance of ELBO in SGVB estimator can be dominated by the covariances for even moderately large M.
+
+- We therefore propose an alternative estimator for which we have Cov [Li,Lj ]=0, so that the variance of our stochastic gradients scales as 1/M. We then make this new estimator computationally efficient by not sampling epsilon directly, but only sampling the intermediate variables f(epsilon) through which the epsilon influences the SGVB ELBO estimate.  By doing so, the global uncertainty in the weights is translated into a form of local uncertainty that is independent across examples and easier to sample. Whenever a source of global noise can be translated to local noise in the intermediate states of computation (epsilon -> f(epsilon)), a local reparameterization can be applied to yield a computationally and statistically efficient gradient estimator.
+
 
 ## Path-wise Gradients of the ELBO: (continuous variables)
 This method has two more assumptions, the first is assuming the hidden random variable can be reparameterized to represent the random variable z as a function of deterministic variational parameters $v$ and a random variable $\epsilon$, $z=f(\epsilon, v)$. The second is that log p(x, z) and log q(z) are differentiable with respect to z. With reparameterization trick, this amounts to a differentiable deterministic variational function. This method generally has a better behaving variance.
@@ -59,7 +66,7 @@ Replacing every discrete random variable in a model with a Concrete (continuous 
 
 
 ## Straight-through gradient
-
+-  Pretend the stochastic variable is identity in the backward pass where you need gradients. 
 
 ##Conditioning only on the Markov blanket, Ranganath et al. (2014) / local learning signals, Mnih and Gregor (2014). 
 This is the most important variance reduction technique, since the stochastic gradients no longer scale with the number of latent variables but rather with the size of their Markov blanket.
