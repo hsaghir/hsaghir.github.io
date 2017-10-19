@@ -101,6 +101,33 @@ Rebar gradient combines Reinforce gradients with gradients of the Concrete varia
 We sought an estimator that is low variance, unbiased, and does not require tuning additional hyper-parameters. To construct such an estimator, we introduce a simple control variate based on the difference between the REINFORCE and the re-parameterization trick gradient estimators for the relaxed model. This reduces variance, but does not outperform state-of-the-art methods on its own. Our key contribution is to show that it is possible to conditionally marginalize the control variate to significantly improve its effectiveness.
 
 
+an implementation:
+- https://github.com/Bonnevie/rebar/blob/master/rebar.py
+
+## Natural gradients
+
+
+- Two classes of optimization:
+    + SGD: with momentum and coordinate-wise rescaling(Adam). 
+        * can take many iterations
+    + Coordinate descent (EM):
+        * requires full batch gradients 
+- Natural gradient is an elegant solution to both problems
+
+- SGD bounces around in high curvature points which makes convergence harder due to the fact that the manifold of weights is flattened. The idea of natural gradient is to map the gradients from input space to the Riemannian output space where we are comparing ground truth with model outputs. 
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
