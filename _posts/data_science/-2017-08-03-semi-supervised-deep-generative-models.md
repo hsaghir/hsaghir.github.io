@@ -8,11 +8,14 @@ image:
 ---
 
 ## Background
-- Data surrounds us, however, most of it is unlabeled data. Anotating data is a very energy-gobbling and time-consuming effort. Therefore, labeled data is few and expensive.
 
-- Supervised learning works very well, however, it requires a lot of labeled data which is scarce. Semi-supervised learning, transfer learning, and few shot learning are promising approaches for overcoming this problem. 
+So we live in the age of data they say. Singularity is near they say. It's soon that artificially intelligent robots will take over and we will have to bow down to our robot overlords. Between the [Internet](), [smart cities](), [Internet of things](), [big data](), [Block chain](), it's safe to say data is [eating the world]() (I tried to pack in as many buzz words as I can!). However, what they don't tell you is that almost all of it is unlabeled data. Data that is not annotated as belonging to a certain class. 
 
-- We focus on the former. Supervised learning addresses the problem of classification when only a small number of labeled examples are available. The idea is to employ both labeled and unlabeled data in our modelling process. Although unlabeled data might not be able to help in discriminative tasks, theoretically, it can be useful in finding the right representation for the data. 
+- Supervised learning works very well, however, it requires a lot of labeled data which is scarce. 
+
+With the exception of a few cool developments, almost all recent success stories of deep learning come from the supervised learning front. Cases where vast amount of labeled data is available. However, annotating data is a very energy-gobbling and time-consuming effort. Therefore, labeled data is scarce and expensive while unlabeled data is vast and cheap. That's why we might want to develop methodologies that try to learn from unlabeled data along with our precious labeled samples. Semi-supervised learning, transfer learning, few shot learning, active learning, and reinforcement learning are promising approaches for overcoming this problem. 
+
+In this post, I want to focus on a the former. In particular, I will focus on a promising and cool approach called semi-supervised learning with deep generative models. The idea is to employ both labeled and unlabeled data in our modeling process. Although unlabeled data might not be able to help in discriminative tasks, theoretically, it can be useful in finding the right representation for the data. 
     + The simplest approach is self-training, where the model is fed the data it has confidently classified data. This can reinforce poor predictions. most existing methods not really scalable.
         * Transductive SVM -> use distance to margin as confidence?
     + Graph-based -> propagate the label information from labeled nodes to unlabeled nodes (MAP inference?)
