@@ -9,18 +9,21 @@ image:
 
 ## Background
 
-So we live in the age of data they say. Singularity is near they say. It's soon that artificially intelligent robots will take over and we will have to bow down to our robot overlords. Between the [Internet](), [smart cities](), [Internet of things](), [big data](), [Block chain](), it's safe to say data is [eating the world]() (I tried to pack in as many buzz words as I can!). However, what they don't tell you is that almost all of it is unlabeled data. Data that is not annotated as belonging to a certain class. 
+Between the [Internet](), [smart cities](), [Internet of things](), [big data](), [Block chain](), it's safe to say data is [eating the world](). So we live in the age of data they say. Singularity is near they say. It's soon that artificially intelligent robots will take over and we will have to bow down to our robot overlords.  However, what they don't tell you is that almost all of this data is unlabeled data. Data that is not annotated as belonging to a certain group/activity/etc. 
 
-- Supervised learning works very well, however, it requires a lot of labeled data which is scarce. 
+With the advent of [deep learning](), we've had some very exciting breakthroughs in machine learning. However, again the caveat is that with the exception of a few cool ideas, almost all recent success stories of deep learning come from the supervised learning front. Cases where vast amount of labeled data is available. Obtaining labeled data is often very expensive, time-consuming and not scalable while unlabeled data is vast and cheap. So the question is, how can we learn from limited labeled data?
 
-With the exception of a few cool developments, almost all recent success stories of deep learning come from the supervised learning front. Cases where vast amount of labeled data is available. However, annotating data is a very energy-gobbling and time-consuming effort. Therefore, labeled data is scarce and expensive while unlabeled data is vast and cheap. That's why we might want to develop methodologies that try to learn from unlabeled data along with our precious labeled samples. Semi-supervised learning, transfer learning, few shot learning, active learning, and reinforcement learning are promising approaches for overcoming this problem. 
+Some very promising approaches for overcoming this problem are semi-supervised learning, transfer learning, few shot learning, active learning, and reinforcement learning. In this post, I want to focus on the former. In particular, I will focus on a promising and cool approach called [semi-supervised learning with deep generative models](). The idea is to employ both labeled and unlabeled data in our modeling process. Although unlabeled data might not be able to help in discriminative tasks, theoretically, it can be useful in finding the right representation for the data. 
 
-In this post, I want to focus on a the former. In particular, I will focus on a promising and cool approach called semi-supervised learning with deep generative models. The idea is to employ both labeled and unlabeled data in our modeling process. Although unlabeled data might not be able to help in discriminative tasks, theoretically, it can be useful in finding the right representation for the data. 
-    + The simplest approach is self-training, where the model is fed the data it has confidently classified data. This can reinforce poor predictions. most existing methods not really scalable.
-        * Transductive SVM -> use distance to margin as confidence?
+    + The simplest approach is self-training, where the model is fed the data it has confidently classified. The downside is that this approach can reinforce poor predictions.
+        * e.g. Transductive SVM -> use distance to margin as confidence but is not really scalable.
+
     + Graph-based -> propagate the label information from labeled nodes to unlabeled nodes (MAP inference?)
+
     + neural net based -> train a classifier using an autoencoder (or other unsupervised embeddings) as a regularizer. 
+
     + Manifold tangent classifier -> trains contrastive autoencoders to learn the manifold on which the data lies. Follows this with TangentProp to train a classifier that is approximately invariant to local perturbations along the manifold. (Tangent prop has an additional derivative of weights penalty term for known invariances in the data)
+    
     + Manifold learning using graph-based methods + SVM kernel (rbf) method.
 
 
