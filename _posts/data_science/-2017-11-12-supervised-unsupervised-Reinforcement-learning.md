@@ -19,6 +19,9 @@ In both, we want to learn a mapping from inputs or states to outputs or actions:
 
 In supervised learning, we usually have an iid assumption between samples of the dataset where in RL, the samples are a trajectory where iid assumption doesn't hold. However, if we have a structured prediction supervised learning (e.g. image captioning), then we have dependencies across the sequence of predictions for each sample.
 
+
+- Also AdaBoost learns a sequence of weak classifiers that minimize total error rate. We should be able to formulate it as AdaBoost.
+
 ### Problem setup
 
 We want to learn a mapping, $$X \rightarrow a$$:
