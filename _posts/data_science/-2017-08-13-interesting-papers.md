@@ -29,8 +29,8 @@ image:
     *  we assume each attribute is a mixture of a set of distributions for possible data types. The weights, w, determine the mixture coefficient and is desired. 
     *  ![alt text](/images/interesting_papers/Valera17_data_type_inference.png "model")
 
-
-
+##  [Direct feedback alignment]()
+- The idea is to use random matrices instead of inverse weight matrices in backprop. Interestingly it works. Reminds me of reservoir computing ideas. 
 
 
 
