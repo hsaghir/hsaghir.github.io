@@ -101,3 +101,46 @@ where each `v_i` is a low-dimensional vector. This is the forward pass of a seco
 - FMs are general predictor working with any real valued feature vector. 
     + In contrast to SVMs, FMs model all interactions between variables using factorized parameters. Thus they are able to estimate interactions even in problems with huge sparsity (like recommender systems) where SVMs fail. 
     + In contrast to matrix factorization models, the drawback of matrix factorization models is that they are not applicable for general prediction tasks but work only with special input data. Furthermore their model equations and optimization algorithms are derived individually for each task. We show that FMs can mimic these models just by specifying the input data (i.e. the feature vectors).
+
+
+## Correlation Explanation (CorEx)
+- learns a layer-wise hierarchy of successively more abstract representations of complex data based on optimizing an information-theoretic objective. 
+
+- Intuitively, the optimization searches for a set of latent factors that best explain the correlations in the data (as measured by multivariate mutual information).
+
+- The method is unsupervised, requires no model assumptions, and scales linearly with the number of variables.
+
+## Dimensionality reduction
+
+### PCA variants
+- finding the principle components is essentially finding the highest linear sources of variations (eigenvectors) in the data which are basically the canonical coordinate system in space of features. Then we can just pick the ones with most variation (highest eigen values). 
+
+- In Kernel PCA, using the kernel trick, principle components can be computed efficiently in high-dimensional feature spaces that are related to the input space by some nonlinear mapping which will itself create a bunch of new dim reduction algos. 
+    + MDS (metric multidimensional scaling)
+    + SDE (Semi-definite embedding)
+    + Graph-based kernel PCA: defining a graph-based kernel for Kernel PCA by constructing a low-dimensional data representation using a cost function that retains local properties of the data. 
+        * Isomap, 
+        * locally linear embedding (LLE),
+        * Hessian LLE,
+        * Laplacian eigenmaps,
+        * local tangent space alignment (LTSA). 
+
+- Supervised PCA (SPCA) simply finds the correlation between each feature and a target value and then eliminates the features that are less correlated than a threshold. Then performs PCA on the remaining set of features. 
+
+- Linear discriminant analysis (LDA): finds a linear combination of features that characterizes or separates two or more classes of objects or events.
+
+- generalized discriminant analysis (GDA): does nonlinear discriminant analysis using kernel trick.
+
+- Feature extraction and dimension reduction can be combined in one step using principal component analysis (PCA), linear discriminant analysis (LDA), or canonical correlation analysis (CCA) techniques as a pre-processing step followed by clustering by K-NN on feature vectors in reduced-dimension space. In machine learning this process is also called low-dimensional embedding.[10]
+
+
+### Autoencoders
+
+- Nonlinear versions of PCA
+
+### Non-Negative Matrix factorization
+
+### T-SNE
+
+
+

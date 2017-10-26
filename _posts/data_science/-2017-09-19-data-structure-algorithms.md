@@ -24,17 +24,27 @@ image:
 - **Brute Force**: *Brute force is simply solving all cases of a problem. It is the last straw, where if none of smarter/faster algorithms apply, we may use brute force to solve a problem.*
 
 ## Data Structure Patterns
-- **Arrays**:
-    + Stack 
-    + Queue 
-    + Dequeue 
-- **Linked Lists**:
-    + Stack
-    + Queue
-    + Dequeue
-- **Tries**
-    + tree
-    + trie
-    + graph
-    + heap
-- **Hash tables**
+
+Memory Allocation:
+    - a single contiguously allocated slab of memory:
+        - **Arrays**: fixed size memory. constant access time. 
+            + Dynamic array: array doubles in memory every time index is out of bound. the access time amortizes to constant again. 
+        - **Hash tables**:
+        - **Heaps**:
+
+    - multiple chunks of memory linked together using pointers:
+        - **Linked Lists**: Singly two way linked slabs of memory with pointers. Since pointers can change, linked lists support insert, delete, and search. Access time not constant. 
+
+Data Structures:
+    - **Stack**: last in, first out (LIFO). Used when order doesn't matter like batch jobs.
+        + Implementation: arrays, linked lists
+    - **Queue/Dequeue**: first in, first out (FIFO). Used when order matters like search in graph. Can also be implemented with arrays
+        + Implementation: arrays, linked lists
+    - **Binary search trees**: Each node has a key, and all keys in the left subtree are smaller than the node's key, all those in the right are bigger. Operations, insert, delete, search, traversal.
+        + Implemented with linked lists
+    - **Dictionary**: Access data by 'keys'.
+        + Implementation: Hash tables, binary search trees
+    - **Tries**:
+        + tree: 
+        + trie
+        + graph

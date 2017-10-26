@@ -9,22 +9,26 @@ image:
 
 ## Background
 
-Between the [Internet](), [smart cities](), [Internet of things](), [big data](), [Block chain](), it's safe to say data is [eating the world](). So we live in the age of data they say. Singularity is near they say. It's soon that artificially intelligent robots will take over and we will have to bow down to our robot overlords.  However, what they don't tell you is that almost all of this data is unlabeled data. Data that is not annotated as belonging to a certain group/activity/etc. 
+With the advent of [deep learning](), we've had some very exciting breakthroughs in machine learning. However, the caveat is that with the exception of a few [cool ideas](), almost all recent success stories of deep learning come from the supervised learning front. Cases where vast amount of labeled data is available.
 
-With the advent of [deep learning](), we've had some very exciting breakthroughs in machine learning. However, again the caveat is that with the exception of a few cool ideas, almost all recent success stories of deep learning come from the supervised learning front. Cases where vast amount of labeled data is available. Obtaining labeled data is often very expensive, time-consuming and not scalable while unlabeled data is vast and cheap. So the question is, how can we learn from limited labeled data?
+Between the [Internet](), [smart cities](), [Internet of things](), [big data](), [Block chain](), etc it's safe to say data is [eating the world]() and we have no shortage of data. However, almost all of these data resources are unlabeled data. Obtaining labeled data is often very expensive, time-consuming and not scalable while unlabeled data is vast and cheap. So the question is, how can we learn from limited labeled data and can we use unlabeled data to aid our models? Some very promising approaches to answering these questions are [transfer learning](), [few-shot learning](), [active learning](), [reinforcement learning](), and [semi-supervised learning](). 
 
-Some very promising approaches for overcoming this problem are semi-supervised learning, transfer learning, few shot learning, active learning, and reinforcement learning. In this post, I want to focus on the former. In particular, I will focus on a promising and cool approach called [semi-supervised learning with deep generative models](). The idea is to employ both labeled and unlabeled data in our modeling process. Although unlabeled data might not be able to help in discriminative tasks, theoretically, it can be useful in finding the right representation for the data. 
+In this post, I will focus on the last one, a common real world situation where only a small subset of our datapoints are labeled while the rest are unlabeled. The question is, can we do something smarter than just ignoring the unlabeled data? The answer is yes and it's semi-supervised learning. The idea is to use our vast resources of unlabeled data to aid our models in a supervised learning task. Although unlabeled data might not be able to help in discriminative tasks, it can be useful in finding the right representation for the data. 
 
-    + The simplest approach is self-training, where the model is fed the data it has confidently classified. The downside is that this approach can reinforce poor predictions.
-        * e.g. Transductive SVM -> use distance to margin as confidence but is not really scalable.
 
-    + Graph-based -> propagate the label information from labeled nodes to unlabeled nodes (MAP inference?)
+Some approaches that have been explored in the literature of semi-supervised learning are:
 
-    + neural net based -> train a classifier using an autoencoder (or other unsupervised embeddings) as a regularizer. 
+    + Self-training, where the model is fed the data it has confidently classified. The downside is that this approach can reinforce poor predictions.
+        * e.g. Transductive SVM -> use distance to margin as confidence. The problem is that it's not really scalable.
 
-    + Manifold tangent classifier -> trains contrastive autoencoders to learn the manifold on which the data lies. Follows this with TangentProp to train a classifier that is approximately invariant to local perturbations along the manifold. (Tangent prop has an additional derivative of weights penalty term for known invariances in the data)
+    + Graph-based approaches: the idea is to propagate the label information from labeled nodes to unlabeled nodes (MAP inference?)
+
+    + neural net based approaches: the idea is to train a classifier along with an autoencoder (or other unsupervised embeddings) as a regularizer. 
+
+    + Manifold tangent classifier: the idea is to train contrastive autoencoders to learn the manifold on which the data lies. Followin that with TangentProp to train a classifier that is approximately invariant to local perturbations along the manifold. (Tangent prop has an additional derivative of weights penalty term for known invariances in the data)
     
     + Manifold learning using graph-based methods + SVM kernel (rbf) method.
+
 
 
 ## Representation learning with VAE
@@ -38,13 +42,15 @@ $$ Z ~ p(Z) = N(0,I) ;  X ~ p(X|Z) = N(\mu, \sigma^2)$$
 
 ![alt text](/images/VAE_intuitions/vae_semi_M1.png "a simple vae latent variable model")
 
-- Variational Inference turns the inference into optimization. It posits a variational family of distributions over the latent variables,  and fit the variational parameters to be close (in KL sense or another divergence like BP, EP, etc) to the exact posterior. KL is intractable (only possible exactly if q is simple enough and compatible with the prior), so VI optimizes the evidence lower bound (ELBO) instead which is a lower bound on log p(x). Maximizing the ELBO is equivalent to minimizing the KL, note that the ELBO is not convex. The ELBO trades off two terms, the first term prefers q(.) to place its mass on the MAP estimate. The second term encourages q(.) to be diffuse.
+- Variational Inference turns the inference into optimization. It posits a variational family of distributions over the latent variables, and fit the variational parameters to be close (in KL sense or another divergence like BP, EP, etc) to the exact posterior. KL is intractable (only possible exactly if q is simple enough and compatible with the prior), so VI optimizes the evidence lower bound (ELBO) instead which is a lower bound on log p(x). Maximizing the ELBO is equivalent to minimizing the KL, note that the ELBO is not convex. The ELBO trades off two terms, the first term prefers q(.) to place its mass on the MAP estimate. The second term encourages q(.) to be diffuse.
 
 - Note that in the above derivation of the ELBO, the first term is the entropy of the variational posterior and second term is log of joint distribution. However we usually write joint distribution as $$p(x,z)=p(x|z)p(z)$$ to rewrite the ELBO as $$ E_q[\log\ p(x|z)+KL(q(z|x)\ | \ p(z))]$$. This derivation is much closer to the typical machine learning literature in deep networks. The first term is log likelihood (i.e. reconstruction cost) while the second term is KL divergence between the prior and the posterior (i.e a regularization term that won't allow posterior to deviate much from the prior). Also note that if we only use the first term as our cost function, the learning with correspond to maximum likelihood learning that does not include regularization and might overfit.
 
 - What we need for optimization is actually the gradient of the ELBO not the ELBO itself. Using pathwise gradient (reparameterization trick) we can calculate the gradient without evaluating the ELBO
 
 ## Conditional VAE
+
+## Continuous+Categorical latent variables (M2)
 
 
 ## Semi-supervised learning with VAEs
