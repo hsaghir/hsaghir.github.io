@@ -50,7 +50,7 @@ This is where the re-parameterization trick we discussed above comes in. We assu
 
 #### Stochastic optimization in Variational inference/learning
 
-To optimize the ELBO, Traditional VI uses coordinate ascent which iteratively update each parameter, holding others fixed. Classical VI is inefficient since they do some local computation for each data point. Aggregate these computations to re-estimate global structure and Repeat. In particular, variational inference in a typical model where a local latent variable is introduced for every observation (z->x) would involve introducing variational distributions for each observation, but doing so would require a lot of parameters, growing linearly with observations. Furthermore, we could not quickly infer x given a previously unseen observation. We will therefore perform amortised inference where we introduce an inference network for all observations instead.
+To optimize the ELBO, Traditional VI uses coordinate ascent which iteratively update each parameter, holding others fixed. Classical VI is inefficient since they do some local computation for each data point. Aggregate these computations to re-estimate global structure and Repeat. In particular, variational inference in a typical model where a local latent variable is introduced for every observation (z->x) would involve introducing variational distributions for each observation, but doing so would require a lot of parameters, growing linearly with observations. Furthermore, we could not quickly infer x given a previously unseen observation. We will therefore perform amortised inference where we introduce an inference network for all observations instead.
 
 - Stochastic variational inference (SVI) scales VI to massive data. Additionally, SVI enables VI on a wide class of difficult models and enable VI with elaborate and flexible families of approximations. Stochastic Optimization replaces the gradient with cheaper noisy estimates and is guaranteed to converge to a local optimum. Example is SGD where the gradient is replaced with the gradient of a stochastic sample batch. The variational inferene recipe is:
 1. Start with a model
@@ -70,10 +70,10 @@ To optimize the ELBO, Traditional VI uses coordinate ascent which iteratively up
 - Pathwise Gradients of the ELBO: This method has two more assumptions, the first is assuming the hidden random variable can be reparameterized to represent the random variable z as a function of deterministic variational parameters $v$ and a random variable $\epsilon$, $z=f(\epsilon, v)$. The second is that log p(x, z) and log q(z) are differentiable with respect to z. With reparameterization trick, this amounts to a differentiable deterministic variational function. This method generally has a better behaving variance. 
 
 In summary, for variational inference, if log p(x, z) is z-differentiable:
-- Try out an approximation q that is reparameterizable (end to end differentiable model)
+- Try out an approximation q that is reparameterizable (end to end differentiable model)
 If log p(x, z) is not z differentiable:
-- Use score function estimator with control variates
-- Add further variance reductions based on experimental evidence
+- Use score function estimator with control variates
+- Add further variance reductions based on experimental evidence
 
 
 ##### Reparameterization trick
@@ -94,8 +94,38 @@ The reparameterization trick helps with a low variance estimate of the gradient 
 - Amortised inference: Pathwise gradients would need to estimate a value for each data sample in the training. The basic idea of amortised inference is to learn a mapping from data to variational parameters to remove the computational cost of calculation for every data point. In stochastic variation inference, after random sampling, setting local parameters also involves an intractable expectation which should be calculated with another stochastic optimization for each data point. This is also the case in classic inference like an EM algorithm, the learned distribution/parameters in the E-step is forgotten after the M-step update. In amortised inference, an inference network/tree/basis function might be used as the inference function from data to variational parameters to amortise the cost of inference. So in a sense, this way there is some sort of memory in the inferene and the learned params are not forgotten each time but rather updated in each step and thus they amortise the cost of inference. Amortized inference is faster, but admits a smaller class of approximations, the size of which depends on the flexibility of f.
 
 
-## Advanced ideas in VI (Auxiliary Variational Method, Variational Inference with Normalizing Flows, Hierarchical Variational Models, Auxiliary Deep Generative Models):
+## Advanced ideas in VI:
+Improvements in building deep latent-variable generative models have primarily focused on deriving better algorithms and objectives for training that go beyond the ELBO, and identifying more powerful and flexible architectures. 
+    - On the algorithmic side, 
+        + (1) new objectives have been presented to speed up training, learn better features, and combat some of the deficiencies of the ELBO.
+            * [Importance weighted autoencoders](Burda et al., 2015),
+            * [Renyi divergence variational inference](Li & Turner, 2016),
+            * [Operator variational inference](Ranganath et al., 2016a)
+            * [Stein variational gradient] (Liu and Wang, 2016)
+        + (2) adversarial algorithms for variational inference(http://www.inference.vc/variational-inference-using-implicit-models/)
+            * [prior contrastive, Adversarial autoencoders, Unifying VAE & GAN ](Makhzani & Frey 2016, Mescheder et al. 2017)
+            * [joint contrastive, ALI, BiGAN](Dumoulin et al, 2016, Donahue et al, 2016)
+            * [both above] (Karaletsos, 2016, Mohamed & Lakshminarayanan, 2016, Huszar F. 2017).
+            * [Using denoisers instead of discriminator](http://www.inference.vc/variational-inference-using-implicit-models-part-iv-denoisers-instead-of-discriminators/)
+            * [implicit p and q, Deep hierarchical implicit models](http://dustintran.com/blog/deep-and-hierarchical-implicit-models)
+    - On the architectural side, there are three directions of focus: 
+        + (1) more complex encoders that extend the variational family 
+            * [normalizing flows](Rezende & SMohamed, 2015),
+            * [autoregressive flows](Kingma et al., 2016),
+            * [Hierarchical variational models](Ranganath et al., 2016b), etc
+        + (2) more complex priors:
+            * [Vae with a vampprior] (Tomczak & Welling, 2017), 
+            * [NADE](Larochelle & Murray, 2011b), 
+            * [DGM with stick-breaking priors](Nalisnick & Smyth, 2016)
+        + (3) more complex decoders: 
+            * [Variational lossy autoencoder](Chen et al., 2016),
+            * [PixelVAE](Gulrajani et al., 2016),
+            * [PixelGAN autoencoders](Makhzani & Frey, 2017)
+    - On the theory side,
+        + (1) Information theoretic analysis:
+            * [amount of information that the latent variable contains about the input](Alexander A. Alemi et al 2017)
 
+These extensions have allowed us to scale VI to many exciting applications, but it remains unclear how these different pieces of complexity fit together and interact.
 
 ### Limitations of mean-field VI (Gaussian posterior)
 - mean field assumption for the approximate posterior of a vanilla VAE means that we are assuming a multivariate Guassian shape for the approximate posterior with a diagonal covariance matrix (a hyper-sphere). meaning that we are assuming dimensions of the hyper-sphere are completely independent of each other. Even an LDS still has a multivariate Gaussian approximate posterior but now with tri-diagonal covariance matrix (a hyper-elipse).
@@ -108,8 +138,19 @@ However, advances in probabilistic modelling (probabilistic programming), scalab
 
 - In Gaussian Approximate Posteriors, Structure of covariance $\sum$ describes dependency. Mean field assumption (i.e. diagonal covariance matrix as in a VAE) is least expressive but computatoinally efficient. Full covariance is richest, but computationally expensive. There are ideas around using linear algebra to efficiently decompose the covariance matrix, for example using a tri-diagonal covariance for an LDS approximate posterior. A limitation of Gaussian variational distributions is that the posterior is always Gaussian which doesn't always reflect real world distributions. 
 
+### Adversarial training in VI
+
+there are two ways implicit models (following the definition above) can be used in variational inference, and which can be important to distinguish.
+
+The first is as you describe in the example of Bayesian logistic regression, where the variational distribution is an implicit model. This enables the most expressive posterior approximation in the sense that q no longer requires a tractable density (which is a silly requirement but appears again and again for historical and ease of optimization reasons). We pursued it in Operator Variational Inference (https://arxiv.org/abs/1610.... ), termed a "variational program". Others including Qiang Liu, Dilin Wang, Jason Lee, and Yingzhen Li are currently pursuing this in the context of Stein variational gradient descent, and there's also the fantastic workshop paper by Theo you referenced above.
+
+The second is inference when the probability model (p) is implicit. This is related to the papers you mentioned above on adversarial auto encoders and BiGANs/ALI, both of which do a form of latent variable inference beyond point estimation (although not necessarily posterior inference). There's also recent works on variational inference + ABC which are very relevant, such as VI with intractable likelihood (https://arxiv.org/abs/1503.... ) and automatic variational ABC (https://arxiv.org/abs/1606.... ).
+
+A natural idea of course is to consider algorithms that enable [both implicit p and implicit q](http://dustintran.com/blog/deep-and-hierarchical-implicit-models). This is something that we're working on, hopefully to be done by ICML Like you, I've also found that thinking from the perspective of ratio estimation, and beyond the usual GAN setup, to be very insightful.
+
 ### Designing richer approximate posteriors
 - In order to design richer approximate posteriors, we can introduce new variables that help to form a richer approximate posterior (where q(z|x) is the marginalization of those new variables). We need to be able to adapt bound (ELBO) to compute entropy or a bound, and maintain computational efficiency to be linear in number of latent variables. There are two main approaches for doing this. First is change-of-variables including Normalising flows and invertible transforms. The second is auxiliary variables which involves Entropy bounds, and Monte Carlo sampling.
+
 
 #### transformations (normalizaing, autoregressive and NVP flows)
 In approximations using Change-of-variables, the distribution flows through a sequence of **deterministic invertible** transforms. We begin with an initial distribution q0(z0|x) and apply a sequence of K invertible functions $$f_k$$ that will reshape the posterior to more complex shapes. We employ a class of transformations for which the determinant of the Jacobian can be computed in linear time.

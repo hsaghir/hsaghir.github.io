@@ -71,3 +71,22 @@ Areas of proficiency:
 -   Upon completion of first solution, either try to improve it, or try to come up with a different solution that is better (e.g.: recursion vs. imperative code)
 -   Assumptions might now change, and so the solution needs to be adapted
 -   Glossing over standard APIs if you're not sure is OK, make sure you state that and give a reasonable API to work with
+
+
+## Google Brain event:
+
+Kevin Swersky: Generative models, BNNs, RL, few shot learning (meta learning, learning to learn)
+
+
+Nick Frosst: Explainable models by building trees. Capsules
+
+
+What does Google look for?
+how a candidate thinks, leadership skills , role-related knowledge, Googlyness! (help, collaborate, open thoughts, innovative, pleasure to work with). 
+
+AI residency:
+- classif SWE inerview
+- applied knowledge -> publications, projects, open source,  etc (explain these in your application)
+- apply earlier. Rolling basis!???
+- Eric Langlua / brain resident
+
