@@ -71,7 +71,7 @@ To optimize the ELBO, Traditional VI uses coordinate ascent which iteratively up
 
 In summary, for variational inference, if log p(x, z) is z-differentiable:
 - Try out an approximation q that is reparameterizable (end to end differentiable model)
-If log p(x, z) is not z differentiable:
+  If log p(x, z) is not z differentiable:
 - Use score function estimator with control variates
 - Add further variance reductions based on experimental evidence
 
@@ -96,34 +96,34 @@ The reparameterization trick helps with a low variance estimate of the gradient 
 
 ## Advanced ideas in VI:
 Improvements in building deep latent-variable generative models have primarily focused on deriving better algorithms and objectives for training that go beyond the ELBO, and identifying more powerful and flexible architectures. 
-    - On the algorithmic side, 
-        + (1) new objectives have been presented to speed up training, learn better features, and combat some of the deficiencies of the ELBO.
-            * [Importance weighted autoencoders](Burda et al., 2015),
-            * [Renyi divergence variational inference](Li & Turner, 2016),
-            * [Operator variational inference](Ranganath et al., 2016a)
-            * [Stein variational gradient] (Liu and Wang, 2016)
-        + (2) adversarial algorithms for variational inference(http://www.inference.vc/variational-inference-using-implicit-models/)
-            * [prior contrastive, Adversarial autoencoders, Unifying VAE & GAN ](Makhzani & Frey 2016, Mescheder et al. 2017)
-            * [joint contrastive, ALI, BiGAN](Dumoulin et al, 2016, Donahue et al, 2016)
-            * [both above] (Karaletsos, 2016, Mohamed & Lakshminarayanan, 2016, Huszar F. 2017).
-            * [Using denoisers instead of discriminator](http://www.inference.vc/variational-inference-using-implicit-models-part-iv-denoisers-instead-of-discriminators/)
-            * [implicit p and q, Deep hierarchical implicit models](http://dustintran.com/blog/deep-and-hierarchical-implicit-models)
-    - On the architectural side, there are three directions of focus: 
-        + (1) more complex encoders that extend the variational family 
-            * [normalizing flows](Rezende & SMohamed, 2015),
-            * [autoregressive flows](Kingma et al., 2016),
-            * [Hierarchical variational models](Ranganath et al., 2016b), etc
-        + (2) more complex priors:
-            * [Vae with a vampprior] (Tomczak & Welling, 2017), 
-            * [NADE](Larochelle & Murray, 2011b), 
-            * [DGM with stick-breaking priors](Nalisnick & Smyth, 2016)
-        + (3) more complex decoders: 
-            * [Variational lossy autoencoder](Chen et al., 2016),
-            * [PixelVAE](Gulrajani et al., 2016),
-            * [PixelGAN autoencoders](Makhzani & Frey, 2017)
-    - On the theory side,
-        + (1) Information theoretic analysis:
-            * [amount of information that the latent variable contains about the input](Alexander A. Alemi et al 2017)
+- On the algorithmic side, 
+    + (1) new objectives have been presented to speed up training, learn better features, and combat some of the deficiencies of the ELBO.
+        * [Importance weighted autoencoders](Burda et al., 2015),
+        * [Renyi divergence variational inference](Li & Turner, 2016),
+        * [Operator variational inference](Ranganath et al., 2016a)
+        * [Stein variational gradient] (Liu and Wang, 2016)
+    + (2) adversarial algorithms for variational inference(http://www.inference.vc/variational-inference-using-implicit-models/)
+        * [prior contrastive, Adversarial autoencoders, Unifying VAE & GAN ](Makhzani & Frey 2016, Mescheder et al. 2017)
+        * [joint contrastive, ALI, BiGAN](Dumoulin et al, 2016, Donahue et al, 2016)
+        * [both above] (Karaletsos, 2016, Mohamed & Lakshminarayanan, 2016, Huszar F. 2017).
+        * [Using denoisers instead of discriminator](http://www.inference.vc/variational-inference-using-implicit-models-part-iv-denoisers-instead-of-discriminators/)
+        * [implicit p and q, Deep hierarchical implicit models](http://dustintran.com/blog/deep-and-hierarchical-implicit-models)
+- On the architectural side, there are three directions of focus: 
+    + (1) more complex encoders that extend the variational family 
+        * [normalizing flows](Rezende & SMohamed, 2015),
+        * [autoregressive flows](Kingma et al., 2016),
+        * [Hierarchical variational models](Ranganath et al., 2016b), etc
+    + (2) more complex priors:
+        * [Vae with a vampprior] (Tomczak & Welling, 2017), 
+        * [NADE](Larochelle & Murray, 2011b), 
+        * [DGM with stick-breaking priors](Nalisnick & Smyth, 2016)
+    + (3) more complex decoders: 
+        * [Variational lossy autoencoder](Chen et al., 2016),
+        * [PixelVAE](Gulrajani et al., 2016),
+        * [PixelGAN autoencoders](Makhzani & Frey, 2017)
+- On the theory side,
+    + (1) Information theoretic analysis:
+        * [amount of information that the latent variable contains about the input](Alexander A. Alemi et al 2017)
 
 These extensions have allowed us to scale VI to many exciting applications, but it remains unclear how these different pieces of complexity fit together and interact.
 
@@ -181,11 +181,24 @@ In "Operator Variational Inference", authors revisit variational inference from 
 
 
 
-
 ### Variational inference for Bayesian Neural Networks
 
 
 
+### Information theory perspective:
+
+Goal is to learn a representation that contains a particular amount of information and from which the input can be reconstructed as well as possible. A good representation $$Z$$ must contain information about the input $$X$$. The mutual information is:
+
+$$I(X;Z)=\mathbb {E} _{X,Z}[SI(x,Z)]=\sum _{x,z}p(x,z)\log {\frac {p(x,z)}{p(x)\,p(z)}}$$
+
+This is representational mutual information, which is distinguishable from the generative mutual information. Unfortunately, this is hard to compute, since we do not have access to the true data density $$p(x)$$, and computing the marginal $$p(z)=\sum_x p(x,z)$$ can
+be challenging. However, the following tractable lower and upper bounds can be derived as $$H-D<I<R$$ where R is rate and D is distortion. H here is the data complexity and a theoretical limit. We cannot use less than H nats to communicate data X in anyway. When $$R=0$$, then mutual information of representation and data is zero ($$I=0$$) and $$Z$$ doesn't know anything about $$X$$. This is the case where encoder hasn't encoded any information into $$Z$$. However, even without learning a representation $$Z$$, decoder alone can reduce distortion using an autoregressive setting upto the theoretical limit of$$ H$$. When $$D=0$$, we have a zero distortion setting, we can perfectly encode and decode our data; where lowest possible rate is  $$H$$, the entropy of the data. We can use a less efficient code $$Z$$ to get the same reconstruction performance which means higher rates at fixed distortion.
+
+This reminds me of CorEx where if we have $$n$$ discrete random variabels $${X_1,...,X_n}$$, total correlation (multivariate mutual information) is defined as the sum of mutual informations between all random variables $$TC(X_G) =  \sum_i H(X_i) - H(X_G)$$. If the joint distribution $$P(X_1,..X_n)$$ factorizes the total correlation is zero therfore, total correlation can be expressed as the KL divergence between the real joint and the factorized joint $$TC(X_G) =  KL(p(X_G) || \prod_i p(x_i))$$. 
+
+We then introduce latent variables $$Y$$. The total correaltion among the observed group of variables, $$X$$, after condition on $$Y$$ is simply $$TC(X|Y) = \sum_i H(X_i|Y) - H(X|Y)$$. Therefore, the extent to which $$Y$$ explains the total correlation in $$X$$ can be measured by looking at how much the total correlation is reduced after introducing $$Y$$ i.e. the difference between the total correlation in $$X$$ and and total correlation in $$(X|Y)$$ i.e. $$TC(X;Y) = TC(X) - TC(X|Y) = \sum_i I(X_i : Y) - I(X : Y)$$. This difference forms an objective function that we can optimize to find the latent factors $$Y$$ that best explain the correlations in $$X$$. The bigger this objective, the more $$Y$$ explains correlation in $$X$$. Note that this objective is not symmetric. 
+
+Since the total correlation depends on the joint distribution $$p(X,Z)$$ and by extension on $$P(X)$$. If we have $$n$$ binary $${0,1}$$ variables, then the search over all $$P(Z|X)$$ involves $$2^n$$ variables which is intractable. The paper introduces some restrictions on the objective to make the optimization tractable. The VAE framework can be combined with CorEx here. 
 
 
 
