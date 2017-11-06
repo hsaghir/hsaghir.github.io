@@ -7,25 +7,30 @@ image:
   teaser: jupyter-main-logo.svg
 ---
 
+If you've been tracking the news on machine learnign and "AI", chances are that you've heard of generative models. Models that have gained notable popularity recently for their ability to generate realistic images.   Generative models are statistical models that try to explicitly explain the process of generating a set of data points. The ability to model the data generation process without direct supervision (unsupervised learning) has been a general goal of machine learning for a long time. The advent of deep learning has revived interest in such probabilistic models due to the extraordinary power of deep neural networks as function approximators. 
 
-Generative models try to explicitly explain the process of generating a set of data points. They are a very elegant and principled approach to solving the  unsupervised learning problem. If generative models had a motto, it probably would be this quote from Richard Feynman. "What I cannot create, I do not understand". 
-
-The basic goal of generative models is to perform density estimation meaning that they take in a bunch of training data and fit a probability density function to it. We can use that probability density function to generate new data.
+I am specificly interested in generative models due to their unreasonably elegant and principled approach in solving machine learning problems at a time where we don't really understand much about our models. The basic goal of generative models is to perform density estimation meaning that we want to take in a bunch of training data and fit a probability density function to it. We can then use that probability density function to generate new data similar to the training data.
 
 
 ## Statistical modelling
 
-Finding insights in data, prediction, modeling the world and everything that we can do with data involves finding the probability distribution underlying our data P(x). Therefore, We are interested in finding the true probability distribution of our data P(x) which is unknown. We usually use the scientific method of probabilistic pipeline to solve this problem i.e.:
+Almost everything that we can do with data involves finding the probability distribution underlying our data P(x). This includes finding insights in data, prediction, modeling the world, etc.  Therefore, We are interested in finding the true probability distribution of our data P(x) which is unknown. We usually use the scientific method in a probabilistic pipeline to solve this problem i.e.:
 
-1. Knowledge and questions we want answered
-2. make assumptions and formulate a model (using probabilistic graphical models, deep nets as functions, etc)
-3. Fit the model with data, find the parameters of the model, find patterns in data (Inference)
-4. predict and explore
-5. criticize and revise the model
+1. We determine the knowledge and questions we want answered
+2. We make assumptions and formulate a model (using probabilistic graphical models, deep nets as functions, etc)
+3. We fit the model with data, find the parameters of the model, find patterns in data (Inference)
+4. We use the model for prediction, inference and exploration
+5. And we finally criticize and revise the model
 
-The statistical modeling procedure involves introduction of some hidden variables, z, and a mixing procedure for them in a way which we believe will lead to an estimation for the true probability distribution of the data P(x). These hidden variables and their structure construct our model. Therefore, the new problem under our model is the joint distribution P(x,z) of the hidden variables z, and the observed variables x. 
+The statistical modeling procedure usually involves the introduction of some hidden variables, $$z_i$$, as hidden causes for the observed variables $$x_i$$, and a mixing procedure that we believe will lead to generation of the data as a model for the unknown true probability distribution of the data $$P(X)$$. The collection of observed variables $$X$$, and hidden variables, $$Z$$, form a joint probability distribution  $$P(X, Z)$$ that constructs our model. 
 
-The joint distribution P(x,z) can be thought of as a combination of other simpler probability distributions P(x,z)=P(x|z)P(z). The way they are combined is through a hierarchy of component distributions. So first a sample from the top distribution over hidden variables P(z) (i.e. prior) chooses the component that should produce data, then the corresponding component P(x|z) (i.e. likelihood) produces a sample x. This makes it easier to express the complex probability distribution of the observed data P(x) using a model P(x,z)=P(x|z)P(z). It is important to note that the real procedure for producing a sample x is unknown to us and the model is merely an attempt to find an estimation for the true distribution.
+The joint distribution $$P(X, Z)$$ can be thought of as a combination of other simpler probability distributions  through a hierarchy of component distributions i.e. $$P(X, Z)=P(X|Z)P(Z)$$. This means that we firstsa sample the top distribution over hidden variables $$P(Z)$$ to choose a component that should produce data, then the corresponding component $$P(X|Z)$$ produces a sample x. This makes it easier to express the complex probability distribution of the observed data P(x) using a model P(x,z)=P(x|z)P(z). It is important to note that the real procedure for producing a sample x is unknown to us and the model is merely an attempt to find an estimation for the true distribution.
+
+The task is then to fit the model by "infering" the latent variables from the data i.e. $$P(Z|X)$$. 
+
+One of the most interesting ideas in statistics is the idea of the [Bayes' theorem](https://en.wikipedia.org/wiki/Bayes%27_theorem). Reverend Thomas Bayes of England first thought of a way to formulate the integration of evidence with prior beliefs so that one can update beliefs. The famous Pierre-Simon Laplace then formulated Bayes' ideas in the modern form of $$P(Z|X) = \frac{P(X|Z) P(Z)}{P(X)}$$. 
+
+
 
 At the beginning, the probability of choosing a component in the mixture is based on a very crude assumption for the general shape of such a distribution (i.e. prior P(z)) and we don't know the specific value of the parameters in the assumed structure for the probability model. We would like to find these unknowns based on the data. Finding the parameters to form a posterior belief is called inference and is the key algorithmic problem which tells us what model says about the data. In the probabilistic pipeline, we will then criticize the model we have built and might modify it and solve the problem again until we arrive at a model that satisfies our needs. 
 
@@ -34,7 +39,7 @@ At the beginning, the probability of choosing a component in the mixture is base
 
 -  We use probability theory as a tool to start the modeling process. Let's assume each variable, $$x_i$$, as a random variable (meaning that it is actually a distribution and the possible values are random draws from the said distribution). In this setup, the model is the joint probability distribution of all random variables, i.e. $$p(x_1,x_2, .., x_n) = \prod_i p(x_i)p(x_i|x_m)$$. 
 
-- Finding the true joint distribution is no easy task. We appeal to modeling to find a good approximation for this joint distribution. There are two approaches we can take to solving this. 
+-  Finding the true joint distribution is no easy task. We appeal to modeling to find a good approximation for this joint distribution. There are two approaches we can take to solving this. 
     + non-parametric modeling
     + parametric modeling
 
@@ -47,11 +52,11 @@ At the beginning, the probability of choosing a component in the mixture is base
 ## Parametric modeling 
 -  The first prior we encode into our modeling process is that we assume the data is coming from a generative process that we define. For example, if observations are $$X = {x_1, x_2, .., x_n}$$, we might assume that each data point is the outcome of a hidden local variable variable. This is a  simple generative model with a set of latent variables $$Z = {z_1, z_2,...,z_n}$$.
 
-- Now with this assumed generative model, we want to fit the model to data and infer the latent variables, $$z_i$$, from the visible variables $$x_i$$. The Bayes rule shows a way for performing inference through the notion of posterior. The idea is that we have some initial belief, we see data, then our beliefs evolve to posterior beliefs based on our observations. This is formalized as $$p(z|x) = \frac{p(x|z)p(z)}{p(x)}$$ where $$p(z)$$ is the prior on latent variables, $$p(z|x)$$ is the posterior belief on latent variables after observations, $$p(x|z)$$ is the likelihood of observations under the model, and $$p(x)$$ is the marginalized likelihood of observations under the model alternatively called evidence (when we ingrate out all latent variables).
+-  Now with this assumed generative model, we want to fit the model to data and infer the latent variables, $$z_i$$, from the visible variables $$x_i$$. The Bayes rule shows a way for performing inference through the notion of posterior. The idea is that we have some initial belief, we see data, then our beliefs evolve to posterior beliefs based on our observations. This is formalized as $$p(z|x) = \frac{p(x|z)p(z)}{p(x)}$$ where $$p(z)$$ is the prior on latent variables, $$p(z|x)$$ is the posterior belief on latent variables after observations, $$p(x|z)$$ is the likelihood of observations under the model, and $$p(x)$$ is the marginalized likelihood of observations under the model alternatively called evidence (when we ingrate out all latent variables).
 
-- In order to be able to use the Bayesian formula for inference and learning, we usually assume a functional form for the beliefs mentioned above (probability distributions). This functional form is called density function since it shows how dense the probability of the domain of the random variable of interest is. The density functions usually come with a set of sufficient statistics that while known, would completely define the density function on the variable domain. For example, the sufficient statistics for the Normal distribution density function are mean and variance parameters. We can choose to further parameterize these sufficient statistics parameters to give more expressibility to our model.
+-  In order to be able to use the Bayesian formula for inference and learning, we usually assume a functional form for the beliefs mentioned above (probability distributions). This functional form is called density function since it shows how dense the probability of the domain of the random variable of interest is. The density functions usually come with a set of sufficient statistics that while known, would completely define the density function on the variable domain. For example, the sufficient statistics for the Normal distribution density function are mean and variance parameters. We can choose to further parameterize these sufficient statistics parameters to give more expressibility to our model.
 
-- Since in the Bayesian world every parameter is interpreted as a belief (probability distribution), we can also treat the parameters in a Bayesian way, express them with another level of a density functions and parameterize them and then again treat the parameters of the parameters as belief and so on in an endless loop of Bayesian utopia! However, like all other good things, this endless loop has to end which means that we have to be practical Bayesian. 
+-  Since in the Bayesian world every parameter is interpreted as a belief (probability distribution), we can also treat the parameters in a Bayesian way, express them with another level of a density functions and parameterize them and then again treat the parameters of the parameters as belief and so on in an endless loop of Bayesian utopia! However, like all other good things, this endless loop has to end which means that we have to be practical Bayesian. 
 
 
 ### Types of models
@@ -82,7 +87,7 @@ These models Model data as a transformation of an unobserved noise source using 
 ![alt text](/images/Generative_models/transformation_models.png "map of instances of transformation models")
 
 These models are usually used as generative models to model distributions of observed data. They can also be used to model distributions over latent variables as well in approximate inference (e.g. adversarial autoencoder).
- 
+
 #### 3. Latent variable models (Explicit Probabilistic graphical models): 
 These models introduce an unobserved local random variable for every observed data point. This is in contrast with fully-observed models that do not impose such explicit assumptions on the data. They are easy to sample from, include hierarchy of causes believed. The latent variable structure encode our assumptions about the generative process of the data. Let data be $$X = {x_1, x_2, ..., x_n}$$. We assume a generative process for example a latent Gaussian model $$z ~ N(0,I); x|z = N(\mu(z), \Sigma(z)); p(X,Z) = p(Z)p(X|Z) $$. 
     + Conditional distributions are usually represented using deep neural nets
@@ -93,7 +98,7 @@ These models introduce an unobserved local random variable for every observed da
     + Difficult to calculate marginalized log-likelihood and involves approximations
     + Not easy to specify rich approximate posterior for latent variables.
     + inference of latents from observed data is difficult in general
-    
+
 
 ![alt text](/images/VAE_intuitions/latent_var_model.png "a latent variable model")
 
@@ -113,7 +118,7 @@ The second is the Bayesian approach which is a belief system that suggests every
 
     + The Bayesian school of thought obviously believes that the parameters are distributions themselves and thus we need to infer distributions for parameters too and not just learn single values.
 
-    +  Another school of thought tries to balance the above two ideas by professing that although the parameter maybe distributions but we want to be practical so instead of inferring a distribution for each parameter we choose the single parameter values that will maximize the posterior belief of latent values. This gives rise to the Maximum a Posteriori (MAP) inference concept. 
+    + Another school of thought tries to balance the above two ideas by professing that although the parameter maybe distributions but we want to be practical so instead of inferring a distribution for each parameter we choose the single parameter values that will maximize the posterior belief of latent values. This gives rise to the Maximum a Posteriori (MAP) inference concept. 
 
 Note that the loss function (i.e. the distance measure) in optimization (i.e. maximum likelihood) is the root of the all problems since optimization's only objective is to reduce the loss. If the loss is not properly defined, the model can't learn well and if the loss function does not consider the inherent noise of the data (i.e. regularization or MAP), the model will eventually over fit to noise in the data and reduce generalization. Therefore, the loss function (distance measure) is very important and the reason why GANs work so well is that they don't explicitly define a loss function and learn it instead! The reason that Bayesian approach prevents over fitting is because they don't optimize anything, but instead marginalize (integrate) over all possible choices. The problem then lies in the choice of proper prior beliefs regarding the model.
 
@@ -147,12 +152,12 @@ We Write down a parameterized density function (a function that assigns a probab
         * approximate density:
             - variational inference (e.g. VAE)
             - MCMC variations (e.g. RBM)
-
+    
     + Implicit density:
         * Direct:
             - Generative Adversarial Nets (GAN)
                 + In GAN, the latent variable Z is drawn at random during training, and a discriminator is trained to tell if the generated output looks like it's been drawn from the same distribution as the training set.
-
+    
             - Generative Latent Optimization(GLO): 
                 + In GLO, the latent variable Z is optimized during training so as to minimize some distance measure between the generated sample and the training sample Z* = min_z = Distance(Y,G(Z)). The parameters of the generator are adjusted after this minimization. The learning process is really a joint optimization of the distance with respect to Z and to the parameters of G, averaged on a training set of samples. After training, Z can be sampled from their allowed set to produce new samples. Nice examples are shown in the paper.
         * Markov chain:
