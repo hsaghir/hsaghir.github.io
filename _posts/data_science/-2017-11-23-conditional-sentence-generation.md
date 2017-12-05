@@ -48,6 +48,8 @@ image:
             - Arrange vectors in two matrices, W and C.
             - feed in the corpus formatted as bi-ngrams. 
             - Negative sampling objective is based on NCE which basically constructs a fake dataset of bi-ngrams from the original bi-ngrams by replacing the input word with a random one while keeping the context the same. Objective then tries to assign high probability to correct bi-ngrams while assigning low probability to fake bi-ngrams.
+                + using softmax with thousands of outputs (one-hot words) as a multi-class classification is very costly. So the idea is to convert the problem to a binary classification of classifying true sequences of words from fake sequences of words (keeping central word and randomly sampling the context). 
+                + The negative samples are chosen from a slightly modified distribution that favors rare words. 
             - After training, Throw away the C matrix and use the W matrix as word-embeddings. 
         * If we don't throw away the C matrix, the product $$W.C$$ will produce the co-occurrence frequency matrix for each word and its ngrams. Therefore, word2vec is essentially doing a matrix factorization on that matrix in a more algorithmically efficient way than LSA. Even LDA can also be interpreted as a matrix factorization.
        
@@ -117,9 +119,18 @@ https://www.analyticsvidhya.com/blog/2017/01/ultimate-guide-to-understand-implem
 
 ## conditional generation of summaries based on knowledge graph. 
 
-- This will be a layer on top of th Apolo project that connects it to humans and users. Appolo extracts entities and events from many news articles and represents them in a knowledge graph. 
-- I can generate sentences and paragraphs conditioned on the knowledge graph. This will condense information from many news sources and many relationships into a human readable passage. 
+- This will be a layer on top of th Appolo project that connects it to humans and users. The knowledge graph extracts entities and events from many news articles and represents them in a graph. 
+- The idea is to generate sentences and paragraphs conditioned on the knowledge graph. This will condense information from many news sources and many relationships into a human readable passage. 
 - This can be used by analysts trying to make sense of an event. It will help them understand all aspects of the event by reading a single article without the need to read many articles about the topic. 
 - Download and run this to show you can generate sentences [pytorch implementation](https://github.com/kefirski/pytorch_RVAE)
 - model to be used is conditional VAE. 
-- need to find a way to represent the knowlege graph to input to the CVAE. Maybe graph convolution?
+- need to find a way to represent the knowlege graph to input to the CVAE. Maybe graph convolution? 
+
+
+- example of relationship in knowledge graph:
+    + sentence [GM invests 100MM in Lyft] ->
+        * knowledge graph [nodes(GM, Lyft), relationship(investing)]
+
+- We can use a Recurrent VAE to reconstruct the sentence conditioned on the  knowledge graph. 
+
+
