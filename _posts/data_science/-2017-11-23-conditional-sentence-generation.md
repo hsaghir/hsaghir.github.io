@@ -12,20 +12,6 @@ image:
 
 -  Mathematically speaking, a language model is the joint probability distribution of words such that correct and meaningful sequence of words/characters have a high probability distribution while incorrect sequences have low probability. This joint distribution can be factorized further based on assumptions like n-gram models meaning that only n sequences depend on each other and not more. 
 
-- In order to be able to perform machine learning on natural language, we have to first represent it in a numerical format. The central problem in NLP seems to be representation of natural language as numbers. After that the problem is simply sequence and structure learning where a vast array of tools from machine learning exist. 
-
-- Basic representation started by defining a dictionary as the list of all allowed words or letter combinations. Common representations are:
-    + Ascii code representation: Doesn't tell you anything about the meaning of the word. 
-        * Distance between words are not well defined.
-    + tf-idf score: tf is a normalized term frequency in the document while idf is a weight that corrects for more frequent words like 'the'. The tf-idf score is the product $$tf.idf$$$.
-        * tf-idf is a measure of the relative importance of a word in a document. 
-        * It doesn't bear any information about semantic relationships of words.
-    + one-hot encoding: a vector with the size of the dictionary where all entries are zero except the single entry corresponding to the word in a location. 
-        * The distance between all words is a constant one without encoding relationships between words, no notion of meaning is present, huge dimensionality problem.
-    + Bag of words (BoW): add up one-hot encodings of words in each document (word counts) and normalize. 
-        * Latent semantic analysis (LSA) models would do matrix factorization (SVD) on the bag of words representations or bigram word frequency matrix. They pick the eigen-vectors as word representations which can encode some semantic and syntactic (part of speech) information. 
-        * The same linear relationships between word vectors in word2vec were also observed in LSA to a lower extent with proper scaling of bag of words frequencies. 
-            - scaling involves: weighing the co-occurrence count based on distance between the words in the document, ignoring function words like "he", "she", etc.
 - Word2Vec models: a class of NN models that learn a vector representation for words from an unlabeled corpus of text. 
     + Skip-Gram: Based on the notion that words appearing in similar contexts are related to each other semantically. Skip-gram predicts a window of neighboring words from a single word.
         * We convert the corpus into samples with a neighboring window of n-grams on both sides of a word.
@@ -47,9 +33,7 @@ image:
             - Initalize all vectors to random weights.
             - Arrange vectors in two matrices, W and C.
             - feed in the corpus formatted as bi-ngrams. 
-            - Negative sampling objective is based on NCE which basically constructs a fake dataset of bi-ngrams from the original bi-ngrams by replacing the input word with a random one while keeping the context the same. Objective then tries to assign high probability to correct bi-ngrams while assigning low probability to fake bi-ngrams.
-                + using softmax with thousands of outputs (one-hot words) as a multi-class classification is very costly. So the idea is to convert the problem to a binary classification of classifying true sequences of words from fake sequences of words (keeping central word and randomly sampling the context). 
-                + The negative samples are chosen from a slightly modified distribution that favors rare words. 
+            - Negative sampling objective is based on NCE which basically constructs a fake dataset of bi-ngrams from the original bi-ngrams by replacing the input word with a random one while keeping the context the same. Objective then tries to assign high probability to correct bi-ngrams while assigning low probability to fake bi-ngrams. 
             - After training, Throw away the C matrix and use the W matrix as word-embeddings. 
         * If we don't throw away the C matrix, the product $$W.C$$ will produce the co-occurrence frequency matrix for each word and its ngrams. Therefore, word2vec is essentially doing a matrix factorization on that matrix in a more algorithmically efficient way than LSA. Even LDA can also be interpreted as a matrix factorization.
        
@@ -72,7 +56,8 @@ image:
 
 - LDA: While word2vec tries to predict a word from its local context, LDA tries to predict the word from the global document (LDA generative model first chooses a topic, then samples a word from that topic). While word2vec representations are dense, LDA representations are sparse (only a few topics).
 
-- Obviously the number of words in a language is much smaller than the combination of the letters in that language. Why not learn a language-specific word manifold that maps characters to words? Then we can use the char-level language models instead of word-level models and reduce the dimensionality of the problem since number of chars are multiple orders of magnitude smaller than words. 
+- Obviously the number of words in a language is much smaller than the combination of the letters in that language. Why not learn a language-specific word manifold that maps characters to words? The manifold represents the language and only combinations of characters on the manifold would be allowed.
+- Then we can use the char-level language models instead of word-level models and reduce the dimensionality of the problem since number of chars are multiple orders of magnitude smaller than words. 
 
 - a measure: can we take these word vectors and use them in other task like language modeling, translation, etc
 
@@ -117,7 +102,28 @@ Hard
 https://www.analyticsvidhya.com/blog/2017/01/ultimate-guide-to-understand-implement-natural-language-processing-codes-in-python/
 
 
+
+# Neo
+
+## Motivation
+Machine learning and data science in general are concerned with discovering patterns and insights in large collections of data. The advent of deep learning models have had a major impact on many task in computer vision and natural language processing as well as other domains. In essence, machine learning models condense the raw into a machine representation, from which insights are extracted and communicated to provide business and scientific value.
+
+On the other hand, language is the primary facet of communication for humans. Communicating insights from a machine representation back into human language is critical for making the findings accessible to people. Natural language generation(NLG) is the task of automatically generating language from a machine representation of data e.g. a knowledge graph.
+
+
+## Objective
+The objective of this project to bridge the gap in communication of insights to humans using human language. In the specific case of the Apollo project, this can help analysts understand the information contained in the knowledge graph in the form of statements about the existing relationships in the graph. 
+
+
 ## conditional generation of summaries based on knowledge graph. 
+
+Similar setting to labeled sequence transduction task, with a given input sequence and a specified condition, we generate an output sequence to reflect the content of input sequence that satisfies the condition. Examples:
+-  using labels to moderate politeness in machine translation
+-  modifying the output language of a machine translation system
+-  controlling the length of a summary in summarization
+-  morphological reinflection (combinig a root word with suffixes/prefix to make new syntactic and semantic variations). 
+
+
 
 - This will be a layer on top of th Appolo project that connects it to humans and users. The knowledge graph extracts entities and events from many news articles and represents them in a graph. 
 - The idea is to generate sentences and paragraphs conditioned on the knowledge graph. This will condense information from many news sources and many relationships into a human readable passage. 
@@ -126,11 +132,50 @@ https://www.analyticsvidhya.com/blog/2017/01/ultimate-guide-to-understand-implem
 - model to be used is conditional VAE. 
 - need to find a way to represent the knowlege graph to input to the CVAE. Maybe graph convolution? 
 
-
-- example of relationship in knowledge graph:
+## Dataset
+- Thomson-Reuters dataset and the associated knowledge graph from the Apollo project 
+- example of relationship between text and the knowledge graph:
     + sentence [GM invests 100MM in Lyft] ->
         * knowledge graph [nodes(GM, Lyft), relationship(investing)]
 
-- We can use a Recurrent VAE to reconstruct the sentence conditioned on the  knowledge graph. 
+
+## Methodology
+- A conditional recurrent VAE [1-5] to reconstruct the input sentence conditioned on the  knowledge graph representation of the relationship. 
+
+- Possible to use discrete latent variable models i.e. Concrete[], vector quantisation (VQ) [],REBAR [], RELAX []. 
 
 
+## References
+[1] Kingma, Diederik P., and Max Welling. "Auto-encoding variational Bayes." arXiv preprint arXiv:1312.6114 (2013).
+
+[2] Kingma, Diederik P., et al. "Semi-supervised learning with deep generative models." Advances in Neural Information Processing Systems. 2014.
+
+[3] Maaløe, Lars, et al. "Auxiliary deep generative models." arXiv preprint arXiv:1602.05473 (2016).
+
+
+
+
+[4] Bowman, Samuel R., et al. "Generating sentences from a continuous space." arXiv preprint arXiv:1511.06349 (2015).
+
+[5] Zhou, Chunting, and Graham Neubig. "Multi-space Variational Encoder-Decoders for Semi-supervised Labeled Sequence Transduction." arXiv preprint arXiv:1704.01691 (2017).
+
+[6] Hu, Zhiting, et al. "Controllable Text Generation." arXiv preprint arXiv:1703.00955 (2017).
+
+[7] Hsu, Wei-Ning, Yu Zhang, and James Glass. "Unsupervised Learning of Disentangled and Interpretable Representations from Sequential Data." Advances in neural information processing systems. 2017.
+
+[8] Gupta, Ankush, et al. "A Deep Generative Framework for Paraphrase Generation." arXiv preprint arXiv:1709.05074 (2017).
+
+[9] Guo, Jiaxian, et al. "Long Text Generation via Adversarial Training with Leaked Information." arXiv preprint arXiv:1709.08624 (2017).
+
+[10] Ni, Jianmo, et al. "Estimating Reactions and Recommending Products with Generative Models of Reviews." Proceedings of the Eighth International Joint Conference on Natural Language Processing (Volume 1: Long Papers). Vol. 1. 2017.
+
+
+
+
+[6] Jang, Eric, Shixiang Gu, and Ben Poole. "Categorical reparameterization with gumbel-softmax." arXiv preprint arXiv:1611.01144 (2016).
+
+[7] van den Oord, Aaron, and Oriol Vinyals. "Neural Discrete Representation Learning." Advances in Neural Information Processing Systems. 2017.
+
+[8] Tucker, George, et al. "REBAR: Low-variance, unbiased gradient estimates for discrete latent variable models." Advances in Neural Information Processing Systems. 2017.
+
+[10] Grathwohl, Will, et al. "Backpropagation through the Void: Optimizing control variates for black-box gradient estimation." arXiv preprint arXiv:1711.00123 (2017).
