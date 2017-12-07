@@ -106,14 +106,29 @@ https://www.analyticsvidhya.com/blog/2017/01/ultimate-guide-to-understand-implem
 # Neo
 
 ## Motivation
-Machine learning and data science in general are concerned with discovering patterns and insights in large collections of data. The advent of deep learning models have had a major impact on many task in computer vision and natural language processing as well as other domains. In essence, machine learning models condense the raw into a machine representation, from which insights are extracted and communicated to provide business and scientific value.
+Machine learning and data science in general are concerned with discovering patterns and insights in large collections of data. The advent of deep learning models in particular, have had a major impact on many task in computer vision and natural language processing as well as other domains. In essence, machine learning models condense the information contained in raw data into a machine representation, from which insights are extracted and communicated to provide business and scientific value.
 
-On the other hand, language is the primary facet of communication for humans. Communicating insights from a machine representation back into human language is critical for making the findings accessible to people. Natural language generation(NLG) is the task of automatically generating language from a machine representation of data e.g. a knowledge graph.
-
+Language is the primary facet of communication for humans. Communicating insights from a machine representation back into human language is critical for making the findings accessible and providing value. Natural language generation (NLG) is the task of automatically generating human language from a machine representation of data e.g. a knowledge graph. Systems that can perform NLG may be able to communicate hard to understand machine representations of relationships in the data to human language and therefore act as a layer on top of machine learning models for communication of findings to humans. 
 
 ## Objective
-The objective of this project to bridge the gap in communication of insights to humans using human language. In the specific case of the Apollo project, this can help analysts understand the information contained in the knowledge graph in the form of statements about the existing relationships in the graph. 
+The long-term vision for Neo is to bridge the gap between machine representation and human understanding. This vision can include explainable and interpretable machine learning given availability of proper settings and datasets, however, the short term objective is to build a human language generation engine that can be used for communicating relationships. 
 
+Such language generation engines are particularly very important in business contexts where the end-users of machine learning products are usually non-technical and require human language communication to be able to gain value from machine learning products. 
+
+## The case of the Apollo project
+An example of the immediate value that Neo can provide is project Apollo, a news understanding engine that processes vast amount of textual articles to find relationships between entities and encode them into a knowledge graph representation. While Apollo extracts entities and events from many news articles and represents them in a graph, Neo translates back the found relationships into human language. Therefore Neo will act as a a layer on top of Apollo project that connects it to humans and users.
+
+A possible set of end-users for Apollo are financial market analysts that rely on news articles and other information about the real world to form investment strategies. In a recent consultation with a group of financial analysts, the Apollo team found that analysts would benefit more from a set of statements about the real-world in human language. Neo can provide this missing link and help analysts understand the information contained in the Apollo knowledge graph in the form of human language statements.
+
+### Dataset
+Apollo currently uses the Thomson-Reuters news articles dataset and builds a knowledge graph to represent the information contained in the articles about entities and their relationships. Such a dataset is the perfect setup for Neo to add value due to the availability of textual data for training language generation models and the knowledge graph representation of the same text for relationships that require translation back into human language.
+
+An example of the relationship between textual data and the knowledge graph Apollo are relationships like this. 
+    + sentence [GM invests 500MM in Lyft] ->
+        * knowledge graph [nodes(GM, Lyft), relationship(investing)]
+    + -> generated statement [GM invests in Lyft]
+
+The idea is to train a language model conditioned on the knowledge graph to generate human readable sentences and statements about the relationships between entities.
 
 ## conditional generation of summaries based on knowledge graph. 
 
@@ -123,59 +138,69 @@ Similar setting to labeled sequence transduction task, with a given input sequen
 -  controlling the length of a summary in summarization
 -  morphological reinflection (combinig a root word with suffixes/prefix to make new syntactic and semantic variations). 
 
-
-
-- This will be a layer on top of th Appolo project that connects it to humans and users. The knowledge graph extracts entities and events from many news articles and represents them in a graph. 
-- The idea is to generate sentences and paragraphs conditioned on the knowledge graph. This will condense information from many news sources and many relationships into a human readable passage. 
-- This can be used by analysts trying to make sense of an event. It will help them understand all aspects of the event by reading a single article without the need to read many articles about the topic. 
 - Download and run this to show you can generate sentences [pytorch implementation](https://github.com/kefirski/pytorch_RVAE)
 - model to be used is conditional VAE. 
 - need to find a way to represent the knowlege graph to input to the CVAE. Maybe graph convolution? 
 
-## Dataset
-- Thomson-Reuters dataset and the associated knowledge graph from the Apollo project 
-- example of relationship between text and the knowledge graph:
-    + sentence [GM invests 100MM in Lyft] ->
-        * knowledge graph [nodes(GM, Lyft), relationship(investing)]
-
-
 ## Methodology
-- A conditional recurrent VAE [1-5] to reconstruct the input sentence conditioned on the  knowledge graph representation of the relationship. 
+A conditional recurrent VAE [1-5] to reconstruct the input sentence conditioned on the knowledge graph representation of the relationship. 
 
-- Possible to use discrete latent variable models i.e. Concrete[], vector quantisation (VQ) [],REBAR [], RELAX []. 
+### Conditional VAE. 
 
+A variational autoencoder (VAE) is a latent variable model that uses deep neural networks to represent conditional distributions. VAEs use the autoencoding variational Bayes framework [1] for learning the inference and generative network at the same time using stochastic gradient descent. VAEs are based on the re-parameterization trick that disentangles the stochastic and deterministic part of the latent random variable in the model. This enables passing of gradients through the latent variable to be able to learn both the inference and generative networks end-to-end simultaneously. 
+
+A conditional VAE [2] is similar to a vanilla VAE model with the difference that the graphical model includes an additional observed variable which provides a condition for generative network to use for generating the outputs. A conditional VAE is useful for adding additional constraints to the generative process and providing a control nob for data generation. 
+
+### Sentence VAE
+A VAE can be adapted to textual context by using LSTM networks [3] inside both the encoder and decoder of the VAE. This model would be very similar to seq-to-seq [4] type of models with the addition of a Gaussian prior on the latent code that regularizes the autoencoder [5]. Additionally, another advantage of having a distribution on the latent code is the possibility of generating text. In this context, if a degenerate distribution is learned for the latent code, the sequence VAE will revert to a seq-to-seq model. 
+
+The sentence VAE setup can be improved to learn a more disentangled representation for a more controllable text generation process by adding adversarial costs to the generative network part of the VAE [7]. 
+
+### Conditional recurrent VAE
+A conditional VAE with LSTMs inside both the encoder and decoder networks can be used for conditional generation of text [6]. In this context, the text generation process can be controlled based on the values of the conditions provided.
+
+### Discrete latent gradient
+If latent random variables satisfy some conditions, they can be re-parameterized to provide a deterministic function where gradients can pass through and enable end-to-end learning of the both the inference and generative networks. However, if the random variables are discrete random variables, which is the case for textual data, then re-parameterization and passing gradients through them will be much more challenging. This has been particularly challenging in the context of adversarial loss functions. Some recent advances in gradient estimators for discrete variables may provide solutions. Possible gradient estimators for discrete latent variable models include concrete variables [], vector quantization (VQ) [],REBAR gradient [], and RELAX gradient []. 
 
 ## References
 [1] Kingma, Diederik P., and Max Welling. "Auto-encoding variational Bayes." arXiv preprint arXiv:1312.6114 (2013).
 
 [2] Kingma, Diederik P., et al. "Semi-supervised learning with deep generative models." Advances in Neural Information Processing Systems. 2014.
 
+[3] Hochreiter, Sepp, and Jürgen Schmidhuber. "Long short-term memory." Neural computation 9.8 (1997): 1735-1780.
+
+[4] Sutskever, Ilya, Oriol Vinyals, and Quoc V. Le. "Sequence to sequence learning with neural networks." Advances in neural information processing systems. 2014.
+
+
+
+
+
+[5] Bowman, Samuel R., et al. "Generating sentences from a continuous space." arXiv preprint arXiv:1511.06349 (2015).
+
+[6] Zhou, Chunting, and Graham Neubig. "Multi-space Variational Encoder-Decoders for Semi-supervised Labeled Sequence Transduction." arXiv preprint arXiv:1704.01691 (2017).
+
+[7] Hu, Zhiting, et al. "Controllable Text Generation." arXiv preprint arXiv:1703.00955 (2017).
+
+[8] Hsu, Wei-Ning, Yu Zhang, and James Glass. "Unsupervised Learning of Disentangled and Interpretable Representations from Sequential Data." Advances in neural information processing systems. 2017.
+
+[9] Gupta, Ankush, et al. "A Deep Generative Framework for Paraphrase Generation." arXiv preprint arXiv:1709.05074 (2017).
+
+[10] Guo, Jiaxian, et al. "Long Text Generation via Adversarial Training with Leaked Information." arXiv preprint arXiv:1709.08624 (2017).
+
+[11] Ni, Jianmo, et al. "Estimating Reactions and Recommending Products with Generative Models of Reviews." Proceedings of the Eighth International Joint Conference on Natural Language Processing (Volume 1: Long Papers). Vol. 1. 2017.
+
+
+
+
+[12] Jang, Eric, Shixiang Gu, and Ben Poole. "Categorical reparameterization with gumbel-softmax." arXiv preprint arXiv:1611.01144 (2016).
+
+[13] van den Oord, Aaron, and Oriol Vinyals. "Neural Discrete Representation Learning." Advances in Neural Information Processing Systems. 2017.
+
+[14] Tucker, George, et al. "REBAR: Low-variance, unbiased gradient estimates for discrete latent variable models." Advances in Neural Information Processing Systems. 2017.
+
+[15] Grathwohl, Will, et al. "Backpropagation through the Void: Optimizing control variates for black-box gradient estimation." arXiv preprint arXiv:1711.00123 (2017).
+
+
+
+
 [3] Maaløe, Lars, et al. "Auxiliary deep generative models." arXiv preprint arXiv:1602.05473 (2016).
-
-
-
-
-[4] Bowman, Samuel R., et al. "Generating sentences from a continuous space." arXiv preprint arXiv:1511.06349 (2015).
-
-[5] Zhou, Chunting, and Graham Neubig. "Multi-space Variational Encoder-Decoders for Semi-supervised Labeled Sequence Transduction." arXiv preprint arXiv:1704.01691 (2017).
-
-[6] Hu, Zhiting, et al. "Controllable Text Generation." arXiv preprint arXiv:1703.00955 (2017).
-
-[7] Hsu, Wei-Ning, Yu Zhang, and James Glass. "Unsupervised Learning of Disentangled and Interpretable Representations from Sequential Data." Advances in neural information processing systems. 2017.
-
-[8] Gupta, Ankush, et al. "A Deep Generative Framework for Paraphrase Generation." arXiv preprint arXiv:1709.05074 (2017).
-
-[9] Guo, Jiaxian, et al. "Long Text Generation via Adversarial Training with Leaked Information." arXiv preprint arXiv:1709.08624 (2017).
-
-[10] Ni, Jianmo, et al. "Estimating Reactions and Recommending Products with Generative Models of Reviews." Proceedings of the Eighth International Joint Conference on Natural Language Processing (Volume 1: Long Papers). Vol. 1. 2017.
-
-
-
-
-[6] Jang, Eric, Shixiang Gu, and Ben Poole. "Categorical reparameterization with gumbel-softmax." arXiv preprint arXiv:1611.01144 (2016).
-
-[7] van den Oord, Aaron, and Oriol Vinyals. "Neural Discrete Representation Learning." Advances in Neural Information Processing Systems. 2017.
-
-[8] Tucker, George, et al. "REBAR: Low-variance, unbiased gradient estimates for discrete latent variable models." Advances in Neural Information Processing Systems. 2017.
-
-[10] Grathwohl, Will, et al. "Backpropagation through the Void: Optimizing control variates for black-box gradient estimation." arXiv preprint arXiv:1711.00123 (2017).
