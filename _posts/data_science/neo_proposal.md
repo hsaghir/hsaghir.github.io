@@ -47,8 +47,14 @@ I propose a conditional variational autoencoder with an adversarial objective wh
 
 This model will be trained on the the Thomson-Reuters dataset and its associated knowledge graph from the Apollo project. This model can be used for conditional generation of text given knowledge graph relationships. In this context, the text generation process is controlled based on the conditions provided.
 
+
+### Relationship between semantics and syntax
+-  you may want to input some information about the syntax into the decoder for sentence generation. 
+-  The Bowman (2015) paper uses conditional generation of next word given previous words for this purpose. 
+
 ### Discrete variable gradient estimation
 If latent random variables satisfy some conditions and are continuous, they can be re-parameterized to provide a deterministic function where gradients can pass through and enable end-to-end learning of the both the inference and generative networks. However, if the random variables are discrete random variables, which is the case for textual data, then re-parameterization and gradients passing will be much more challenging. This has been particularly challenging in the context of adversarial loss functions. Some recent advances in gradient estimators for discrete variables may provide solutions. Possible gradient estimators for discrete latent variable models include concrete variables [12], vector quantization (VQ) [13],REBAR gradient [14], and RELAX gradient [15]. 
+
 
 
 ### Existing Implementations

@@ -11,7 +11,7 @@ image:
 Back-propagation (Rumelhart & Hinton, 1986), computes exact gradients for deterministic and differentiable objective functions but is not applicable if there is stochasticity or non-differentiable functions involved. That is the case when we want to calculate the gradient of an expectation of a function with respect to parameters $$\theta$$ i.e. $$ \nabla_\theta (E_q(z) [f(z)])=\nabla_\theta( \int q(z)f(z))$$ . An example is ELBO where gradient is difficult to compute since the expectation integral is unknown or the ELBO is not differentiable.
 
 ## Score function gradient (likelihood ratio gradient estimator, REINFORCE gradient): (both continuous and discrete variables)
-To calculate the gradient, we first take the $$\nabla_\theta$$ inside the integral to rewrite it as $$\int \nabla_\theta(q(z)) f(z) dz$$ since only the $$q(z)$$ is a function of $$\theta$$. Then we use the log derivative trick (using the derivative of the logarithm $d (log(u))= d(u)/u$) on the (ELBO) and re-write the integral ass an expectation $$\nabla_\theta (E_q(z) [f(z)]) = E_q(z) [\nabla_\theta \log q(z) f(z)]$$. This estimator now only needs the derivative $$\nabla \log q_\theta (z)$$ to estimate the gradient. The expectation will be replaced with a Monte Carlo Average. When the function we want derivative of is log likelihood, we call the derivative $\nabla_\theta \log ⁡p(x;\theta)$ a score function. The expected value of the score function is zero.[](http://blog.shakirm.com/2015/11/machine-learning-trick-of-the-day-5-log-derivative-trick/)
+To calculate the gradient, we first take the $$\nabla_\theta$$ inside the integral to rewrite it as $$\int \nabla_\theta(q(z)) f(z) dz$$ since only the $$q(z)$$ is a function of $$\theta$$. Then we use the log derivative trick (using the derivative of the logarithm $d (log(u))= d(u)/u$) on the (ELBO) and re-write the integral as an expectation $$\nabla_\theta (E_q(z) [f(z)]) = E_q(z) [\nabla_\theta \log q(z) f(z)]$$. This estimator now only needs the derivative $$\nabla \log q_\theta (z)$$ to estimate the gradient. The expectation will be replaced with a Monte Carlo Average. When the function we want derivative of is log likelihood, we call the derivative $\nabla_\theta \log ⁡p(x;\theta)$ a score function. The expected value of the score function is zero.[](http://blog.shakirm.com/2015/11/machine-learning-trick-of-the-day-5-log-derivative-trick/)
 
 The form after applying the log-derivative trick is called the score ratio. This gradient is also called REINFORCE gradient or likelihood ratio. We can then obtain noisy unbiased estimation of this gradients with Monte Carlo. To compute the noisy gradient of the ELBO we sample from variational approximate q(z;v), evaluate gradient of log q(z;v), and then evaluate the log p(x, z) and log q(z). Therefore there is no model specific work and and this is called black box inference. 
 
@@ -94,10 +94,15 @@ $${\mathbb{E}_{q(z)}\Big[\nabla_{\lambda} \log q(z; \lambda) \Big(f(z) - f(\bar 
 Of course, calculating $$f'(\bar z)$$ is not feasible because of the discrete variables. To address this they apply a “deterministic mean-field network” as an approximation. This enables backpropagation over the mean values of the discrete distributions, rather than over samples from the discrete distribution. 
 
 
+# Unbiased and low variance estimators
+- The main idea is to use a control variate to reduce the variance of a Monte Carlo estimator. i.e. $$g_{new} (b) = g(b) - control(b) + E_{p(b)}[control(b)] $$.
+
+
 ## Rebar gradient (discrete variable):
 
 Rebar gradient combines Reinforce gradients with gradients of the Concrete variable through a novel control variate for Reinforce.  It produces a low-variance, and unbiased gradient. 
 
+- The main idea is to use reinforce as the gradient estimator, $$g(b)$$, and CONCRETE estimator as the control variate, control(b).
 
 We sought an estimator that is low variance, unbiased, and does not require tuning additional hyper-parameters. To construct such an estimator, we introduce a simple control variate based on the difference between the REINFORCE and the re-parameterization trick gradient estimators for the relaxed model. This reduces variance, but does not outperform state-of-the-art methods on its own. Our key contribution is to show that it is possible to conditionally marginalize the control variate to significantly improve its effectiveness.
 
@@ -107,7 +112,9 @@ an implementation:
 
 ## Relax gradient (discrete/continuous/blackbox gradient):
 
-a general framework for learning low-variance, unbiased gradient estimators for black-box functions of random variables. Uses gradients of a neural network trained jointly with model parameters.
+- The main idea is to use reinforce as the gradient estimator, $$g(b)$$, a reinforce estimator for a learned control variate function, control(b), and the reparameterization gradient for expectation of the control variate. 
+
+It makes a general framework for learning low-variance, unbiased gradient estimators for black-box functions of random variables. Uses gradients of a neural network trained jointly with model parameters.
 
 ## Natural gradients
 
@@ -120,22 +127,6 @@ a general framework for learning low-variance, unbiased gradient estimators for 
 - Natural gradient is an elegant solution to both problems
 
 - SGD bounces around in high curvature points which makes convergence harder due to the fact that the manifold of weights is flattened. The idea of natural gradient is to map the gradients from input space to the Riemannian output space where we are comparing ground truth with model outputs. 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
