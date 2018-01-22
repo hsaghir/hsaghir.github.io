@@ -142,7 +142,7 @@ log_temp, log_eta = est_params
 It makes a general framework for learning low-variance, unbiased gradient estimators for black-box functions of random variables. Uses gradients of a neural network trained jointly with model parameters.
 
 
-
+- https://github.com/duvenaud/relax/blob/master/relax-autograd/relax.py
 
 ##Conditioning only on the Markov blanket, Ranganath et al. (2014) / local learning signals, Mnih and Gregor (2014). 
 This is the most important variance reduction technique, since the stochastic gradients no longer scale with the number of latent variables but rather with the size of their Markov blanket.
