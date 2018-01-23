@@ -6,4 +6,35 @@
 
 3- Will be moving on to the Thomson-Reuters dataset and generating text conditioned on knowledge graph on the application side of Neo Project. 
 
-4- Want to discuss possible publication routes as I am not familiar with NLP conferences and have not delved very deeply into NLP literature. Items I want to discuss are possible problems to focus initial paper on, appropriate publication venues, benchmark datasets, required experiments, and a rough time-line.  
+4- Want to discuss possible publication routes as I am not familiar with NLP conferences and have not delved very deeply into NLP literature. Items I want to discuss are possible problems to focus initial paper on, appropriate publication venues, benchmark datasets, required experiments, and a rough time-line. 
+
+
+
+# Publication strategy: talk with Jackie,
+1-First publication: Shared Surface Realization Task (parse tree -> sentence)
+- look at works of Yue Zhang (linearization)
+- look at the work on shared surface realization task 2011 
+- look at Claire Gardent's work on (grammer -> sentence)
+
+2-Continuing research along the lines of: Conditioning on other latent factors in generatig text (i.e. controllable text generation)
+- For example generating text with positive/negative opinions
+
+3- structure of a quality NLP paper (i.e. ACL)
+- motivating it very clearly on why this is important. 
+- Generate language and evaluate BLEU score 
+- analysis of why the system works well or not 
+- an ablation study
+- sampling outputs and lingusticly analyze the structure of the generated text
+
+4- appropriate venues in order of importance for this line of work: 
+ACL, EMNL, EACL, COLNG, INLG, TACL. 
+
+
+
+### Thomson Reuters dataset on AWS S3
+
+- make a ".aws/" directory inside your home directory and make a file called "credentials"
+- Copy your S3 credentials for access to your bucket into this file (usually people make two sets of "s3-read" and "s3-write" credentials to prevent accidental overwriting)
+- install awscli using pip
+- there are a bunch of commands (like ls, cp, mv , etc) for accessing the S3 file system with awscli
+- you can use those commands with sth like this "aws --profile=s3-read s3 ls s3://"
