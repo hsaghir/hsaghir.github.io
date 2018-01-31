@@ -11,12 +11,12 @@
 
 
 # Publication strategy: talk with Jackie,
-1-First publication: Shared Surface Realization Task (parse tree -> sentence)
+1- First publication: Shared Surface Realization Task (parse tree -> sentence)
 - look at works of Yue Zhang (linearization)
 - look at the work on shared surface realization task 2011 
 - look at Claire Gardent's work on (grammer -> sentence)
 
-2-Continuing research along the lines of: Conditioning on other latent factors in generatig text (i.e. controllable text generation)
+2- Continuing research along the lines of: Conditioning on other latent factors in generatig text (i.e. controllable text generation)
 - For example generating text with positive/negative opinions
 
 3- structure of a quality NLP paper (i.e. ACL)
@@ -38,3 +38,25 @@ ACL, EMNL, EACL, COLNG, INLG, TACL.
 - install awscli using pip
 - there are a bunch of commands (like ls, cp, mv , etc) for accessing the S3 file system with awscli
 - you can use those commands with sth like this "aws --profile=s3-read s3 ls s3://"
+
+
+
+a sample input from train set:
+
+price target to $18 from $16 <EOS> * etsy inc <etsy.o>: stifel raises target price to $18 from $15 <EOS> * etsy inc <etsy.o>: wedbush raises price target to $16 from $14ï¿½ï¿½ <EOS> * everbridge inc <evbg.o>: canaccord genuity raises price target to $33 from $28 <EOS> * everbridge inc
+
+==== next word prediction with :
+
+target target to $34 from $20 <EOS> * yelp inc <yelp.n>: barclays raises target price to $36 from $16 <EOS> * yelp inc <yelp.n>: barclays raises target target to $36 from $16 <EOS> * yelp inc <yelp.n>: credit genuity raises target target to $36 from $34 <EOS> * yelp inc
+
+
+
+### Capital markets
+- not on scale
+- Differentiate research
+- it's a high cost business, shell of content , formatting, etc (associates)
+- writing styles of analysts. 
+- Narrative science -> summarize and explain text
+
+
+
