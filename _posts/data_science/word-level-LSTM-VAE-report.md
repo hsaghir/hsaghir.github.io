@@ -50,6 +50,16 @@ price target to $18 from $16 <EOS> * etsy inc <etsy.o>: stifel raises target pri
 target target to $34 from $20 <EOS> * yelp inc <yelp.n>: barclays raises target price to $36 from $16 <EOS> * yelp inc <yelp.n>: barclays raises target target to $36 from $16 <EOS> * yelp inc <yelp.n>: credit genuity raises target target to $36 from $34 <EOS> * yelp inc
 
 
+sample conditioned on "canada": (Breaking news on canada, [my model])
+
+spokesman told reuters, adding that u.s. secretary crazy shortage of u.s. enterprises to restrict winds were meant to leave the red sea guard ration footprint. china," said in a statement on foot. "for your year-to-year resistance ... wide promotions is out of setting up in the pitch. i would not be topping this year to come at slightly down," taking your choices 1.38 percent, out," said gustavo horst leyds, 69, as 24-hour finance minister. the scottish parliament think outlets jurisdiction and sharpened local elections in over three years. hammond
+
+"Iran"
+has warned that the arab sanctions could <EOS> involve [nl8n1nm4hn] diplomats said there were no call white; <EOS> tillerson that encouraged to facilitate worth eu, their grip <EOS> and exporting ally alive. <EOS> wang spokesman said chinese negotiators would have to use <EOS> their bank in paris to set their bull amid the government in <EOS> 2013, and not put a default. will undermine further brexit <EOS> demands. <EOS> as part of a dup of centre-right 68, in an anti-corruption <EOS> purge which included money, a sharp factor aimed at making <EOS> venezuela into a vote. it has introduced jobs 
+In [14]:
+
+"Saudi"
+oil output rise last month as crude prices <clc1> steadied back after hurricane-related disruptions in the purge of saudi arabia tightened the beirut lead to free inflation "as having to verify the region back towards rumbling drillers used the iran-aligned houthis and royal family in china, but it also has openly raised costs for more than 3 years. during a diplomatic purge of tough corruption, crown prince prince mohammed bin salman, is scheduled to visit his  mid-2015, [nl5n1nb0y4] after saudi billionaire prince mohammed accused saudi arabia of supplying its stability.
 
 ### Capital markets
 - not on scale
