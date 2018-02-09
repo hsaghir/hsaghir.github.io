@@ -107,3 +107,68 @@ It makes a general framework for learning low-variance, unbiased gradient estima
 
 
 - https://github.com/duvenaud/relax/blob/master/relax-autograd/relax.py
+
+### project ideas:
+- taking models with non-differentiable part (i.e. DRAW, Neural Turing Machine, RL, etc) and applying a continuous relaxation like RELAX/REBAR
+
+
+## VIMCO gradient:
+- Both the REINFORCE and the variational inference objectives admit multi-sample versions that give tighter bounds on the log-likelihood [5]. we can reduce the variance of the estimators by using information from multiple trajectories to construct baselines.
+-  VIMCO optimizes the multisample variational lower bound in equation (5) with the leave-one-out baseline, and NVIL optimizes the single sample variational lower bound with a baseline that can be learned or computed from averages.
+
+# VQ-VAE:
+- Embed observation into continuous space
+- Transform the Z into a discrete variable over k categories
+    - make a lookup table embedding. 
+    - find the nearest neigbour categorical embedding
+- Take the embedding and feed to decoder
+    + KL will become a constant and can be removed from objective.
+    + gradients are straight through gradient estimator (pretend the non-diffrentiable part doesn't exist)
+- The latent is a matrix of categorical variables
+    + if we sample each categorical independently, the reconstruction won't have a coherent structure. 
+    + Therefore, they used an autoregressive model (pixelCNN) to sample the categorical latent for generation. 
+
+# DRAW
+- use RNNs as encoder/decoder
+- use spatial attention mechanism
+    + main challenge is where to look
+        * 1. using REINFORCE
+        * 2. build a fully differentiable attention (like soft attention)
+        * 3. what they did was to to sample from decoder, send it to encoder, 
+
+
+# Attend infer repeat
+- difference from DRAW is it's focus on learning an understandable representation compared to focus of DRAW on reconstruction
+- Objective is ELBO. challenges:
+    + the size of latent space is a random variable itself
+    + mix of continuous and discrete latent random variables (presence, where, what)
+
+# learning hard alignment with variational inference
+- a seq2seq that can work in online setting. 
+    + where the input seq comes in, in real time. 
+    + TIMIT dataset (speech) 
+- we want the model to attend to different parts of speach and decide if it maps to a phoneme (uses hard attention which is not differentiable)
+- A bernouli decides at each input if we sould output or not. Therefore, the seq will be variable size. 
+- used VIMCO gradient estimator. 
+
+# Thinking fast as slow with deep learning and tree seach (Alpha Zero)
+- why not just use REINFORCE (why use MCTS)?
+    + reinforce is just average of reward times gradient of log of some policy.
+    + we can only use differentiable policies
+    + reinforce has high variance
+    + 
+
+- alpha-beta tree search is expensive. Monte carlo tree seach (MCTS) is and approaximation. 
+    + selece nodes according to a huristic probability function (UCP function)
+    + traverse the tree to get at leaf node:
+        * if this node has not been explored, run simulation get reward
+        * if you have, add child node to tree, run simulation from a random child
+    + update upper confidence bound(UCP) values of node along path from leaf to node
+- MCTS in acion:
+    + selection 
+    + expansion (add it's child)
+    + simulation (get reward)
+    + backprop
+
+
+
