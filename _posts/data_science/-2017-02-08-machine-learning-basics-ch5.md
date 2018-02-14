@@ -53,7 +53,9 @@ However, If we assume that both train and test sets are iid samples (independant
 ### Cross-entropy and Softmax
 - A popular cost function in classification problems is cross-entropy loss coupled with softmax function. Softmax function transforms the outputs of the model into numbers in [0,1] in a way that they add up to 1. This way the outputs can be interpreted as a probability distribution. The cross-entropy loss measures the difference between two probability distributions. If we can use softmax to interpret multiple outputs as a probability distribution, we should use cross entropy as a measure of difference between model output and target values.
 
-- Softmax is an exponentiation and cross-entropy is a log, so it's natural to combine the two in a single function for numerical stability. pytorch does this in the F.cross_entropy function. 
+- Computationally, applying an exponential (Softmax) and then taking a log to find log-probabilities is unstable due to over/under-flow problems. so it's natural to combine the two in a single function for numerical stability. pytorch's F.log_softmax combines the two to find log-probabilities in a numerically single stable step.
+
+- Categorical Cross entropy is just the sum of (real_probability_{category_i} x model_log_probability_{category_i}). Pytorch can do this sum in a single function F.cross_entropy. 
 
 - Another way to interpret cross-entropy is to see it as negative log-likelihood for the data target $$y_i^'$$, under a model $$y_i$$. i.e. $$-log p(data|model)$$
 
@@ -64,7 +66,6 @@ Due to the $$\log$$ for the model output, if the model assigns zero probability 
 To avoid this problem people use sigmoid or "softmax" functions at the output of the model so as to leave at least some chance for every option.
 
 $$softmax(x) = \frac{\exp(x_i)}{\sum_i \exp(x_i)}$$
-
 
 ### SVM
 - Support vector machines are linear classifiers that interpret a linear transformation of the data as a hyperplane $$wx+b = 0$$ separating the two classess. SVMs try to find the hyperplane with the maximum seperation between classes (i.e. maximum k where $$wx+b>k$$ for class 1 and $$wx+b<-k$$ for class -1). The seperation margine we want to maximize is the normalized distance between the two parallel hyperplanes $$(1)wx+b=k , (2)wx+b=-k$$ that touch the data in the two classes i.e. $$d = (1)-(2) = \frac{2k}{|w|}$$. So this will be a constrained optimization problem with $$max \frac{2k}{|w|}$$ subject to $$y_i f(x_i) > k with y_i=1 for class 1 and y_i=-1 for class -1$$. This is a quadratic optimization with a unique maximum. 
