@@ -67,6 +67,17 @@ To avoid this problem people use sigmoid or "softmax" functions at the output of
 
 $$softmax(x) = \frac{\exp(x_i)}{\sum_i \exp(x_i)}$$
 
+
+### Evaluation metrics
+- ROC curve is the plot of the True positive rate (how many of the positive samples the model got right) versus the False positive rate (How many of the negative samples the model wrongly assigned to positive). Therefore, the ideal ROC curve looks like a convex "L" since in ideal case true positive rate is 100% and the false positive rate is zero.
+
+- note that ROC curve is a way of assessing the tradeoff between the benefits (TPR) and costs (FPR). Therefore, summarizing it in a single number like AUC, ignores the tradeoff. For example, if the curve is concave instead of a convex curve, we might be able to get good results by inverting the prediction (i.e. predicting the negative class instead of positive). 
+
+- However, the area under the ROC curve (ROC AUC) is still a widely used metric for evaluating a classifier. ROC AUC is the probability that the model will assign a random sample from the positive class correctly to positive label. 
+
+- The diagonal line of the ROC curve is chance probability (flipping a coin). The area between the diagonal line and the ROC curve is called gini index in econometrics. 
+
+
 ### SVM
 - Support vector machines are linear classifiers that interpret a linear transformation of the data as a hyperplane $$wx+b = 0$$ separating the two classess. SVMs try to find the hyperplane with the maximum seperation between classes (i.e. maximum k where $$wx+b>k$$ for class 1 and $$wx+b<-k$$ for class -1). The seperation margine we want to maximize is the normalized distance between the two parallel hyperplanes $$(1)wx+b=k , (2)wx+b=-k$$ that touch the data in the two classes i.e. $$d = (1)-(2) = \frac{2k}{|w|}$$. So this will be a constrained optimization problem with $$max \frac{2k}{|w|}$$ subject to $$y_i f(x_i) > k with y_i=1 for class 1 and y_i=-1 for class -1$$. This is a quadratic optimization with a unique maximum. 
 
