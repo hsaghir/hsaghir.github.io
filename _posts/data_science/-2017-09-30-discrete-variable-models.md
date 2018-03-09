@@ -10,9 +10,8 @@ image:
 
 Back-propagation (Rumelhart & Hinton, 1986), computes exact gradients for deterministic and differentiable objective functions but is not applicable if there is stochasticity or non-differentiable functions involved. That is the case when we want to calculate the gradient of an expectation of a function with respect to parameters $$\theta$$ i.e. $$ \nabla_\theta (E_q(z) [f(z)])=\nabla_\theta( \int q(z)f(z))$$ . An example is ELBO where gradient is difficult to compute since the expectation integral is unknown or the ELBO is not differentiable.
 
-
-
-# permutations with Gumbel-Sinkhorn 
+# permuations:
+## with Gumbel-Sinkhorn 
 Learning permutation latent variable models requires an intractable marginalization over the combinatorial objects. 
 
 The paper approximates discrete maximum-weight matching using the continuous Sinkhorn operator. Sinkhorn operator is attractive because it functions as a simple, easy-to-implement analog of the softmax operator. Gumbel-Sinkhorn is an extension of the Gumbel-Softmax to distributions over latent matchings.
@@ -20,101 +19,26 @@ https://openreview.net/pdf?id=Byt3oJ-0W
 
 Notice that choosing a category can always be cast as a maximization problem (e.g. argmax of a softmax on categories). Similarly, one may parameterize the choice of a permutation $$P$$ through a square matrix $$X$$, as the solution to the linear assignment problem with $$P_N$$ denoting the set of permutation matrices. The matching operator can parameterize the hard choice of permutations with an argmax on the inner product of the matrix $$X$$ and the set of $$P_N$$ matrices i.e. $$M(X) = argmax <P,X>$$. They approximate $$M(X)$$ with the Sinkhorn operator. Sinkhorn normalization, or Sinkhorn balancing iteratively normalizes rows and columns of a matrix.
 
-
-# gradient estimators for discrete variables 
-
-## REINFORCE
-
-$$g_reinforce[f] = f(b) grad_\theta \log p(b|\theta), $$
-
-To calculate the gradient of the expectation, we first take the gradient operator $$\nabla_\theta$$ inside the integral to rewrite it as $$\int \nabla_\theta(q(z)) f(z) dz$$ given that only the $$q(z)$$ is a function of $$\theta$$. The only condition is that $$q(z)$$ be differentiable over $$\theta$$ almost everywhere. 
-
-Then we use the log derivative trick (using the derivative of the logarithm $d (log(u))= d(u)/u$) on the (ELBO) and re-write the integral as an expectation $$\nabla_\theta (E_q(z) [f(z)]) = E_q(z) [\nabla_\theta \log q(z) f(z)]$$. This estimator now only needs the derivative $$\nabla \log q_\theta (z)$$ to estimate the gradient. The expectation will be replaced with a Monte Carlo Average. When the function we want derivative of is log likelihood, we call the derivative $\nabla_\theta \log ⁡p(x;\theta)$ a score function. The expected value of the score function is zero.[](http://blog.shakirm.com/2015/11/machine-learning-trick-of-the-day-5-log-derivative-trick/)
-
-The form after applying the log-derivative trick is called the score ratio. This gradient is also called REINFORCE gradient or likelihood ratio. We can then obtain noisy unbiased estimation of this gradients with Monte Carlo. To compute the noisy gradient of the ELBO we sample from variational approximate q(z;v), evaluate gradient of log q(z;v), and then evaluate the log p(x, z) and log q(z). Therefore there is no model specific work and and this is called black box inference. 
-
-The problem with this approach is that sampling rare values can lead to large scores and thus high variance for gradient. There are a few methods that use control variates to help with reducing the variance but with a few more non-restricting assumptions we can find a better method with low variance i.e. pathwise gradients. 
+## Variational permutation inference
+with Reparameterizing the Birkhoff polytope for variational permutation inference
 
 
-- An example of a non-differentiable function is a loss function that is defined by an expectation over a collection of random variables. For example, in case of a few possible discrete actions in RL, the policy net is a classifier with softmax output over possible categories of actions. We don't have immediate target values, and the reward is delayed. therefore, the loss function is defined by an expectation over a sequence of action random variables. Estimating the gradient of this loss function, using samples, is required so that we can backpropagate through the policy netword and adjust policy net parameters. the loss functions and their gradients are intractable, as they involve either a sum over an exponential number of latent variable configurations, or high-dimensional integrals that have no analytic solution. Monte-Carlo gradient estimators (Reinforce is an example) are common. 
+## [Grammer VAE](https://arxiv.org/pdf/1703.01925.pdf)
+key observation: frequently, discrete data can be represented as a parse tree (i.e. a sequence of production rules) using a context-free grammar. why not directly encode/decode to and from these parse trees, ensuring the generated outputs are always valid. 
+    1. Take a valid sequence, parse it into a sequence of ordered and reversible production rules (i.e. a parse tree).
+    2. Assign a one-hot representation to each production rule, feed to an LSTM encoder, learn a hidden distribution on the latent space of a VAE. 
+    3. LSTM decoder generates a sequence of production rules.
+    4. Do an offline semantic check to weed out nonsensical sequences. 
+    5. applying sequence of production rules in order to convert to grammatically correct strings. 
 
-- we sample the softmax output of the policy neural net to get a discrete action, then, take log, then we can multiply the logprob by reward and sum it up. 
+Grammars exist for a wide variety of discrete domains such as symbolic expressions, standard programming languages such as C, and chemical structures. A context-free grammar (CFG) is traditionally defined as a 4-tuple G = (V, Σ, R, S): V is a finite set of non-terminal symbols; the alphabet Σ is a finite set of terminal symbols, disjoint from V ; R is a finite set of production rules; and S is a distinct non-terminal known as the start symbol. The rules R are formally described as α → β for α ∈ V and β ∈ (V ∪ Σ)* with * denoting the Kleene closure. In practice, these rules are defined as a set of mappings from a single left-hand side non-terminal in V to a sequence of terminal and/or non-terminal symbols, and can be interpreted as a rewrite rule. Note that natural language is not context-free. Application of a production rule to a non-terminal symbol defines a tree with symbols on the right-hand side of the production rule becoming child nodes for the left-hand side parent. The grammar G thus defines a set of possible trees extending from each non-terminal symbol in V. produced by recursively applying rules in R to leaf nodes until all leaf nodes are terminal symbols in Σ. 
 
+## [Syntax-Directed VAE for Structured Data](https://openreview.net/forum?id=SyqShMZRb)
+The idea is to add an 'attribute grammar', called 'stochastic lazy attribute',  to convert the step 4 from grammer VAE (the offline semantic check) into online guidance for stochastic decoding.
 
-- [pytoch implementation](https://github.com/JamesChuanggg/pytorch-REINFORCE/blob/master/reinforce_discrete.py)
-
-
-
-``` python
-probs = self.model(Variable(state)) # run policy net, get softmax output on categories of possible actions
-action = probs.multinomial().data # sample to get action index and choose a category
-prob = probs[:, action[0,0]].view(1, -1) # index probs with action selection
-log_prob = prob.log() # compute log prob
-
-
-```
-
-
-
-
-## Gumble Softmax:
-Estimates the discrete categorical variable with a continuous analog (i.e. softmax) and then uses the path-wise gradient (reparameterization trick) to produce a low-variance but biased gradient. 
-
-Replacing every discrete random variable in a model with a Concrete (continuous estimation of discrete) random variable results in a continuous model where the re-parameterization trick is applicable. The gradients are biased with respect to the discrete model, but can be used effectively to optimize large models. The tightness of the relaxation is controlled by a temperature hyper-parameter. In the low temperature limit, the gradient estimates become unbiased, but the variance of the gradient estimator diverges, so the temperature must be tuned to balance bias and variance.
-
-
-``` python 
-def sample_gumbel(self, shape, eps=1e-20): 
-    """Sample from Gumbel(0, 1)"""
-    U = autograd.Variable(t.FloatTensor(shape).uniform_(0,1))
-    return -t.log(-t.log(U + eps) + eps)
-
-def gumbel_softmax_sample(self, logits, temperature): 
-    """ Draw a sample from the Gumbel-Softmax distribution"""
-    y = logits + self.sample_gumbel(logits.size())
-    return self.softmax( y / temperature)
-```
-
--  If we pretend the stochastic variable is identity in the backward pass where you need gradients, this would be the straight through gradient.
-
-
-
-## Rebar gradient (discrete variable):
-- The main idea is to use a control variate to reduce the variance of a Monte Carlo (e.g. reinforce) estimator. i.e. $$g_{new} (b) = g(b) - control(b) + E_{p(b)}[control(b)] $$.
-
-Rebar gradient combines Reinforce gradients with gradients of the Concrete variable through a novel control variate for Reinforce.  It produces a low-variance, and unbiased gradient. 
-
-- The main idea is to use reinforce as the gradient estimator, $$g(b)$$, and CONCRETE estimator as the control variate, control(b).
-
-We sought an estimator that is low variance, unbiased, and does not require tuning additional hyper-parameters. To construct such an estimator, we introduce a simple control variate based on the difference between the REINFORCE and the re-parameterization trick gradient estimators for the relaxed model. This reduces variance, but does not outperform state-of-the-art methods on its own. Our key contribution is to show that it is possible to conditionally marginalize the control variate to significantly improve its effectiveness.
-
-
-an implementation:
-- https://github.com/Bonnevie/rebar/blob/master/rebar.py
-
-```
-def rebar(params, est_params, noise_u, noise_v, f):
-log_temp, log_eta = est_params
-```
-
-## Relax gradient (discrete/continuous/blackbox gradient):
-
-- if the function we require gradient of is discrete, then continuous relaxation of it to interpolate values at points where it doesn't exist can use a variety of function. Relax uses a NN to learn that function. 
-
-- The main idea is to use reinforce as the gradient estimator, $$g(b)$$, a reinforce estimator for a learned control variate function, control(b), and the reparameterization gradient for expectation of the control variate. 
-
-It makes a general framework for learning low-variance, unbiased gradient estimators for black-box functions of random variables. Uses gradients of a neural network trained jointly with model parameters.
-
-
-- https://github.com/duvenaud/relax/blob/master/relax-autograd/relax.py
 
 ### project ideas:
 - taking models with non-differentiable part (i.e. DRAW, Neural Turing Machine, RL, etc) and applying a continuous relaxation like RELAX/REBAR
-
-
-## VIMCO gradient:
-- Both the REINFORCE and the variational inference objectives admit multi-sample versions that give tighter bounds on the log-likelihood [5]. we can reduce the variance of the estimators by using information from multiple trajectories to construct baselines.
--  VIMCO optimizes the multisample variational lower bound in equation (5) with the leave-one-out baseline, and NVIL optimizes the single sample variational lower bound with a baseline that can be learned or computed from averages.
 
 # VQ-VAE:
 - Embed observation into continuous space
@@ -151,7 +75,7 @@ It makes a general framework for learning low-variance, unbiased gradient estima
 - A bernouli decides at each input if we sould output or not. Therefore, the seq will be variable size. 
 - used VIMCO gradient estimator. 
 
-# Thinking fast as slow with deep learning and tree seach (Alpha Zero)
+# Thinking fast as slow with deep learning and tree seach (AlphaGo Zero)
 - why not just use REINFORCE (why use MCTS)?
     + reinforce is just average of reward times gradient of log of some policy.
     + we can only use differentiable policies
@@ -171,4 +95,29 @@ It makes a general framework for learning low-variance, unbiased gradient estima
     + backprop
 
 
+# GANs for text
+- Adversarial loss (also happens in supervised learning when we optimize hyperparams)
+    + convert the minmax optimization into a nested Bilevel optimization 
+    + Actor-critic method combines policy and value learning and learns them simultaneously
+    + formulate a GAN as an actor-critic method (generator-> plicy, discriminator -> value, state -> real/fake image, environment-> randomly gives real/fake image, reward -> real image label)
+        * the critic cannot learn the causal structure of the environment
+
+
+- Adversarial Autoencoder. For each minibactch:
+    + First train a VAE
+    + then take the encoder as generator of a GAN and compare it with samples from a prior you want to impose. The discriminator will try to tell apart these two
+    + can be done on SSVAE to encourage the categorical be closer to one-hot. 
+        * train auto-encoder
+        * train the two discriminators (one for continuous, one for discrete)
+        * additional classification loss
+
+# Hierarchical Multiscale RNNs
+
+- They learned a hierarchy starting from characters. The model learns to make decisions about boundries of words, phrases, sentences, etc in the hierarchy of layers. 
+ 
+- they only added three operations UPDATE (update params using gradients i.e. assuming the boundary hasn't been seen yet), COPY (copy hidden state to above layer i.e. when boundary is seen) and FLUSH (zero out the hidden i.e. when the boundary was seen in the state before and now we zero out the hidden) to a stacked RNN. The problem is that hard operations aren't differentiable. so they used straight through gradient.
+https://arxiv.org/pdf/1609.01704.pdf
+
+
+# program synthesis 
 
