@@ -12,6 +12,13 @@ Back-propagation (Rumelhart & Hinton, 1986), computes exact gradients for determ
 
 # permuations:
 ## with Gumbel-Sinkhorn 
+
+- simply treat ordering the peices of the puzzle as classification of peices to the number of possible slots in a way that there aren't any conflicts. If there are N pieces, there are N spots. So an N class classification problem without inconsistencies. 
+- If we make a softmax vector of N-dim for classifying each puzzle peice to a location, there might be peices that are assigned to the same location. 
+
+- The matching operator solves this by forming a matrix of sofmaxes where both rows and cols sum to 1. It is simply a softmax applied to the stack of logits from all peices of the puzzle.  Basically, first normalizing every row of the matrix of all peices and then normalizing applied to columns using  softmax operator. 
+- If we map this to the case of a semi-supervised VAE, instead of using Gumbel-Softmax for a single discrete latent variable(classification label Y), we now have a bunch of N latent variables (the number of puzzle pieces). Instead of sampling from Gumble distribution and applying softmax, we sample from Gumble and apply the matching operator.
+
 Learning permutation latent variable models requires an intractable marginalization over the combinatorial objects. 
 
 The paper approximates discrete maximum-weight matching using the continuous Sinkhorn operator. Sinkhorn operator is attractive because it functions as a simple, easy-to-implement analog of the softmax operator. Gumbel-Sinkhorn is an extension of the Gumbel-Softmax to distributions over latent matchings.
@@ -19,8 +26,32 @@ https://openreview.net/pdf?id=Byt3oJ-0W
 
 Notice that choosing a category can always be cast as a maximization problem (e.g. argmax of a softmax on categories). Similarly, one may parameterize the choice of a permutation $$P$$ through a square matrix $$X$$, as the solution to the linear assignment problem with $$P_N$$ denoting the set of permutation matrices. The matching operator can parameterize the hard choice of permutations with an argmax on the inner product of the matrix $$X$$ and the set of $$P_N$$ matrices i.e. $$M(X) = argmax <P,X>$$. They approximate $$M(X)$$ with the Sinkhorn operator. Sinkhorn normalization, or Sinkhorn balancing iteratively normalizes rows and columns of a matrix.
 
+
+## Learning to compose words into sentences using RL
+- composing word embeddings to sentence embeddings. 
+
+- convert a liearized sentence to a tree representation by a sequence of a set of actions using Reinforce. 
+
+- a list of actions(shift-> put word into stack as a node, reduce -> combine top two nodes in stack into a new node and put into stack)
+
+## generative models for graphs:
+- n^2 adjacency matrix for a graph
+- the number of nodes vary between graphs
+- ordering is factorial possibilities
+
+- decomposes the process to two RNNs
+    + one keeps track of graphs
+    + one generates nodes to insert
+    + 
+
 ## Variational permutation inference
 with Reparameterizing the Birkhoff polytope for variational permutation inference
+
+
+
+## message passing neural network (MPNN)
+- MPNN is an unstructured graph-networks, where the nodes are neurons and the edges are like a synapse between two neurons with a particular (and modifiable) strength
+- When the connection strengths are updated in a rule-based manner until they converge, these graph-based networks can be used to perform complex computation with very high data throughout
 
 
 ## [Grammer VAE](https://arxiv.org/pdf/1703.01925.pdf)

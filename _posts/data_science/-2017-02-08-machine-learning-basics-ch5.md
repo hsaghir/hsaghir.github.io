@@ -37,6 +37,13 @@ However, If we assume that both train and test sets are iid samples (independant
 
 - In the supervised learning case, we write $$p_model(y|x)$$ and follow the same procedure for maximum likelihood estimation. For example, in linear regression we assume a Gaussian model $$p(y|x)=N(wx, \sigma^2)$$ with a fixed variance and a linear function of mean. Performing maximum liklihood on this model results in optimizing mean squared error. When the number of examples is small in the model, we will overfit and have a large gap between train (sample) and test (population) errors (large variance). Therefore, we trade off a biased version of maximum likelihood (i.e. add regularization) for less variance in the model. 
 
+
+### Lp regularization,
+- L2 norm or weight decay makes weights go toward zero but not exactly zero
+- L1 norm makes some parameters be exactly zero (thus sparse) but also penalizes other parameters be small
+- The ideal case is L0 norm where we penalize the number of parameters in a network and not put any constraint on other parameters. But the problem is that L0-norm is discrete and not differentiable. Some work on continuous relaxation of L0-norm discrete variable is encouraging. 
+
+
 ### Bayesian inference
 - As opposed to point estimates for model parameters in frequentist stats, Bayesian approach views model parameters as random variables instead of data points. Therefore, it assumes a distribution for model parameters which is first defined by priors (usually a high entropy distribution like uniform or Gaussian), then data are plugged in and decrease the entropy by concentrating around likely values which establish the posterior belief. The Bayesian approach has two important difference; 1) every prediction will also be a probability distribution (belief) reflecting the model uncertainty about it (robust against overfitting) 2) Another difference is in the application of priors which shift the starting probability space to regions prefered in the beginning. In practice priors are often used to convey preference for models that are simple or smooth. 
 
