@@ -26,14 +26,18 @@ https://openreview.net/pdf?id=Byt3oJ-0W
 
 Notice that choosing a category can always be cast as a maximization problem (e.g. argmax of a softmax on categories). Similarly, one may parameterize the choice of a permutation $$P$$ through a square matrix $$X$$, as the solution to the linear assignment problem with $$P_N$$ denoting the set of permutation matrices. The matching operator can parameterize the hard choice of permutations with an argmax on the inner product of the matrix $$X$$ and the set of $$P_N$$ matrices i.e. $$M(X) = argmax <P,X>$$. They approximate $$M(X)$$ with the Sinkhorn operator. Sinkhorn normalization, or Sinkhorn balancing iteratively normalizes rows and columns of a matrix.
 
-
-- for a sentence of words: an LSTM classifies every token in the sequence as 1-of-n. 
-- put n sequence of the 1-of-n vectors into an nxn matrix of logits called log_alpha.
-- sample a few nxn matrices from Gumbel distribution (i.e. sample from uniform and apply 2 consecutive -logs) as \epsilon
-- add \epsilon to the log_alpha matrix. 
-- apply the sinkhorn operator to this matrix for N_iter times to approximate a permutation matrix and satisfy a matching operator. 
-    + sinkhorn simply applies softmax first to rows and then to columns for n_iterations. softmax is $$\frac{exp(noisy_log_alpha_{i})}{sum(exp(noisy_log_alpha_{i}))}$$.
-- now compare the sinkhorned approximate permutation matrix with target sequence ordering. 
+for a sentence of words:
+- an LSTM classifies every token in the sequence as 1-of-n. 
+- we put all the outputs corresponding to the $$n$$ input token (1-of-n vectors) into an $$nxn$$ matrix of logits called log_alpha. 
+- This matrix should be one-hot vectors that assign each input to only one location. Since such a matrix is categorical and non-differentiable, it is replaced with its continuous relaxation.
+    + one can re-parameterize any categorical distribution by injecting noise and then choosing a category. However, the marginalization  |Y| = N!.
+        * $$\epsilon$$ : sample a few nxn matrices from Gumbel distribution (i.e. sample from uniform and apply 2 consecutive -logs) 
+        * noisy_log_alpha =  $$\epsilon$$ + log_alpha. 
+        * apply the sinkhorn operator to noisy_log_alpha for N_iter times to slove inconsistencies and approximate a permutation matrix.
+        * sinkhorn simply applies softmax first to rows and then to columns for n_iterations. softmax on a row is $$\frac{exp(noisy_log_alpha_{i})}{sum(exp(noisy_log_alpha_{i}))}$$.
+    + re-order original input using the permutation matrix.
+- Feed this sampled factorization matrix to an LSTM decoder to reconstruct input tokens but with new ordering. 
+    + we compare the re-ordered and reconstructed input sequence with target sequence ordering to calculate loss. 
 
 ## Learning to compose words into sentences using RL
 - composing word embeddings to sentence embeddings. 
