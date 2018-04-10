@@ -8,16 +8,30 @@ image:
 ---
 
 
-Back-propagation (Rumelhart & Hinton, 1986), computes exact gradients for deterministic and differentiable objective functions but is not applicable if there is stochasticity or non-differentiable functions involved. That is the case when we want to calculate the gradient of an expectation of a function with respect to parameters $$\theta$$ i.e. $$ \nabla_\theta (E_q(z) [f(z)])=\nabla_\theta( \int q(z)f(z))$$ . An example is ELBO where gradient is difficult to compute since the expectation integral is unknown or the ELBO is not differentiable.
+Back-propagation (Rumelhart & Hinton, 1986), computes exact gradients for deterministic and differentiable objective functions but is not applicable if there is stochasticity or non-differentiable functions involved. Two sources of non-differentiability in computational graphs are:
+1. Stochastic nodes:
+    - Stochastic nodes can be reparameterized to decouple the stochastic part (needs a re-parameterizable distributions)
+        + exponential distributions can be reparameterized easily with Normal distribution as the noise source. 
+        + via the Gumbel trick (choosing a category, after injecting Gumbel noise), any categorical distribution is re-parameterizable.
+
+2. Discrete nodes:
+    - we can enable backpropagation in the discrete nodes by a continuous relaxation \citep{Bengio2013,Jang2016,Maddison2016,Tucker2017}. The idea is that a hard node in the computational graph is replaced with a soft one.
+
+Stochasticity is the case when we want to calculate the gradient of an expectation of a function with respect to parameters $$\theta$$ i.e. $$ \nabla_\theta (E_q(z) [f(z)])=\nabla_\theta( \int q(z)f(z))$$ . An example is ELBO where gradient is difficult to compute since the expectation integral is unknown or the ELBO is not differentiable. If we have discrete distributions, both of above situations co-occur. These two are used in Gumbel-Softmax to make a latent variable model with discrete latent variables. 
+    - Authors reparameterize a categorical latent variable with Gumbel trick to solve stochasticity. Then since the re-parameterization is still dicrete, they relax it by sampling under the softmax approximation.
 
 # permuations:
 ## with Gumbel-Sinkhorn 
 
-- simply treat ordering the peices of the puzzle as classification of peices to the number of possible slots in a way that there aren't any conflicts. If there are N pieces, there are N spots. So an N class classification problem without inconsistencies. 
+Although continuous relaxations of discrete variables work well for categorical variables, they do not directly apply to discrete objects possessing well defined combinatorial structure, such as a graphs or permutations
+
+- They simply treat ordering the peices of the puzzle as classification of peices to the number of possible slots in a way that there aren't any conflicts. If there are N pieces, there are N spots. So it's an N class classification problem without inconsistencies. 
+
 - If we make a softmax vector of N-dim for classifying each puzzle peice to a location, there might be peices that are assigned to the same location. 
 
-- The matching operator solves this by forming a matrix of sofmaxes where both rows and cols sum to 1. It is simply a softmax applied to the stack of logits from all peices of the puzzle.  Basically, first normalizing every row of the matrix of all peices and then normalizing applied to columns using  softmax operator. 
-- If we map this to the case of a semi-supervised VAE, instead of using Gumbel-Softmax for a single discrete latent variable(classification label Y), we now have a bunch of N latent variables (the number of puzzle pieces). Instead of sampling from Gumble distribution and applying softmax, we sample from Gumble and apply the matching operator.
+- The matching operator solves this by forming a matrix of sofmaxes where both rows and cols sum to 1. It is simply a softmax applied to the stack of logits from all pieces of the puzzle.  Basically, first normalizing every row of the matrix of all peices (assigning each piece to a spot) and then normalizing applied to columns (removing inconsistent assignments) using  softmax operator. 
+
+- This can be extended to a stocvhastic case of having a distribution over the permutations via re-parameterization of Gumbel-Sinkhorn operator to perform computations with stochastic nodes. If we map this to the case of a semi-supervised VAE, instead of using Gumbel-Softmax for a single discrete latent variable(classification label Y), we now have a bunch of N latent variables (the number of puzzle pieces). Instead of sampling from Gumble distribution and applying softmax for one discrete variable as in Gumbel-softmax, we sample from Gumble and then apply the matching operator to sample from a set of discrete variables in a way that assigns each peice to only a single spot.
 
 Learning permutation latent variable models requires an intractable marginalization over the combinatorial objects. 
 
