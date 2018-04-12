@@ -168,12 +168,19 @@ The idea is to add an 'attribute grammar', called 'stochastic lazy attribute',  
         * train the two discriminators (one for continuous, one for discrete)
         * additional classification loss
 
-# Hierarchical Multiscale RNNs
+# Hierarchical Multiscale RNNs (HM-RNN)
 
-- They learned a hierarchy starting from characters. The model learns to make decisions about boundries of words, phrases, sentences, etc in the hierarchy of layers. 
- 
-- they only added three operations UPDATE (update params using gradients i.e. assuming the boundary hasn't been seen yet), COPY (copy hidden state to above layer i.e. when boundary is seen) and FLUSH (zero out the hidden i.e. when the boundary was seen in the state before and now we zero out the hidden) to a stacked RNN. The problem is that hard operations aren't differentiable. so they used straight through gradient.
+- It's a stacked LSTM where instead of performing a cell UPDATE at every time step, and at each layer, we choose from 3 operations to do on cell state (memory) at each time step and each layer. This learns a multiscale and hierarchical representation (e.g. characters, words, etc). Each layer has a parametrized binary boundary detector, Z, that is learned to decide the boundaries at each layer and choose an operation on the cell state (memory).
+    + UPDATE: update the previous hidden state, $$C_t = f*C_{t-1} + i*C^{~}_{t}$$, as soon as the boundary in the below layer is seen i.e. $$Z^{l-1}=1, Z^{l}=0$$.
+    + COPY: copies previous hidden state to present, $$C_t = C_{t-1}, h_t = h_{t-1}$$, until the boundary in layer below is seen i.e. $$Z^{l-1}=0, Z^{l}=0$$. 
+    + FLUSH: zeros out the memory of the present hidden state, $$C_t = i*C^{~}_{t}$$, if the boundary in the current layer is seen i.e. $$Z^{l-1}=0, Z^{l}=0$$
+
+
+- In HM-RNN, at each time step, (1) operation is selected based on the hidden states of the below layer at the same time or the previous time step of the same layer and (2) operation executed (e.g., UPDATE, COPY, FLUSH). 
+- an UPDATE at a layer can happen only after *at least* one UPDATE is performed at its previous layer
+- The binary boundary parameter is not differentiable, so they used straight through gradient.
 https://arxiv.org/pdf/1609.01704.pdf
+
 
 
 # program synthesis 
