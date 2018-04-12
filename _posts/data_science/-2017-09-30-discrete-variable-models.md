@@ -183,5 +183,7 @@ https://arxiv.org/pdf/1609.01704.pdf
 
 
 
-# program synthesis 
-
+# project idea:
+- Take [DRAW](https://github.com/chenzhaomin123/draw_pytorch), apply it to text instead of a seq2seq with attention. (maybe even surface realization)
+- taking models with non-differentiable part (i.e. DRAW, Neural Turing Machine, RL, etc) and use a continuous relaxation like [RELAX/REBAR](https://github.com/pemami4911/REBAR-pytorch/blob/master/rebar_toy.ipynb) for gradient estimator. 
+- Similar to [multiscale hierarchical LSTM](https://github.com/HanqingLu/MultiscaleRNN) perform one of UPDATE, COPY, or FLUSH on the LSTM cell based on a learned boundary variable. This way, the encoder can put words far from each other into a multiscale hierarchy. 
