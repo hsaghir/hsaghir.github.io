@@ -184,8 +184,9 @@ https://arxiv.org/pdf/1609.01704.pdf
 
 
 # project idea:
-- Take [DRAW](http://kvfrans.com/what-is-draw-deep-recurrent-attentive-writer/), [apply](https://github.com/chenzhaomin123/draw_pytorch) it to text instead of a seq2seq with attention. (maybe even surface realization)
-- Use the [Sinkhorn operator](https://github.com/google/gumbel_sinkhorn/blob/master/sinkhorn_ops.py) on the attention matrix.
+- Take [DRAW](http://kvfrans.com/what-is-draw-deep-recurrent-attentive-writer/), [apply](https://github.com/chenzhaomin123/draw_pytorch) it to text instead of a seq2seq with attention.
+- Compare it with only attention networks i.e. [transformer network](https://mchromiak.github.io/articles/2017/Sep/12/Transformer-Attention-is-all-you-need/).
+- Use it for surface realization with the [Sinkhorn operator](https://github.com/google/gumbel_sinkhorn/blob/master/sinkhorn_ops.py) on the attention matrix.
 - taking models with non-differentiable part (i.e. DRAW, Neural Turing Machine, RL, etc) and use a continuous relaxation like [RELAX/REBAR](https://github.com/pemami4911/REBAR-pytorch/blob/master/rebar_toy.ipynb) for gradient estimator. 
 - Similar to [multiscale hierarchical LSTM](https://github.com/HanqingLu/MultiscaleRNN) perform one of UPDATE, COPY, or FLUSH on the LSTM cell based on a learned boundary variable. This way, the encoder can put words far from each other into a multiscale hierarchy. 
 - Then try developing the [inverse DRAW](https://openai.com/requests-for-research/#inverse-draw)
