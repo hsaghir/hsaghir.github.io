@@ -36,3 +36,12 @@ image:
 - There are super-complex cells in brain (medial temporal lobe) called grandmother cells pointing to the fact that get activated by a super complex pattern, for example the image of grand mother. 
 
 - The human eye is mostly very low resolution, except for a tiny patch called the fovea. The fovea only observes an area about the size of a thumbnail held at arms length. This has inspired building attention mechanisms into NN.
+
+
+## Separable Convolutions
+- In a separable convolution, we can split the kernel operation into multiple steps. Assuming the kernel can be expressed as $$k = k1.dot(k2)$$, instead of doing a 2D convolution with k, we could get to the same result by doing 2 1D convolutions with k1 and k2.
+- **depthwise separable convolution**. This will perform a spatial convolution while keeping the channels separate and then follow with a depthwise convolution. We do this because of the hypothesis that spatial and depthwise information can be decoupled and reduces the number of kernels/parameters in the network. 
+    + Let’s say we have a 3x3 convolutional layer on 16 input channels and 32 output channels. What happens in detail is that every of the 16 channels is traversed by 32 3x3 kernels resulting in 512 (16x32) feature maps. Adding up features along output channels give us 32 output channels we wanted.
+    + For a depthwise separable convolution on the same example, we traverse the 16 channels with 1 3x3 kernel each, giving us 16 feature maps. Now, before merging anything, we traverse these 16 feature maps with 32 1x1 convolutions each (depth multiplier of 1) and only then start to them add together. This results in 656 (16x3x3 + 16x32x1x1) parameters opposed to the 4608 (16x32x3x3) parameters from above
+
+
