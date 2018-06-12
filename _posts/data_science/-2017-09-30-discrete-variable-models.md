@@ -25,13 +25,13 @@ Stochasticity is the case when we want to calculate the gradient of an expectati
 
 Although continuous relaxations of discrete variables work well for categorical variables, they do not directly apply to discrete objects possessing well defined combinatorial structure, such as a graphs or permutations
 
-- They simply treat ordering the peices of the puzzle as classification of peices to the number of possible slots in a way that there aren't any conflicts. If there are N pieces, there are N spots. So it's an N class classification problem without inconsistencies. 
+- They simply treat ordering the peices of the puzzle as classification of peices to the number of possible slots in a way that there aren't any conflicts. If there are N pieces, there are N spots. So it comes down to doing an N-class classification problem N times in a way that each piece is put in just one place. 
 
 - If we make a softmax vector of N-dim for classifying each puzzle peice to a location, there might be peices that are assigned to the same location. 
 
 - The matching operator solves this by forming a matrix of sofmaxes where both rows and cols sum to 1. It is simply a softmax applied to the stack of logits from all pieces of the puzzle.  Basically, first normalizing every row of the matrix of all peices (assigning each piece to a spot) and then normalizing applied to columns (removing inconsistent assignments) using  softmax operator. 
 
-- This can be extended to a stocvhastic case of having a distribution over the permutations via re-parameterization of Gumbel-Sinkhorn operator to perform computations with stochastic nodes. If we map this to the case of a semi-supervised VAE, instead of using Gumbel-Softmax for a single discrete latent variable(classification label Y), we now have a bunch of N latent variables (the number of puzzle pieces). Instead of sampling from Gumble distribution and applying softmax for one discrete variable as in Gumbel-softmax, we sample from Gumble and then apply the matching operator to sample from a set of discrete variables in a way that assigns each peice to only a single spot.
+- This can be extended to a stochastic case of having a distribution over the permutations via re-parameterization of Gumbel-Sinkhorn operator to perform computations with stochastic nodes. If we map this to the case of a semi-supervised VAE, instead of using Gumbel-Softmax for a single discrete latent variable(classification label Y), we now have a bunch of N latent variables (the number of puzzle pieces). Instead of sampling from Gumble distribution and applying softmax for one discrete variable as in Gumbel-softmax, we sample from Gumble, add to logits and then apply the matching operator to softly sample from a set of discrete variables in a way that assigns each peice to only a single spot.
 
 Learning permutation latent variable models requires an intractable marginalization over the combinatorial objects. 
 
@@ -41,12 +41,12 @@ https://openreview.net/pdf?id=Byt3oJ-0W
 Notice that choosing a category can always be cast as a maximization problem (e.g. argmax of a softmax on categories). Similarly, one may parameterize the choice of a permutation $$P$$ through a square matrix $$X$$, as the solution to the linear assignment problem with $$P_N$$ denoting the set of permutation matrices. The matching operator can parameterize the hard choice of permutations with an argmax on the inner product of the matrix $$X$$ and the set of $$P_N$$ matrices i.e. $$M(X) = argmax <P,X>$$. They approximate $$M(X)$$ with the Sinkhorn operator. Sinkhorn normalization, or Sinkhorn balancing iteratively normalizes rows and columns of a matrix.
 
 for a sentence of words:
-- an LSTM classifies every token in the sequence as 1-of-n. 
-- we put all the outputs corresponding to the $$n$$ input token (1-of-n vectors) into an $$nxn$$ matrix of logits called log_alpha. 
+- an LSTM classifies every token in the sequence to one of n location as 1-of-n. 
+- we put all the outputs (each 1xn) of the LSTM corresponding to the $$n$$ input token (1-of-n vectors) into a list that forms an $$nxn$$ matrix of logits called log_alpha. 
 - This matrix should be one-hot vectors that assign each input to only one location. Since such a matrix is categorical and non-differentiable, it is replaced with its continuous relaxation.
-    + one can re-parameterize any categorical distribution by injecting noise and then choosing a category. However, the marginalization  |Y| = N!.
-        * $$\epsilon$$ : sample a few nxn matrices from Gumbel distribution (i.e. sample from uniform and apply 2 consecutive -logs) 
-        * noisy_log_alpha =  $$\epsilon$$ + log_alpha. 
+    + one can re-parameterize any categorical distribution by adding noise to the distribution parameter and then choosing a category. However, the marginalization  |Y| = N!.
+        * $$\epsilon$$ : sample a few nxn noise matrices from Gumbel distribution (i.e. sample from uniform and apply 2 consecutive $$-log$$) 
+        * noisy_log_alpha =  average ( $$\epsilon$$ + log_alpha. 
         * apply the sinkhorn operator to noisy_log_alpha for N_iter times to slove inconsistencies and approximate a permutation matrix.
         * sinkhorn simply applies softmax first to rows and then to columns for n_iterations. softmax on a row is $$\frac{exp(noisy_log_alpha_{i})}{sum(exp(noisy_log_alpha_{i}))}$$.
     + re-order original input using the permutation matrix.
