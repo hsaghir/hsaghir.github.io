@@ -173,7 +173,11 @@ A bunch of useful loss functions:
 
 - $$\argmax f(x)$$  is nothing but the value of x for which the value of the function is maximal. And $$\max f(x)$$ means value of $$f(x)$$ for which it is maximum.
 
-argmax(x1,x2) takes a pair numbers and returns (let's say) 0 if x1>x2, 1 if x2>x1. (value at x1=x2 is arbitrary/undefined). So, wherever you are on the (x1,x2) plane, as long as you're not on the x1=x2 line, if you move an infinitesimal tiny bit in any direction: you won't change the value (0 or 1) that argmax outputs - the gradient of argmax(x1,x2) w.r.t x1,x2 is (0,0) almost everywhere. At those places where x1=x2 (and argmax's value changes abruptly from 0 to 1 or vice versa), its gradient w.r.t x1,x2 is undefined.
+$$\max{f(x)} = f{\argmax{f(x)}}$$
+$$\argmax{f(x)} = f^{-1} {\max{f(x)}}$$
+
+
+- for comparison of two numbers, argmax(x1,x2) takes a pair numbers and returns index of maximum (let's say) 0 if x1>x2, 1 if x2>x1. (value at x1=x2 is arbitrary/undefined). So, wherever you are on the (x1,x2) plane, as long as you're not on the x1=x2 line, if you move an infinitesimal tiny bit in any direction: you won't change the value (0 or 1) that argmax outputs - the gradient of argmax(x1,x2) w.r.t x1,x2 is (0,0) almost everywhere. At those places where x1=x2 (and argmax's value changes abruptly from 0 to 1 or vice versa), its gradient w.r.t x1,x2 is undefined.
 
 There are no networks that do ordinary backprop through argmax (since the gradient is degenerate / useless). The training of networks that have argmax (or similar) in their equations must include something other than backprop - sampling techniques such as REINFORCE (generally: harder to train).
 
