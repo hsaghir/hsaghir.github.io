@@ -169,4 +169,12 @@ A bunch of useful loss functions:
 
         $$softmax(x) = \frac{\exp(x_i)}{\sum_i \exp(x_i)}$$
 
+### Max vs Argmax
 
+- $$\argmax f(x)$$  is nothing but the value of x for which the value of the function is maximal. And $$\max f(x)$$ means value of $$f(x)$$ for which it is maximum.
+
+argmax(x1,x2) takes a pair numbers and returns (let's say) 0 if x1>x2, 1 if x2>x1. (value at x1=x2 is arbitrary/undefined). So, wherever you are on the (x1,x2) plane, as long as you're not on the x1=x2 line, if you move an infinitesimal tiny bit in any direction: you won't change the value (0 or 1) that argmax outputs - the gradient of argmax(x1,x2) w.r.t x1,x2 is (0,0) almost everywhere. At those places where x1=x2 (and argmax's value changes abruptly from 0 to 1 or vice versa), its gradient w.r.t x1,x2 is undefined.
+
+There are no networks that do ordinary backprop through argmax (since the gradient is degenerate / useless). The training of networks that have argmax (or similar) in their equations must include something other than backprop - sampling techniques such as REINFORCE (generally: harder to train).
+
+max(x1,x2) also doesn't have a gradient at x1=x2, But - every other place you go on the (x1,x2) plane the gradient of max(x1,x2) w.r.t x1,x2 is either (1,0) or (0,1) - when we do a forward pass we'll let only x1 or only x2 pass through, and when we back prop gradients, the gradient of max(x1,x2) w.r.t to the larger of the two arguments will be 1, and w.r.t to the smaller of the arguments - it will be 0. So max and similar functions (like relu) are useful for backprop.
