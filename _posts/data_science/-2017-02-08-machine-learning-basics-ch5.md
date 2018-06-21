@@ -169,8 +169,20 @@ A bunch of useful loss functions:
 
         $$softmax(x) = \frac{\exp(x_i)}{\sum_i \exp(x_i)}$$
 
-### Max vs Argmax
+### Gradients through max pooling 
 
+- backprop through max pooling: There is no gradient with respect to non maximum values, since changing them slightly does not affect the output. Further the max is locally linear with slope 1, with respect to the input that actually achieves the max. Thus, the gradient from the next layer is passed back to only that neuron which achieved the max. All other neurons get zero gradient. So the output of max pool would be a vector of all zeros, except that the i-th location where $$(i=argmax(z_i))$$ that will get a gradient. So suppose you have a layer P which comes on top of a layer PR. Then the forward pass will be something like this:
+
+$$Pi=f(∑jWijPRj)$$,
+
+where Pi is the activation of the ith neuron of the layer P, f is the activation function and W are the weights. So if you derive that, by the chain rule you get that the gradients flow as follows:
+
+$$grad(PRj)=∑igrad(Pi)f′Wij$$, 
+
+But now, if you have max pooling, f=id for the max neuron and f=0 for all other neurons, so f′=1 for the max neuron in the previous layer and f′=0 for all other neurons.
+
+
+#### Max vs Argmax
 - $$\argmax f(x)$$  is nothing but the value of x for which the value of the function is maximal. And $$\max f(x)$$ means value of $$f(x)$$ for which it is maximum.
 
 $$\max{f(x)} = f{\argmax{f(x)}}$$
@@ -182,3 +194,8 @@ $$\argmax{f(x)} = f^{-1} {\max{f(x)}}$$
 There are no networks that do ordinary backprop through argmax (since the gradient is degenerate / useless). The training of networks that have argmax (or similar) in their equations must include something other than backprop - sampling techniques such as REINFORCE (generally: harder to train).
 
 max(x1,x2) also doesn't have a gradient at x1=x2, But - every other place you go on the (x1,x2) plane the gradient of max(x1,x2) w.r.t x1,x2 is either (1,0) or (0,1) - when we do a forward pass we'll let only x1 or only x2 pass through, and when we back prop gradients, the gradient of max(x1,x2) w.r.t to the larger of the two arguments will be 1, and w.r.t to the smaller of the arguments - it will be 0. So max and similar functions (like relu) are useful for backprop.
+
+
+
+### Generalization and BAC_Bayes
+- generalization gap is rarely observed in neural nets. the question is why?

@@ -53,6 +53,8 @@ for a sentence of words:
 - Feed this sampled factorization matrix to an LSTM decoder to reconstruct input tokens but with new ordering. 
     + we compare the re-ordered and reconstructed input sequence with target sequence ordering to calculate loss. 
 
+- Note that the matching operator is not differentiable! It searches over all  n!n!  possible permutation matrices and returns the one with the maximum Frobinius inner product. Sinkhorn operator is the differentiable approximation of the matching operator. to be able to perform approximate posterior inference to enable learning of a probabilistic latent representation of permutations, rather than categories. Argmax function is reparameterized with Gumbel-softmax and matching operator is reparameterized using Gumbel-Sinkhorn. 
+
 ## Learning to compose words into sentences using RL
 - composing word embeddings to sentence embeddings. 
 

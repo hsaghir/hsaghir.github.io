@@ -173,6 +173,9 @@ The ratio loss is minimised since it acts as a surrogate negative log-likelihood
 
 6. Instead of estimating ratios, we estimate ratio of gradients of log densities. For this, we can use[ denoising as a surrogate task](http://www.inference.vc/variational-inference-using-implicit-models-part-iv-denoisers-instead-of-discriminators/). denoisers estimate gradients directly, and therefore we might get better estimates than first estimating likelihood ratios and then taking the derivative of those. 
 
+7. WGAN requires that the discriminator be a 1-Lipchitz function. A differentiable function is 1-Lipschtiz if and only if it has gradients with norm at most 1 everywhere. Gradient penalty considers directly constraining the gradient norm of the critic’s output with respect to its input.
+	- enforcing the unit gradient norm constraint everywhere is intractable, we only enforce it only along straight lines between pairs of points sampled from the data distribution and the generator distribution (i.e. positive and negative samples). This seems sufficient and experimentally results in good performance.
+
 ### Energy-based training (alternative to GAN)
 
 "Optimizing the Latent Space of Generative Networks" is a new paper from FAIR that describes the GLO model (Generative Latent Optimization).
