@@ -12,6 +12,17 @@ If you've been tracking the news on machine learnign and "AI", chances are that 
 I am specificly interested in generative models due to their unreasonably elegant and principled approach in solving machine learning problems at a time where we don't really understand much about our models. The basic goal of generative models is to perform density estimation meaning that we want to take in a bunch of training data and fit a probability density function to it. We can then use that probability density function to generate new data similar to the training data.
 
 
+The discipline of generative modeling has experienced enormous leaps in capabilities in recent years, mostly with likelihood-based methods (Graves, 2013; Kingma and Welling, 2013, 2018; Dinh et al., 2014; van den Oord et al., 2016a) and generative adversarial networks (GANs) (Goodfellow et al., 2014) (see Section 4). Likelihood-based methods can be divided into three categories:
+    - Autoregressive models (Hochreiter and Schmidhuber, 1997; Graves, 2013; van den Oord et al., 2016a,b; Van Den Oord et al., 2016). Those have the advantage of simplicity, but have as disadvantage that synthesis has limited parallelizability, since the computational length of synthesis is proportional to the dimensionality of the data; this is especially troublesome for large images or video.
+    - Variational autoencoders (VAEs) (Kingma and Welling, 2013, 2018), which optimize a lower bound on the log-likelihood of the data. Variational autoencoders have the advantage of parallelizability of training and synthesis, but can be comparatively challenging to optimize (Kingma et al., 2016).
+    - Flow-based generative models, first described in NICE (Dinh et al., 2014) and extended in RealNVP (Dinh et al., 2016). 
+        + advantage: Exact latent-variable inference and log-likelihood evaluation. In VAEs, one is able to infer only approximately the value of the latent variables that correspond to a datapoint. GAN’s have no encoder at all to infer the latents.
+        + Efficient inference and efficient synthesis, compared to autoregressive models.
+        + Useful latent space for downstream tasks. The hidden layers of autoregressive models have unknown marginal distributions, making it much more difficult to perform valid manipulation of data. In GANs, datapoints can usually not be directly represented in a latent space.
+        + Significant potential for memory savings. Computing gradients in reversible neural networks requires an amount of memory that is constant instead of linear in their depth.
+        + In most flow-based generative models (Dinh et al., 2014, 2016), the generative process is defined as an invertible transformation (g) of a latent variable (z) (usually a simple and tractable distribution e.g. mutlivariate Gaussian) to data points (x). The invertability of the transformation makes inference of latent z from data x easy. 
+
+
 ## Statistical modelling
 
 Almost everything that we can do with data involves finding the probability distribution underlying our data P(x). This includes finding insights in data, prediction, modeling the world, etc.  Therefore, We are interested in finding the true probability distribution of our data P(x) which is unknown. We usually use the scientific method in a probabilistic pipeline to solve this problem i.e.:
@@ -24,7 +35,7 @@ Almost everything that we can do with data involves finding the probability dist
 
 The statistical modeling procedure usually involves the introduction of some hidden variables, $$z_i$$, as hidden causes for the observed variables $$x_i$$, and a mixing procedure that we believe will lead to generation of the data as a model for the unknown true probability distribution of the data $$P(X)$$. The collection of observed variables $$X$$, and hidden variables, $$Z$$, form a joint probability distribution  $$P(X, Z)$$ that constructs our model. 
 
-The joint distribution $$P(X, Z)$$ can be thought of as a combination of other simpler probability distributions  through a hierarchy of component distributions i.e. $$P(X, Z)=P(X|Z)P(Z)$$. This means that we firstsa sample the top distribution over hidden variables $$P(Z)$$ to choose a component that should produce data, then the corresponding component $$P(X|Z)$$ produces a sample x. This makes it easier to express the complex probability distribution of the observed data P(x) using a model P(x,z)=P(x|z)P(z). It is important to note that the real procedure for producing a sample x is unknown to us and the model is merely an attempt to find an estimation for the true distribution.
+The joint distribution $$P(X, Z)$$ can be thought of as a combination of other simpler probability distributions  through a hierarchy of component distributions i.e. $$P(X, Z)=P(X|Z)P(Z)$$. This means that we first sample the top distribution over hidden variables $$P(Z)$$ to choose a component that should produce data, then the corresponding component $$P(X|Z)$$ produces a sample x. This makes it easier to express the complex probability distribution of the observed data P(x) using a model P(x,z)=P(x|z)P(z). It is important to note that the real procedure for producing a sample x is unknown to us and the model is merely an attempt to find an estimation for the true distribution.
 
 The task is then to fit the model by "infering" the latent variables from the data i.e. $$P(Z|X)$$. 
 
@@ -62,7 +73,8 @@ At the beginning, the probability of choosing a component in the mixture is base
 ### Types of models
 
 #### 1. Fully-observed models: 
-These Models observe data directly without introducing any new local latent variables but have a deterministic internal hidden representation of the data. Let observations be $$X = {x_1, x_2, .., x_n}$$ as random variables. We assume a prior for each variable e.g. $$x_i ~ Cat(\pi|\pi(x_1,...,x_i))$$. The joint distribution is described as $$p(X) = p(x_1)p(x_2|x_1)...p(x_n|(x_1,...,x_n))$$. This will be a directed model of only observed variables.
+These Models observe data directly without introducing any new local latent variables but have a deterministic internal hidden representation of the data. Let observations be $$X = {x_1, x_2, .., x_n}$$ as random variables. The joint distribution is described as $$p(X) = p(x_1)p(x_2|x_1)...p(x_n|(x_1,...,x_n))$$. This will be a directed model of only observed variables.
+    + We can assume a prior for each variable e.g. $$x_i ~ Cat(\pi|\pi(x_1,...,x_i))$$. 
     + all conditional probabilities (e.g. $$p(x_i|(x_1,...,x_{i-1}))$$) may be described using deep neural nets (e.g. an LSTM).  
     + They can work with any data type.
     + likelihood function is explicit in terms of observed variables. Therefore, the log-likelihood is directly computable without any approximations. 
@@ -75,20 +87,14 @@ These Models observe data directly without introducing any new local latent vari
 
 - For example, in the case of char-RNN, the number of RNN unrolling steps is the degree of conditional probabilities. If we put a soft-max layer on the output, the decision of the RNN will be a probability distribution on possible outputs and the rest of the RNN can be deterministic. 
 
-#### 2. Transformation models (Implicit generative models): 
-These models Model data as a transformation of an unobserved noise source using a deterministic function. Their main properties are that we can sample from them very easily, and that we can take the derivative of samples with respect to parameters. Let data samples be $$X = {x_1, x_2, ...,x_n}$$. We model the data as a deterministic transformation of a noise source i.e. $$ Z ~ N(0,I); X = f(Z; \theta)$$
-    + The transformation is usually a deep neural network. 
-    + It's easy to compute expectations without knowing final distribution due to the easy sampling and Monte Carlo averages.
-    + It's difficult to maintain invertability. 
-    + Challenging optimization.
-    + They don't have an explicit likelihood function. Therefore, difficult to calculate marginal log-likelihood for model comparison. 
-    + difficult to extend to generic data types.
+#####  examples:
+-  MADE: Masked Autoencoder for Distribution Estimation: Autoregressive models are used a lot in time series modelling and language modelling: hidden Markov models or recurrent neural networks are examples. There, autoregressive models are a very natural way to model data because the data comes ordered (in time).
 
-![alt text](/images/Generative_models/transformation_models.png "map of instances of transformation models")
+What's weird about using autoregressive models in this context is that it is sensitive to ordering of dimensions, even though that ordering might not mean anything. If xx encodes an image, you can think about multiple orders in which pixel values can be serialised: sweeping left-to-right, top-to-bottom, inside-out etc. For images, neither of these orderings is particularly natural, yet all of these different ordering specifies a different model above.
 
-These models are usually used as generative models to model distributions of observed data. They can also be used to model distributions over latent variables as well in approximate inference (e.g. adversarial autoencoder).
+But it turns out, you don't have to choose one ordering, you can choose all of them at the same time. The neat trick in the masking autoencoder paper is to train multiple autoregressive models all at the same time, all of them sharing (a subset of) parameters θθ, but defined over different ordering of coordinates. This can be achieved by thinking of deep autoregressive models as a special cases of an autoencoder, only with a few edges missing.
 
-#### 3. Latent variable models (Explicit Probabilistic graphical models): 
+#### 2. Latent variable models (Explicit Probabilistic graphical models): 
 These models introduce an unobserved local random variable for every observed data point. This is in contrast with fully-observed models that do not impose such explicit assumptions on the data. They are easy to sample from, include hierarchy of causes believed. The latent variable structure encode our assumptions about the generative process of the data. Let data be $$X = {x_1, x_2, ..., x_n}$$. We assume a generative process for example a latent Gaussian model $$z ~ N(0,I); x|z = N(\mu(z), \Sigma(z)); p(X,Z) = p(Z)p(X|Z) $$. 
     + Conditional distributions are usually represented using deep neural nets
     + easy to include hierarchy, depth, and the believed generating structure 
@@ -105,6 +111,90 @@ These models introduce an unobserved local random variable for every observed da
 - In latent variable models, the probabilistic nature of the model is evident in both stochastic latent variables and stochastic observation variables. This means that we assume a latent node is a probability distribution and an observation node is also a probability distribution. The probability distribution function of the latent before inference is called prior and after inference posterior. The probability distribution of the observed nodes is called likelihood probability density function. Therefore, in such models, there is an explicit likelihood probability distribution function for observable nodes. However, this likelihood function is intractable in deep latent variable models. If we marginalize the latent nodes, we get a probability distribution which we sample to get observations. This is in contrast with implicit models. In implicit models, observations are not random variables. Observations are deterministic nodes, and therefore, there is no likelihood explicit probability density function. The likelihood is implicit in a deterministic function mapping a sample from a random variable (noise source) to an observation. 
 
 ![alt text](/images/Generative_models/Latent_variable_models.png "map of latent variable models")
+
+
+##### examples:
+- VAE
+
+- Another example is LDA (latent Drichlet allocation), which is basically a mixture of multinomial distributions (topics) in a document. Its difference from a typical mixture is that each document has its own mixture proportions of the topics but the topics (multinomials) are shared across the whole collection (i.e. a mixed membership model). 
+
+
+#### 3. Transformation models (Implicit generative models): 
+- These models Model data as a transformation of an unobserved noise source using a deterministic function. Their main properties are that we can sample from them very easily, and that we can take the derivative of samples with respect to parameters. Let data samples be $$X = {x_1, x_2, ...,x_n}$$. We model the data as a deterministic transformation of a noise source i.e. $$ Z ~ N(0,I); X = f(Z; \theta)$$
+    + The transformation is usually a deep neural network. 
+    + It's easy to compute expectations without knowing final distribution due to the easy sampling and Monte Carlo averages.
+    + It's difficult to maintain invertability. 
+    + Challenging optimization.
+    + They don't have an explicit likelihood function. Therefore, difficult to calculate marginal log-likelihood for model comparison. 
+    + difficult to extend to generic data types.
+
+![alt text](/images/Generative_models/transformation_models.png "map of instances of transformation models")
+
+These models are usually used as generative models to model distributions of observed data. They can also be used to model distributions over latent variables as well in approximate inference (e.g. adversarial autoencoder).
+
+
+##### examples:
+- Flow-based generative models (NICE, RealNVP, GLOW, Normalizing flows): In most flow-based generative models (Dinh et al., 2014, 2016), the generative process is defined as an invertible transformation (g) of a latent variable (z) (usually a simple and tractable distribution e.g. mutlivariate Gaussian) to data points (x). The invertability of the transformation makes inference of latent z from data x easy. 
+    - Real-valued non-volume preserving transformation (Real NVP): is an invertable transformation model. The generative procedure from the model is very similar to the one used in Variational Auto-Encoders and Generative Adversarial Networks: sample a vector z from a simple distribution (here a Gaussian) and pass it through the generator network g to obtain a sample x=g(z). 
+        - The idea is to split the parameters of a NN layer to two segments, then transform one group of params by a sequence of an element-wise scaling and an offset. These two element-wise transformations are done by two matrices that are a function of the other group of parameters. this function can be a NN. We interleave the transformation of the two groups of parameters. 
+        - This constructs a reversible function that has a diagonal jacobian. Therefore calculating the determinant of the jacobian is as easy of the product of the diagonal of the jacobian. 
+        - The generator network g has been built in the paper according to a convolutional architecture, making it relatively easy to reuse the model to generate bigger images. As the model is convolutional, the model is trying to generate a “texture” of the dataset rather than an upsampled version of the images it was trained on. This explains why the model is most successful when trained on background datasets like LSUN different subcategories. This sort of behaviour can also be observed in other models like Deep Convolutional Generative Adversarial Networks.
+        - From the generated samples, it seems the model was able to capture the statistics from the original data distribution. For example, the samples are in general relatively sharp and coherent and therefore suggest that the models understands something more than mere correlation between neighboring pixels. This is due to not relying on fixed form reconstruction cost like squared loss on the data level. The models seems also to understand to some degree the notion of foreground/background, and volume, lighting and shadows. 
+
+    - Glow: it's similar to realNVP with the difference that the structure of the reversible function is different and uses 1x1 convolutions as the scaling transformation. 
+
+
+- Another example, Deep Unsupervised Learning using Nonequilibrium Thermodynamics. What we typically try to do in representation learning is to map data to a latent representation. While the Data can have arbitrarily complex distribution along some complicated nonlinear manifold, we want the computed latent representations to have a nice distribution, like a multivariate Gaussian. This paper takes this idea very explicitly using a stochastic mapping to turn data into a representation: a random diffusion process. If you take any data, and apply Brownian motion-like stochastic process to this, you will end up with a standard Gaussian distributed variable due to the stationarity of the Brownian motion. Now the trick the authors used is to train a dynamical system (a Markov chain) to inverts this random walk, to be able to reconstruct the original data distribution from the random Gaussian noise. Amazingly, this works, and the traninig objective becomes very similar to variational autoencoders. 
+
+- GANs are also of this type of (transformation) generative models where a random Gaussian noise is transformed into data (e.g.an image) using a deep neural network. These models also assume a noise model on the latent cause. The good thing about such models is that it's easy to sample and compute expectation from these models without knowing the final distribution. Since classifiers are well-develped, we can use our knowledge there for density ratio estimation in these models. However, these models lack noise model and likelyhood. It's also difficult to optimize them.  Any implicit model can be easily turned into a prescribed model by adding a simple likelihood function (noise model) on the generated outputs but models with likelihood functions also regularly face the problem of intractable marginal likelihoods.But the specification of a likelihood function provides knowledge of data marginal p(x) that leads to different algorithms by exploiting this knowledge, e.g., NCE resulting from class-probability based testing in un-normalised models, or variational lower bounds for directed graphical models.
+
+- Think of GANs as a density estimation problem. There are two high dimensional surfaces. One of them is P(x) which is unknown, we want to estimate, and we only have some examples of. The other is a maleable goo from a family of surfaces that we want to match onto the unknown density to estimate it. 
+
+- Variational inference tries to solve this by assuming a goo Q(z|x) defined by a parametric model from the exponential family, a fixed distance metric (i.e. KL divergence) to make a force field, and letting the physics takes its course (running SGD on parameters). MCMC methods don't use any model and instead try to just throw random points onto the surface and see where it ends up and use samples to estimate the shape of the surface P(x). Variational inference can't match all the intricacies of the high dimensional surface while MCMC is very costly since using samples to estimate a high dimensional surface is a fools errand!
+
+- GANs have a more elegant approach, they define the goo to be a transformation model Q(x) that doesn't have a tractable likelihood function (can get very complex) but is very easy to sample from instead. Instead of using a rigid distance metric, GANs actively define an adaptive distance metric that tries to capture the intricacies of the unknown surface in every iteration. They do this by using the insight that classifiers can actually find a surface between two data sources easily and we have two data sources from the unknown surface and the goo. Therefore, the surface that the classifier finds to distinguish the data sources, captures the intricacies of the unknown surface P(x). So, if after each iteration that the classifier finds the optimum surface between the unknown and the goo, we reshape the goo to beat the classifier surface, the goo will very well take the shape of the surface at the end. This is a very clever way of matching the goo to the unknown surface P(x) that basically uses an adaptive distance metric using the distance to the classifer surface instead of the unknown surface. the distance to the classifier surface sort of hand holds the goo optimization step by step until it gets as close as possible to the unkown surface. Another point is that we only have a limited number of examples from the unknown surface, so we actually do the above process stocastically in batches of examples from unknown and the goo surfaces.
+
+- Another type of implicit models, are simulators that transform a noise source into an output. Sampling from such simulators is easy but explicitly calculating a likelihood distribution function is usually no possible if the simulator is not invertable and mostly intractable. An example is a physical simulator based on differential euqations derived from eqautions of motions.
+
+- Deep Implicit Models (DIM): 
+    - These are stacked transformation models in a graph. For example, if a GAN is creating the noise code for the next GAN, it's a deep implicit model since likelihoods are not explicitly defined. This enables building complex densities in a hierarchical way similar to probabilistic graphical models. 
+
+    - Inference in these models encounters two problems. First, like other inference problems marginal probability is intractable. Second, in transformation models likelihood is also intractable. We thus turn to variational inference with density ratio estimation instead of density estimation.
+
+    - A DIM is simply a deep neural network with random noise injected at certain layers. An additional reason for deep latent structure appears from this perspective: training may be easier if we inject randomness at various layers of a neural net, rather than simply at the input. This relates to noise robustness.
+
+### Inference problems:
+
+1. Evidence estimation
+- marginal likelihood of evidence: Write the log density as the marginalization of the joint. We introduce a variational approximate q, into our marginal integral of joint p(x,z), to get p(x). By taking the log from both sides, and using Jensen's inequality we get the ELBO. Maximizing the ELBO is equivalent to minimizing the KL divergence of the real and variational posterior. 
+
+2. Density ratio estimation (Density estimation by comparison)
+The main idea is to estimate a ratio of real data distribution and model data distribution p(x)/q(x) instead of computing two densities that are hard. The ELBO in variational inference can be written in terms of the ratio. Introducing the variational posterior into the marginal integral of the joint results in the ELBO being $E[log p(x,z)- log q(z/x)]$. By subtracting emprical distribution on the observations, q(x) which is a constant and doesn't change optimization we have the ELBO using ratio as $E[log p(x,z)/q(x,z)]$. 
+
+- Probabilistic classification: We can frame the ratio estimation as as the problem of classifying the real data (p(x)) from the data produced from model (q(x)). This is what happens in GANs.
+
+- moment matching (log density difference): if all the infinite statistical moments of two distributions are the same the distributions are the same. So the idea is to set the moments of the numenator distribution (p(x)) equal to the moments of a transformed version of the denumerator (r(x)q(x)). This makes it possible to calculate the ratio r(x).
+
+- Ratio matching: basic idea is to directly match a density ratio model r(x) to the true density ratio under some divergence. A kernel is usually used for this density estimation problem plus a distance measure (e.g. KL divergence) to measure how close the estimation of r(x) is to the true estimation. So it's variational in some sense. Loosely speaking, this is what happens in variational Autoencoders!
+
+- Divergence minimization: Another approach to two sample testing and density ratio estimation is to use the divergence (f-divergence, Bergman divergence) between the true density p and the model q, and use this as an objective to drive learning of the generative model. f-GANs use the KL divergence as a special case and are equipped with an exploitable variational formulation (i.e. the variational lower bound). There is no discriminator in this formulation, and this role is taken by the ratio function. We minimise the ratio loss, since we wish to minimise the negative of the variational lower bound; we minimise the generative loss since we wish to drive the ratio to one.
+
+- Maximum mean discrepancy(MMD): is a nonparametric way to measure dissimilarity between two probability distributions. Just like any metric of dissimilarity between distributions, MMD can be used as an objective function for generative modelling.  The MMD criterion also uses the concept of an 'adversarial' function f that discriminates between samples from Q and P. However, instead of it being a binary classifier constrained to predict 0 or 1, here f can be any function chosen from some function class. The idea is: if P and Q are exactly the same, there should be no function whose expectations differ under Q and P. In GAN, the maximisation over f is carried out via stochastic gradient descent, here it can be done analytically. One could design a kernel which has a deep neural network in it, and use the MMD objective!?
+
+- Instead of estimating ratios, we estimate gradients of log densities. For this, we can use[ denoising as a surrogate task](http://www.inference.vc/variational-inference-using-implicit-models-part-iv-denoisers-instead-of-discriminators/).denoisers estimate gradients directly, and therefore we might get better estimates than first estimating likelihood ratios and then taking the derivative of those
+
+
+3. Moment computation
+
+$E[f(z)|x] =\int f(z)p(z|x)dz$
+
+4. Prediction
+
+$p(xt+1) =\int p(xt+1|xt)p(xt)dxt$
+
+5. Hypothesis Testing
+
+$B = log p(x|H1) - log p(x|H2)$
 
 ### Parameter Learning
 - Let's get back to the Bayesian formula. If we write the probability distributions as parameterized density functions, we will end up with an equation with unknown parameters. So the inference task is now transformed into the problem of finding parameter values from observations. 
