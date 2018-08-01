@@ -23,6 +23,16 @@ The discipline of generative modeling has experienced enormous leaps in capabili
         + In most flow-based generative models (Dinh et al., 2014, 2016), the generative process is defined as an invertible transformation (g) of a latent variable (z) (usually a simple and tractable distribution e.g. mutlivariate Gaussian) to data points (x). The invertability of the transformation makes inference of latent z from data x easy. 
 
 
+## What is a generative model?
+- A generative model is a probablistic model that in some sense approximates the natural distribution of the data.
+    + an approach is to fit a latent variable model of the form p(x, z|θ) = p(z|θ)p(x|z, θ) to the data, where x are the observed variables, z are the parameterized latent variables. In maximum likelihood learning, we usually fit such models by minimizing a distance/divergence metric between the true data likelihood p(x) and the marginalized model likelihood p(x|θ) (e.g. $$KL[\frac{p(x|\theta)}{p(x)}]$$). 
+
+
+- examples: Generate bedrooms, faces, etc (GANs, GLOW, VAEs, etc), image algebra, generate image from text and image caption, visual question answering, art applications, etc. 
+
+
+- 
+
 ## Statistical modelling
 
 Almost everything that we can do with data involves finding the probability distribution underlying our data P(x). This includes finding insights in data, prediction, modeling the world, etc.  Therefore, We are interested in finding the true probability distribution of our data P(x) which is unknown. We usually use the scientific method in a probabilistic pipeline to solve this problem i.e.:
@@ -275,3 +285,67 @@ Generative models can be used for:
 
 
 explore variations in data, to reason about the structure and behavior of the world, and ultimately, for decision-making. Deep generative models have widespread applications including those in image denoising and in-painting, data compression, scene understanding, representation learning, 3D scene construction, semi-supervised classification, and hierarchical control, amongst many others.
+
+
+
+
+## Evaluating generative models
+
+- an approach to representation learning is to fit a latent variable model of the form p(x, z|θ) = p(z|θ)p(x|z, θ) to the data, where x are the observed variables, z are the parameterized latent variables. In maximum likelihood learning, we usually fit such models by minimizing a distance/divergence metric between the true data likelihood p(x) and the marginalized model likelihood p(x|θ) (e.g. $$KL[\frac{p(x|\theta)}{p(x)}]$$). However, the fundamental problem is that these loss functions only depend on p(x|θ), and not on p(x, z|θ). Thus they do not measure or optimize for the quality of the representation at all. In particular, if we have a powerful stochastic decoder p(x|z, θ), such as an RNN or PixelCNN, a VAE can easily ignore z and still obtain high marginal likelihood p(x|θ). Thus obtaining a good ELBO (and more generally, a good marginal likelihood) is not enough for good representation learning.
+
+- Two identical values of ELBO, can have different quantitative and qualitative characteristics due to the fact that ELBO consists of two terms (i.e. reconstruction cost plus the KL between prior and variational posterior). 
+
+- Rate-Distortion theory addresses the problem of determining the minimal number of bits per symbol, rate R, that should be communicated over a channel, so that the source can be reconstructed at the output without exceeding a given distortion D. rate-distortion curve that characterizes the tradeoff between compression and reconstruction accuracy. 
+
+- The main idea of the paper is that a better way to assess the value of representation learning is to measure the mutual information I between the observed X and the latent Z. This is intractable but a variational lower and upper bounds on the mutual information between the input and the latent variable can be obtained ($$H − D ≤ I_e(X;Z) ≤ R$$ where H is dataset entropy, D is distortion reconstruction cost as measured through our encoder,
+decoder channel, and rate R is KL between prior and variational posterior and depends only
+on the encoder and variational marginal). By varying I, we can tradeoff between how much the data has been compressed vs how much information we retain represented as the rate-distortion curve.  information constraints provide an interesting alternative way to regularize the learning of latent variable models.
+
+- Having defined a joint density, a symmetric, non-negative, reparameterization-independent measure of how much information one random variable contains about the other is given by the mutual information. There are two natural limits the mutual information can take. In one extreme, X and Z are independent random variables, so the mutual information vanishes: our representation contains no information about the data whatsoever. In the other extreme, our encoding might just be an identity map, in which Z = X and the mutual information becomes the entropy in the data H(X).
+
+- Alternatively, instead of considering the rate as fixed, and tracing out the optimal distortion as a function of the rate D(R), we can perform a Legendre transformation and can find the optimal rate and distortion for a fixed $$\beta$$ in a beta-VAE setup.
+
+
+- For decoder-based model that do not have a tractable likelihood function, likelihood of a sample data point can be evaluated using sampling and Monte Carlo. 
+    + In case of a VAE, the liklihood density function is assumed to be a Gaussian with known mean and variance. 
+    + However, in case of GANs or GMMN, the likelihood is implicit and you don't have access to it, therefore, we appeal to sampling to find it. We simulate data from model (sample) and then assume a Gaussian ball around the sample as the density function to get the likelihood of that data point. 
+
+
+### rate-distortion vs. information bottleneck
+
+- While the rate-distortion theory allowed the consideration of trade-offs between communication rate and the amount of data that would survive it, Tishbi et al noticed that it doesn't consider the relevance of information.
+
+    + Firstly, a distortion measure has to be defined before a rate-distortion problem can be defined. This poses a big problem, since the answer to the question ‘how much relevant information survives the communication?’ becomes dependent upon the choice of that distortion measure. 
+
+    + Secondly, rate-distortion theory is especially powerful in cases where the distortion measure is assumed to be additive: $$d(\bold{x}, \bold{\hat{x}}) = \sum\limits_{x} d_i(x_i, \hat{x}_i)$$, where $$\bold{x}$$ and $$\bold{\hat{x}}$$ are vectors whose components are $$x_i$$ and $$\hat{x}_i$$, respectively. This of course excludes many possible cases, such as when relevant information exists only in one part of the vector.
+
+
+- idea: The main premise of information bottleneck theory is as follows: Consider a random variable X, that has some hidden characteristic Y. Transmitting X to a different location, we are not interested in recreating X, but only in the characteristic Y. It would be very hard to find an additive distortion measure that would indicate good performance if we try to analyze this approach through rate-distortion theory.
+
+- Since the total correlation depends on the joint distribution p(X,Y) and by extension on P(X). If we have $$n$$ binary $${0,1}$$ variables, then the search over all P(Y|X) involves $$2^n$$ variables which is intractable. $$\min \limits_{P_{T|X}}\{I(X;Y) - \beta I(Y;T)\}$$
+
+- The coefficient \beta controls the trade-off between the importance of “forgetting” irrelevant parts of X while creating T and the importance of maintaining relevant parts for Y (aka bottleneck). When \beta = 0 only compression is important and the minimum can easily attain the value 0 by choosing T = 0. When \beta is very large, compression is no longer important and the minimum is achieved by choosing T = X. Thus trying to maximize I(T;Y) to relay the information contained in relavant part of data while minimizing I(T;X) to find the minimal set of relavant information at the same time creates a bottleneck effect.
+
+- In any neural network, the output of each layer can be viewed as a random variable T. This random variable is fabricated from the entry to the network X, and thus the Markov chain $$T \leftrightarrow X \leftrightarrow Y$$ is respected. As this can be claimed for any layer in the network, each layer can be treated simultaneously as the exit of an encoder with entry X, and the entry to a decoder with the output being the prediction Y. Denoting the outputs of each of the layers as$$ T_1, T_2, \ldots$$, we can deduct from the data processing theorem that:
+
+$$I(X;Y) \leq I(T_1; Y) \leq I(T_2; Y) \leq \cdots \leq I(\hat{Y}; Y)$$
+
+Each of the representations T can thus be seen in the information-bottleneck perspective resulting in the view of a DNN as a chain of information bottlenecks.
+
+- Experimenting with a synthetic dataset of (X,Y) that have a high mutual information, the following observation is made: Looking at any layer, its outputs T can be drawn on the ‘information plain’ defined by the mutual information with both the input X and the expected label Y. Doing so, the observation is that the training process can clearly be divided into two. 
+    + In the first part, called the ‘drift’, the network learns to extract the correct label Y from the information X relatively well. It does so by increasing the mutual information of each of the layers T both with the input X and with the label Y. Intuitively, it is easy to understand why the network would seek to increase the mutual information with the labels Y.
+    + In the second, slower, part of the training process, 'compression/diffusion', the network maintains the mutual information with Y while decreasing the mutual information between X and T. Intuitively, what can be gained by decreasing the information of each layer T about the inputs, when we keep in mind that there are no communication constraints? Maybe it helps generalization by forgetting non-relavant parts of the input that don't help with knowing Y better. But why wouldn't we always get better generalizatio by letting more training happen? Maybe the network forgets some relavant parts of X that need to be there for generalization but since the training objective is only looking at the observed Y, it can't generalize to unseen Ys?
+        - This also explains why this phase of training is slower than the first – it happens randomly as the network sees more and more examples that may or may not carry these “unimportant” characteristics. 
+
+- an ICLR18 paper reproduced the Tishby's results and noted that: changing the activation function from a tanh nonlinearity (except for the final layer) to a ReLU nonlinearity changed the observed results drastically. 
+    + It turns out that only with the tanh nonlinearity a decrease in the mutual information with X can be observed in later parts of the training process. ReLU nonlinearity does not exhibit this kind of behaviour.
+    + Andrew Saxe et al. argues that the compression phase observed in the original paper is an artifact of the double-sided saturating nonlinearity used in that study. Saxe et al. observe no compression with the more widely used relu nonlinearity (nor in the linear case). Moreover, they show that even in cases where compression is observed, there is no causal relationship between compression and generalization (which seems to be consistent with the results from the revNet paper claiming that loss of information is not a necessary condition of learning for networks that generalize) and that in cases where compression is observed, it is not caused by the stochasticity of SGD, thus pretty much refuting all claims of the original paper. 
+
+
+- The SVCCA paper, introduces the SVCCA metric as a similarity metric between learned representations of the layers. It is obtained by calculating the sum of the principle eigenvalues of the matrix formed by the outputs of each neuron for every datapoint in the dataset.
+    + It plots the SVCCA similarity ρ between all pairs of layers in the network and notes that learning broadly happens ‘bottom up’, meaning that layers closer to the input seem to solidify into their final representations first with the exception of the very top layers. And the later layers converge to their final representation much later in the training compared to the top layers.
+    +  Other patterns are also visible – batch norm layers maintain nearly perfect similarity to the layer preceding them due to scaling invariance.
+    + In resnet, we see a stripe like pattern due to skip connections inducing high similarities to previous layers.
+    +  the “lower layers learn first” behavior was also observed for recurrent neural networks.
+
+

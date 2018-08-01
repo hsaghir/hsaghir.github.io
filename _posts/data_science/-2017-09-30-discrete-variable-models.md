@@ -176,8 +176,6 @@ The idea is to add an 'attribute grammar', called 'stochastic lazy attribute',  
     + UPDATE: update the previous hidden state, $$C_t = f*C_{t-1} + i*C^{~}_{t}$$, as soon as the boundary in the below layer is seen i.e. $$Z^{l-1}=1, Z^{l}=0$$.
     + COPY: copies previous hidden state to present, $$C_t = C_{t-1}, h_t = h_{t-1}$$, until the boundary in layer below is seen i.e. $$Z^{l-1}=0, Z^{l}=0$$. 
     + FLUSH: zeros out the memory of the present hidden state, $$C_t = i*C^{~}_{t}$$, if the boundary in the current layer is seen i.e. $$Z^{l-1}=0, Z^{l}=0$$
-
-
 - In HM-RNN, at each time step, (1) operation is selected based on the hidden states of the below layer at the same time or the previous time step of the same layer and (2) operation executed (e.g., UPDATE, COPY, FLUSH). 
 - an UPDATE at a layer can happen only after *at least* one UPDATE is performed at its previous layer
 - The binary boundary parameter is not differentiable, so they used straight through gradient.

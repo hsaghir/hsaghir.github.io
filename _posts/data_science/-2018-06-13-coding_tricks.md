@@ -7,50 +7,44 @@ image:
   teaser: jupyter-main-logo.svg
 ---
 
-#### Transformer network (Attention is all you need) 
 
-- Transformer network replaces the sequential processing part of seq2seq networks (i.e. LSTM or CNN) with a **multihead self-attention** to solve the problem of relating two symbols from input/output sequences to a constant O(1) number of operations. It the  consists of two main parts:
-    + Multihead attention
-        * In terms of encoder-decoder, the query (Q) is usually the hidden state of the decoder. Values (V) are encoder hidden states that need to be attended to, and the keys (K) are learned parameters of the attention matrix that produce a distribution representing how much attention each value gets. Output is calculated as a wighted sum of values.
-        * Multihead attention simply projects the Q, K, and V into a smaller embedding space $$d_v$$ using h=8 different linear mappings and applies the attention function there in parallel. Then concatenate the h=8 embedded attentions and map them back to the original dimension.
-        * In self-attention, queries,keys and values that comes form same place i.e. the output of previous layer in encoder. In decoder, self-attention enables each position to attend to all previous positions in the decoder.
-            - self-attention connects all positions with O(1) number of sequentially executed operations. 
-            - The shorter the path between any combination of positions in the input and output sequences, the easier to learn long-range dependencies.
-```python
-def attention(Q, K, V):
-    num = np.dot(Q, K.T)
-    denum = np.sqrt(K.shape[0])
-    return np.dot(softmax(num / denum), V)
-```
-    + Feed forward network
-        * In RNN (LSTM), the notion of time step is encoded in the sequence as inputs/outputs flow one at a time. In FNN, the positional encoding must be preserved to represent the time in some way to preserve the positional encoding.
-            - One way is to embed the absolute position of input elements (as in ConvS2S).
-            - In case of the Transformer authors propose to encode time as sine wave, as an added extra input. Such signal is added to inputs and outputs to represent time passing.
+## bash scripting
+- A Bash script is a plain text file which contains a series of commands. These commands are a mixture of commands we would normally type ouselves on the command line
+- convention is to give files that are Bash scripts an extension of .sh
 
 
-```
-Stage1_out = Embedding512 + TokenPositionEncoding512
-Stage2_out = layer_normalization(multihead_attention(Stage1_out) + Stage1_out)
-Stage3_out = layer_normalization(FFN(Stage2_out) + Stage2_out)
+### profile code to understand runtime bottlenecks
 
-out_enc = Stage3_out
+Profile your code with `sProfile` like the following command in order to understand which part of the code is taking how much time. 
+
+```bash
+python -m cProfile -o train_dialog_coherence.prof train_dialog_coherence.py --cuda --batch_size=16 --do_log --load_models --remove_old_run --freeze_infersent
 ```
 
-```
-Stage1_out = OutputEmbedding512 + TokenPositionEncoding512
+After profiling, you can visualize it using `snakeviz`. But to run it on a remote machine, you need to deactivate running of browser and pipe the port to your local machine so that you can access the visulization in your local browser. On your remote machine do:
 
-Stage2_Mask = masked_multihead_attention(Stage1_out)
-Stage2_Norm1 = layer_normalization(Stage2_Mask) + Stage1_out
-Stage2_Multi = multihead_attention(Stage2_Norm1 + out_enc) +  Stage2_Norm1
-Stage2_Norm2 = layer_normalization(Stage2_Multi) + Stage2_Multi
-
-Stage3_FNN = FNN(Stage2_Norm2)
-Stage3_Norm = layer_normalization(Stage3_FNN) + Stage2_Norm2
-
-out_dec = Stage3_Norm
+```bash
+snakeviz train_dialog_coherence.prof -s --port=1539
 ```
 
-## pytorch techniques for NLP
+to forward the port, make a pipe on your local:
+
+```bash
+ssh -A -N -f -L localhost:$local_host:localhost:$r_port -J skynet hamid@$remote_host
+```
+
+### Mac terminal colors
+
+Open Terminal and type nano .bash_profile
+Paste in the following lines:
+```bash
+export PS1="\[\033[36m\]\u\[\033[m\]@\[\033[32m\]\h:\[\033[33;1m\]\w\[\033[m\]\$ "
+export CLICOLOR=1
+export LSCOLORS=ExFxBxDxCxegedabagacad
+alias ls='ls -GFh'
+```
+
+## pytorch
 
 ### Batching variable length sequences:
 - There are two ways of batching variable length sequences:
@@ -99,39 +93,6 @@ And connect to it by tunneling the port to your local machine. Run is on your lo
 ```bash
 ssh -A -N -f -L localhost:7003:localhost:8008 -J skynet hamid@compute006
 ```
-
-### Getting a profile of the timing of the code
-
-Profile your code with `sProfile` like the following command in order to understand which part of the code is taking how much time. 
-
-```bash
-python -m cProfile -o train_dialog_coherence.prof train_dialog_coherence.py --cuda --batch_size=16 --do_log --load_models --remove_old_run --freeze_infersent
-```
-
-After profiling, you can visualize it using `snakeviz`. But to run it on a remote machine, you need to deactivate running of browser and pipe the port to your local machine so that you can access the visulization in your local browser. On your remote machine do:
-
-```bash
-snakeviz train_dialog_coherence.prof -s --port=1539
-```
-
-to forward the port, make a pipe on your local:
-
-```bash
-ssh -A -N -f -L localhost:$local_host:localhost:$r_port -J skynet hamid@$remote_host
-```
-
-### Mac terminal colors
-
-Open Terminal and type nano .bash_profile
-Paste in the following lines:
-```bash
-export PS1="\[\033[36m\]\u\[\033[m\]@\[\033[32m\]\h:\[\033[33;1m\]\w\[\033[m\]\$ "
-export CLICOLOR=1
-export LSCOLORS=ExFxBxDxCxegedabagacad
-alias ls='ls -GFh'
-```
-
-
 
 ## Debugging ML code:
 - start with a small model and small data and evolve both together. If you can't overfit a small amount of data you've got a simple bug somewhere. 
