@@ -93,31 +93,3 @@ And connect to it by tunneling the port to your local machine. Run is on your lo
 ```bash
 ssh -A -N -f -L localhost:7003:localhost:8008 -J skynet hamid@compute006
 ```
-
-## Debugging ML code:
-- start with a small model and small data and evolve both together. If you can't overfit a small amount of data you've got a simple bug somewhere. 
-    + Start with all zero data first to see what loss you get with the base output distribution, then gradually include more inputs (e.g. try to overfit a single batch) and scale up the net, making sure you beat the previous thing each time.
-    + also if zero inputs produces a nice/decaying loss curve, this usually indicates not very clever initialization.
-    + initialize parameters with truncated normal or xavier.
-    + also try tweak the final layer biases to be close to base distribution
-    + for classification, check if the loss started at ln(n_classes)
-
-- remember to toggle train/eval mode for the net. 
-- remember to .zero_grad() (in pytorch) before .backward(). 
-- remember not to pass softmaxed outputs to a loss that expects raw logits.
-- pytorch `.view()` function reads from the last dimension first and fills the last dimension first too
-- when comparing tensors, the results are `ByteTensor`s. ByteTensors have a buffer of `255` after which it is zeroed out. Although this issue seems to be fixed in newer pytorch versions, beware that a `sum()` on ByteTensors is likely to result in wrong answer. First convert them to `float()` or `long()` and then `sum()`
-
-
-
-If your network isn’t learning (meaning: the loss/accuracy is not converging during training, or you’re not getting results you expect), try these tips:
-
-Overfit! The first thing to do if your network isn’t learning is to overfit a training point. Accuracy should be essentially 100% or 99.99%, or an error as close to 0. If your neural network can’t overfit a single data point, something is seriously wrong with the architecture, but it may be subtle. If you can overfit one data point but training on a larger set still does not converge, try the following suggestions.
-Lower your learning rate. Your network will learn slower, but it may find its way into a minimum that it couldn’t get into before because its step size was too big. (Intuitively, think of stepping over a ditch on the side of the road, when you actually want to get into the lowest part of the ditch, where your error is the lowest.)
-Raise your learning rate. This will speed up training which helps tighten the feedback loop, meaning you’ll have an inkling sooner whether your network is working. While the network should converge sooner, its results probably won’t be great, and the “convergence” might actually jump around a lot. (With ADAM, we found ~0.001 to be pretty good in many experiences.)
-Decrease (mini-)batch size. Reducing a batch size to 1 can give you more granular feedback related to the weight updates, which you should report with TensorBoard (or some other debugging/visualization tool).
-Remove batch normalization. Along with decreasing batch size to 1, doing this can expose diminishing or exploding gradients. For weeks we had a network that wasn’t converging, and only when we removed batch normalization did we realize that the outputs were all NaN by the second iteration. Batch norm was putting a band-aid on something that needed a tourniquet. It has its place, but only after you know your network is bug-free.
-Increase (mini-)batch size. A larger batch size—heck, the whole training set if you could—reduces variance in gradient updates, making each iteration more accurate. In other words, weight updates will be in the right direction. But! There’s an effective upper bound on its usefulness, as well as physical memory limits. Typically, we find this less useful than the previous two suggestions to reduce batch size to 1 and remove batch norm.
-Check your reshaping. Drastic reshaping (like changing an image’s X,Y dimensions) can destroy spatial locality, making it harder for a network to learn since it must also learn the reshape. (Natural features become fragmented. The fact that natural features appear spatially local is why conv nets are so effective!) Be especially careful if reshaping with multiple images/channels; use numpy.stack() for proper alignment.
-Scrutinize your loss function. If using a complex function, try simplifying it to something like L1 or L2. We’ve found L1 to be less sensitive to outliers, making less drastic adjustments when hitting a noisy batch or training point.
-Scrutinize your visualizations, if applicable. Is your viz library (matplotlib, OpenCV, etc.) adjusting the scale of the values, or clipping them? Consider using a perceptually-uniform color scheme as well.
