@@ -93,3 +93,20 @@ And connect to it by tunneling the port to your local machine. Run is on your lo
 ```bash
 ssh -A -N -f -L localhost:7003:localhost:8008 -J skynet hamid@compute006
 ```
+
+### python logging module
+
+Logging serves two purposes:
+
+- Diagnostic logging records events related to the application’s operation. If a user calls in to report an error, for example, the logs can be searched for context.
+    - use logging instead of print statements for debugging purposes is useful since diagnostic information such as the file name, full path, function, and line number of the logging event will also be recorded. 
+
+- Audit logging records events for business analysis. A user’s transactions can be extracted and combined with other user details for reports or to optimize a business goal.
+    
+- To emit a log message, a we first request a named logger and then use it to emit simply-formatted messages at different log levels that have different priority (DEBUG, INFO, ERROR, etc.)
+```py
+IMPORT LOGGING
+LOG = LOGGING.GETLOGGER("MY-LOGGER")
+LOG.INFO("HELLO, WORLD")
+```
+

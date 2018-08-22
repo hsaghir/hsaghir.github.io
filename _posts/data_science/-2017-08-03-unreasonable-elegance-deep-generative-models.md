@@ -349,3 +349,17 @@ Each of the representations T can thus be seen in the information-bottleneck per
     +  the “lower layers learn first” behavior was also observed for recurrent neural networks.
 
 
+
+### VAEs vs GANs
+
+- VAEs use maximum likelihood and variational posterior inference for learning and require generative models to have explicit densities and noise terms in the sample space to make inference possible. 
+    + a combination of model mismatch and poor estimation of the posterior due to approximation/amortization gaps results in systematic biases in the learned distribution, e.g. undesirable averaging effects. 
+
+- GANs are the antithesis of maximum likelihood since they require neither an inference mechanism, nor a generative distribution that admits an explicit density. Estimation of the discrepancy between the data distribution and the generative model is accomplished through a divergence approximator that is learned adversarially using independent samples from both distributions.
+    + This estimation is sound only at the non-parametric limit and the gap between the actual discrepancy and the estimated lower bound needs to be reduced through careful guidance of the functions selected to represent the divergence.
+
+- [Primal-Dual Wasserstein GAN]() synthesizes the desirable qualities of VAEs and GANs using Optimal Transport and divergences (Wasserstein distance). 
+
+
+
+
