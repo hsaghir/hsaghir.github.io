@@ -33,3 +33,14 @@ image:
 
 - From computational point of view, the main work of the algorithm involves a matrix multiplication followed by a nonlinear element-wise transform. These can be accelerated by GPUs!
 - From a theoretical point of view, generalizing CorEx to allow non-tree representations seem feasible.
+
+
+
+
+
+
+
+### MINE (mutual information neural estimation):
+- mutual information between two random variables is the ratio density between their joint distribution and the product of their marginals. GANs can do this density ratio estimation
+
+- It might be possible to use the [MINE](https://arxiv.org/abs/1801.04062) setting of MI estimation in corex. 
