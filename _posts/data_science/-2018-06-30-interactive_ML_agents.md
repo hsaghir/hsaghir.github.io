@@ -70,7 +70,114 @@ A number of problems consist of a hybrid of several learning agents (models), ea
     - Even a sequence model with a teacher forcing the right output?
 
 
-## optimization
+## Adversarial training
+
+
+- BEGAN:
+    - an autoencoder as an energy-based discriminator(D) + an generator(G)
+        - the loss function for the discriminator(D) is the difference between the reconstruction loss of the real image and the reconstruction loss of the generator.
+        - the loss function for the generator (G) is the reconstruction loss of the fake image
+
+- AAE(adversarial autoencoder):
+    - a VAE + a discriminator. the image is mapped to lower dim vector (z_real) and then decoded, a sample from the prior (z_prior) is contrasted with (z_real) using the discriminator.
+
+BiGAN:
+    - a generator/decoder that produces fake image (x_fake) from noise (z_fake), an encoder that maps real image (x_real) to lower dimentional noise (z_real).
+
+- ALI/BiGAN:
+    - a generator/decoder(G), an encoder(E) and a discriminator(D). first G uses random noise (z_fake) to produce fake image (x_fake). Then the real image (x_real) is passed through the encoder to generate a lower dimentional noise vector (z_real). the discriminator consists of two two x, and z branches that get combined into a single score. 
+        - first (x,z)  pairs for both real and fake are computed and passed to the discriminator, discriminator is trained with BCE or margin loss. 
+        - then discriminator is fixed, and gradients are backproped to the generator and the encoder. 
+
+
+## Cooperative training
+### Cooperative Training as a solution to discrete GANs.
+
+in order to estimate the target distribution well in both quality and diversity senses, an ideal algorithm for generative models should be able to optimize a symmetric divergence or distance like Jenson-Shannon Divergence instead of KL.
+
+Each iteration of Cooperative Training mainly consists of two parts. The first part is to train a mediator Mφ, which is a predictive module that measures a mixture distribution of the learned generative distribution Gθ and target latent distribution P as
+Mφ =(P + Gθ)/2. 
+
+
+- Lets say you want to train a language model to generate sentences for you and don't want to train it with maximum likelihood or teacher forcing. In teacher forcing, at every time step you give the right output as the previous word instead of what the RNN has actually generated, which ignores where the network made mistakes in generating words. You ideally want to provide your network a previous word that is a combination of what it generated in previous step and what it should have generated so that it can assign credits and get gradients to fix its mistakes. 
+
+- Training with teacher forcing and maximum likelihood is equivalent to minimizing the KL divergence between the true distribution (P) and generator distribution (G). The alternative we are looking for based on above discussion is JS divergence between the two distributions instead. Since the actual JS divergence requires the true distribition (P) which we don't know, we use a second network called the mediator to approximate the JS divergence between the two distributions. It is achived by minimizing the KL divergence between the real JS divergence (unknown) and a variational approximation to the JS divergence through the parameterized mediator distribution M. This way, the mediator can provide an approximation for the JS divergence between the true distribution (P) and generator distribution (G) that we can use to train the generator. 
+
+- Then they introduce a clever way for calculating the gradient of the approximated JS divergence as well. the gradient for training generator via Cooperative Training can be formulated as the sum of the differences of log logits that G and M produce for a sequence (sentence), times the logits that the G produces. You start from the first word in the sequence, calculate above, and repeat for all subsequent words and then sum all up. That's the gradient for your G without the need for sampling from the softmax of logits, therefore, you can train your generator that is producing categorical variables without the need to pass gradients through the undifferentiable categorical variables. 
+
+Algorithm (example for language models):
+- you make two RNN language models as the generator (G) and the mediator (M).
+- you take a bunch of real sentence from your dataset, pass to generator and get also sentences that the generator produces. 
+- you put the real sentences and the generated sentences in the same minibatch and send to the mediator. You then train the mediator as a language model with this mixed minibatch data using maximum likelihood. 
+- Then you take another real data batch, send through the generator to get the logits_G for each of the words in the sentence.
+- Then you pass this tensor of logits_G to your mediator to get another same-size tensor of logits_M.
+- Then you starting from the first word, apply $$\log$$ to the logits vectors for each word and then calculate the difference and multiply by logits_G i.e. $$logits_G * (\log(logits_G) - \log(logits_M))$$.
+- then sum the above values for all the words in the sentences in the minibatch and that's the gradient of your G.
+- backpropagate it to your G and train your generator to generate sequences for you!
+
+
+## Cross-View Training
+- The idea is to impelment semi-supervised learning by having a supervised model learn from the supervised portion of dataset and a bunch of auxillary models that learn from the unsupervised portion of data by treating the predictions of supervised model as groud truth labels. 
+    - idea here is to have a shared encoder (between supervised and unsupervised models) that learns better representations from the unsupervised portion of data.
+        - the shared encoder is a BiLSTM. the forward LSTM representation is used in the supervised task and the backward LSTM representation in the unsupervised tasks.
+    - The auxillary models that learn from unsupervised data, see different views of the same input and all have to learn to make predictions similar to what the supervised model predicted only from their own view of the input.
+    - We would then alternate between supervised and unsupervised portions of learning while having an encoder that learns from both portions.  
+
+
+
+## Co-Training
+
+co-training paradigm proposed by Blum and Mitchell, trains two classifiers separately on two different views, i.e. two independent sets of attributes, and uses the predictions of each classifier on unlabeled examples to augment the training set of the other, utilizing the natural redundancy in the attributes.
+
+The standard co-training algorithm requires two sufficient and redundant views, that is, the attributes be naturally partitioned into two sets, each of which is sufficient for learning and conditionally independent to the other given the class label.
+
+Goldman and Zhou proposed an algorithm which does not exploit attribute partition. However, it requires using two different supervised learning algorithms that partition the instance space into a set of equivalence classes, and employing time-consuming cross validation technique to determine how to label the unlabeled examples and how to produce the final hypothesis.
+
+
+Let L denote the labeled example set with size |L| and U denote the unlabeled example set with size |U|. In co-training style algorithms, two classifiers are initially trained from L, each of which is then re-trained with the help of unlabeled examples that are labeled by the latest version of the other classifier. In order to determine which example in U should be labeled and which classifier should be biased in prediction, the confidence of the labeling of each classifier must be explicitly measured. Sometimes such a measuring process is quite time-consuming.
+
+### Tri-Training [ZH Zhou, M Li]
+
+Assume that besides these two classifiers, i.e. h1 and h2, a classifier h3 is initially trained from L. Then, for any classifier, an unlabeled example can be labeled for it as long as the other two classifiers agree on the labeling of this example, while the confidence of the labeling of the classifiers are not needed to be explicitly measured. 
+
+
+For instance, if h2 and h3 agree on the labeling of an example x in U, then x can be labeled for h1. It is obvious that in such a scheme if the prediction of h2 and h3 on x is correct, then h1 will receive a valid new example for further training; otherwise h1 will get an example with noisy label. However, even in the worse case, the increase in the classification noise rate can be compensated if the amount of newly labeled examples is sufficient, under certain conditions.
+
+
+Tri-training does not require sufficient and redundant views, nor does it require the use of different supervised learning algorithms whose hypothesis partitions the instance space into a set of equivalence classes.
+
+In contrast to previous algorithms that utilize two classifiers, tritraining uses three classifiers. This setting tackles the problem of determining how to label the unlabeled examples and how to produce the final hypothesis, which contributes much to the efficiency of the algorithm.
+
+### Curriculum learning
+- the idea is that a student learns best not when complex and easy examples are randomly presented, but when a certain curriculum is followed in presentation of examples that lets model achieve best performance. The result from [this](http://ronan.collobert.com/pub/matos/2009_curriculum_icml.pdf) paper is that when training machine learning models, start with easier subtasks and gradually increase the difficulty level of the tasks.
+
+Another [paper](https://openreview.net/forum?id=SJ1fQYlCZ) studies growing sets of data and gives evidence that we can also obtain good results by adding the samples randomly without a meaningful order. The main learning strategy considered is learning with growing sets, i.e. at each stage a new portion of samples is added to the current available training set. At the last stage, all training samples are considered. The classifier is re-learned on each stage, where optimized weights in the previous stage are given as initial weights in the next stage. Specifically, the authors argue that adding samples in random order is as beneficial as adding them with some curriculum strategy, i.e. from easiest to hardest, or reverse.
+
+- Can we learn this curriculum?
+    - a GAN sort of learns a curriculum, as the discriminator and generator gradually evolve together. The generator doesn't suddenly provide the hardest possible example, and the discriminator doesn't suddenly discriminate the hardest possible negative example from the positive ones. Both evolve together according to a learned curriculum of gradually harder negative examples. 
+
+## The Mechanics of n-Player Differentiable Games
+
+
+- a mechanical system (may be consisting of multitudes of pars) is comprehensively described by a set of position variables that reflect the degrees of the freedom of the system in space and a set of conjugate variables called momentum that describe the rate of change of the spatial degrees of freedom in time dimension.
+
+- A Hamiltonian is a scalar function that describes the physics of the mechanical system under study by describing the interaction of the degrees of freedom of the system in space and time. 
+    - If we can describe the physics of a systems by a writing its Hamiltonian, we can predict/study the temporal evolution of the system using the gradient of the Hamiltonian. The equations of motion of the system are: 
+        + The gradient of the Hamiltonian w.r.t. positional variables yields the rate of change of momentum in time. 
+        + The gradient of the Hamiltonian w.r.t. momentum variables yields the rate of change of position in time. 
+    - In the case of physical systems, the Hamiltonian is defined as the total energy of a system obtained by the sum of the potential energy (depending only on the spatial state of the system) and kinetic energy (depending only on momentum and temporal rate of spatial state) of the system. 
+        + Kinetic energy is defined as the work needed to accelerate a body of a given mass from rest to its stated velocity or decelerate a body at its stated velocity to rest. The kinetic energy of a non-rotating body is defined as $$(mv^2)/2$$ or $$(p^2)/2m$$
+        + Potential energy is defined as the work needed to change the spatial position of a body from its ititial position to the stated position (common types: as gravitational, elastic, electric, and maybe neural network potential energy).
+
+
+
+- An ideal mechanical system is energy preserving meaning that the total energy of the system (i.e. Hamiltonian) is constant and the energies are only converted from potential to kinetic or vice versa in the system. It is possible to also have energy dissipating or energy gaining systems. 
+
+
+- Some vector fields are gradient fields (if the partial derivatives are symmetrical) which means that they can be written as the derivative of a scalar field. In such a case, running the dynamical system can be thought of as performing gradient descent in the scalar field. integrating such a gradient field (i.e. force) will yield the scalar field (i.e. potential energy). 
+
+
+
 - [The Mechanics of n-Player Differentiable Games](https://arxiv.org/pdf/1802.05642.pdf) This paper argues that in interactive ML, the loss function consists of competing terms that constitute games. It analyzes the possible games into three categories based on the Hessain of multiple terms of the loss function w.r.t. their respective variables. If we re-write the Hessian in terms of the addition of a symmetric ((H+H')/ 2) and an anti-symmetric function ((H-H')/2), the games are categorized into three classes. 
 	+ first class is potential games where the anti-symmetric term of the Hessian is zero. The constituting terms of the loss in this case, form gradients in the same direction for example, a single objective classification problem. In such scenarios SGD works well since the direction of the first order gradient of the loss constitutes a gradient field and we can follow it to get to a local minimum. 
 	+ second class of games where the symmetric term is zero, are what the paper calls Hamiltonian games. Hamiltonian games are similar to energy conserving physical systems that constitute a limit cycle in the gradient field. The direction of the first order gradient is tangent to this limit cycle, therefore, we can't really reduce the loss. for this class of games, the paper suggests Synthetic Gradient Averaging (SGA), that is a transformation on the gradient to map it to the direction perpendicular to the limit cycle. This gradient has similarities to second order and natural gradient methods that map the gradient from a euclidean space to a hamiltonian space. The paper suggests to move in the direction of $$\epsilon + \lambda A^T \epsilon$$, where $$\epsilon$$ is SGD gradient, $$A^T$$ is the anti-symmetric part of the Hessian matrix. 
