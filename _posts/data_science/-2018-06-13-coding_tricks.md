@@ -13,6 +13,16 @@ image:
 - convention is to give files that are Bash scripts an extension of .sh
 
 
+## NaNs 
+
+- if error starts increasing then NaN appears afterwards: diverging due to too high learning rate
+- if NaNs appear suddenly: saturating units yielding non-differentiable gradient
+
+- NaN computation due to log(0) (for example if cross-entropy is used) 
+- NaN due to floating point issues (to high weights) or activations on the output (could happen also in MSE)
+- $$inf * weight$$ (if haven't checked that, maybe an expert could comment on that)
+solutions: weight clipping, l2 norm, lower learning rate, small value add to log(x), different weight initialization (glorot->gaussian),
+
 ### profile code to understand runtime bottlenecks
 
 Profile your code with `sProfile` like the following command in order to understand which part of the code is taking how much time. 

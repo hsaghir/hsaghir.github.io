@@ -361,5 +361,47 @@ Each of the representations T can thus be seen in the information-bottleneck per
 - [Primal-Dual Wasserstein GAN]() synthesizes the desirable qualities of VAEs and GANs using Optimal Transport and divergences (Wasserstein distance). 
 
 
+#### Unifying deep generative models 
+VAEs and GANs can be formulated as instances or approximations of a loss-augmented variational posterior inference problem of latent variable graphical models. Both VAEs and GANs have a generator that we can sample to generate data x. The difference is that while the GAN generator doesn't admit evaluating the likelihood of the data, a VAE's generator admits an explicit liklihood $$p(x|z)$$. 
+
+- VAEs additionally learn a variational distribution (a.k.a. inference model) 𝚚(z|x; η), which approximates the true posterior p(z|x; θ) that is proportional to p(x|z; θ)p(z). And, using the classic framework of variational EM algorithm, the model is trained to minimize the KL divergence between the variational distribution and the true posterior: 
+
+$$KL( 𝚚(z|x; η) || p(z|x; θ) ) $$
+
+- In contrast, GANs accompany the generator with a discriminator, 𝚚_φ, by setting up an adversarial game in which the discriminator is trained to distinguish between real data and generated (fake) samples, while the generator is trained to produce samples that are good enough to confuse the discriminator.
+
+
+
+### Integrating prior structures into models 
+
+Posterior regularization is a principled framework to impose prior fixed knowledge constraints on posterior distributions of probabilistic models. PR augments the objective (typically log-likelihood) by adding a constraint term $$L(\theta, q)$$ encoding the domain knowledge. For efficient optimization, the constraint $$f(x)$$ is imposed on an auxiliary distribution q, which is encouraged to stay close to the posterior of the model $$p_\theta$$ through a KL divergence term.
+
+$$L(\theta, q) = KL(q(x)||p_\theta (x)) − \alpha E_q [f_\phi (x)] ,$$
+
+The objective trades off likelihood and distance to the desired posterior subspace. The problem is solved using an EM-style algorithm. Specifically, the E-step
+optimizes above equation w.r.t q, which is convex and has a closed-form solution at each iteration given θ:
+
+$$q^∗(x) = p_θ(x) exp {αf(x)}/ Z$$
+
+Given q from the E-step, the M-step optimizes the loss w.r.t θ with:
+
+$$min_θ KL(q(x)||p_θ(x)) = min_θ −E_q [log p_θ(x)] + const.$$
+
+However, many deep generative models (e.g. GANs, autoregressive NN) do not possess a straight-forward probabilistic formulation or even meaningful latent variables. Besides, the constraints need to be know beforehand to use constraint optimization of PR framework. The papers ["Deep Generative Models with Learnable Knowledge Constraints"](https://arxiv.org/pdf/1806.09764.pdf) establishes formal mathematical correspondence between the model and constraints in PR and the policy and reward in entropy-regularized policy optimization. Then it uses inverse RL to learn the constraints (i.e. reward) and then uses PR to do constraint optimization on any type of model. 
+
+- a line of research is trying to formalizing RL as a probabilistic inference problem
+
+
+
+
+Inverse reinforcement learning (IRL) seeks to learn a reward function from expert demonstrations. The paper uses maximum-entropy IRL to derive the constraint learning objective, and leverage the unique structure of PR for efficient importance sampling estimation.
+
+Algo:
+    - In short, we break an input into the constraint region and other info. For example, in sentence generation, constraint region is the templated part of the sentence, while the rest are content information like entities. 
+    - we have a GAN-like setup with two interactive models, that are learned in stages.
+        + First model is an energy-based model that assigns an affinity score (similarity score) to a template and the sentence. It somehow implements the constraint by assigning a high score to a template and its corresponding sentence. 
+            * Stage1 learning: we use inverse RL gradient to train this part of the model. 
+        + Second model is the generator that takes in entities and reconstructs the entire sentences from entities information and affinity score from first model.
+            * This part can of model can be trained using maximum likelihood with reconstruction cost of adversarially using an additional discriminator. 
 
 
