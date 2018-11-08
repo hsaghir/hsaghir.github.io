@@ -374,25 +374,39 @@ $$KL( 𝚚(z|x; η) || p(z|x; θ) ) $$
 
 ### Integrating prior structures into models 
 
-Posterior regularization is a principled framework to impose prior fixed knowledge constraints on posterior distributions of probabilistic models. PR augments the objective (typically log-likelihood) by adding a constraint term $$L(\theta, q)$$ encoding the domain knowledge. For efficient optimization, the constraint $$f(x)$$ is imposed on an auxiliary distribution q, which is encouraged to stay close to the posterior of the model $$p_\theta$$ through a KL divergence term.
+
+#### Posterior regularization
+Posterior regularization is a principled framework to impose known fixed knowledge constraints on posterior distributions of probabilistic models. PR augments the objective (typically log-likelihood) by adding a constraint term $$L(\theta, q)$$ encoding the domain knowledge. 
+
+
+For efficient optimization, instead of directly doing constraint optimization using the constraint $$f(x)$$ (i.e. adding $$f(x)$$ to objective), we add a term that minimizes the distance between the constraint version and the unconstraint version. We do this by imposing the constraint $$f(x)$$ on an auxiliary distribution q, which is encouraged to stay close to the posterior of the model $$p_\theta$$ through a KL divergence term. 
 
 $$L(\theta, q) = KL(q(x)||p_\theta (x)) − \alpha E_q [f_\phi (x)] ,$$
 
-The objective trades off likelihood and distance to the desired posterior subspace. The problem is solved using an EM-style algorithm. Specifically, the E-step
-optimizes above equation w.r.t q, which is convex and has a closed-form solution at each iteration given θ:
+This objective trades off likelihood and distance to the desired posterior subspace. The problem is solved using an EM-style algorithm. Specifically, 
+
+- the E-step optimizes above equation w.r.t q, which is convex and has a closed-form solution at each iteration given θ:
 
 $$q^∗(x) = p_θ(x) exp {αf(x)}/ Z$$
 
-Given q from the E-step, the M-step optimizes the loss w.r.t θ with:
+$$q^*$$ can be seen as an energy-based distribution with the negative energy defined by $$ \alpha f(x) + \log p_\theta(x)$$.
+- Given q from the E-step, the M-step optimizes the loss w.r.t θ with:
 
-$$min_θ KL(q(x)||p_θ(x)) = min_θ −E_q [log p_θ(x)] + const.$$
+$$min_θ KL(q(x)||p_θ(x)) = min_θ −E_q [log p_θ(x)] + constraint given by q.$$
 
-However, many deep generative models (e.g. GANs, autoregressive NN) do not possess a straight-forward probabilistic formulation or even meaningful latent variables. Besides, the constraints need to be know beforehand to use constraint optimization of PR framework. The papers ["Deep Generative Models with Learnable Knowledge Constraints"](https://arxiv.org/pdf/1806.09764.pdf) establishes formal mathematical correspondence between the model and constraints in PR and the policy and reward in entropy-regularized policy optimization. Then it uses inverse RL to learn the constraints (i.e. reward) and then uses PR to do constraint optimization on any type of model. 
+This minimizes the KL divergence between the two so that the unconstrained version gets as close as possible to the constrained version.
+
+In practice, this means that we have an additive objective with two terms, the original unconstrained objective (e.g. log-likelihood) and a constraint term that depends on (q). In each forward pass, we first calculate (p) and then project it into a  constrained subspace using the closed form solution above ($$q^∗(x) = p_θ(x) exp {αf(x)}/ Z$$) to get (q). Second, in the backward pass, we minimize the network w.r.t. the additive objective. 
+
+A similar imitation procedure has been used in other settings called distillation. Following them we call pθ(y|x) the “student” and q(y|x) the “teacher”, which can be intuitively explained in analogous to human education where a teacher is aware of systematic general rules and she instructs students by providing her solutions to particular questions.  An important difference from previous distillation work, where the teacher is obtained beforehand and the student is trained thereafter, is that our teacher and student are learned simultaneously during training.
+
+Though it is possible to combine a neural network with rule constraints by projecting the network to the rule-regularized subspace after it is fully trained as before with only data-label instances, or by optimizing projected network directly, we found our iterative teacher-student distillation approach provides a much superior performance.  Moreover, since pθ distills the rule information into the weights θ instead of relying on explicit rule representations, we can use pθ for predicting new examples at test time when the rule assessment is expensive or even unavailable.
+
+#### learning the constraints
+
+However, many deep generative models (e.g. GANs, autoregressive NN) do not possess a straight-forward probabilistic formulation or even meaningful latent variables. Besides, the constraints need to be known beforehand to use constraint optimization of PR framework. The papers ["Deep Generative Models with Learnable Knowledge Constraints"](https://arxiv.org/pdf/1806.09764.pdf) establishes formal mathematical correspondence between the model and constraints in PR and the policy and reward in entropy-regularized policy optimization. Then it uses inverse RL to learn the constraints (i.e. reward) and then uses PR to do constraint optimization on any type of model. 
 
 - a line of research is trying to formalizing RL as a probabilistic inference problem
-
-
-
 
 Inverse reinforcement learning (IRL) seeks to learn a reward function from expert demonstrations. The paper uses maximum-entropy IRL to derive the constraint learning objective, and leverage the unique structure of PR for efficient importance sampling estimation.
 
@@ -405,3 +419,58 @@ Algo:
             * This part can of model can be trained using maximum likelihood with reconstruction cost of adversarially using an additional discriminator. 
 
 
+#### A connection between GANs, IRL, and EBMs
+> By Finn et al. [https://arxiv.org/pdf/1611.03852v3.pdf](https://arxiv.org/pdf/1611.03852v3.pdf)
+>
+>  A sampled based algorithm for maximum entropy IRL and a GAN in which the generator's density can be evaluated and is provided as an additional input to the discriminator. Interestingly, maximum entropy IRL is a special case of an energy-based model.
+
+##### Inverse Reinforcement Learning
+
+The goal is to infer the cost function underlying demonstrated behavior.
+
+###### Maximum Entropy IRL
+
+Maximum Entropy RL models the demonstrations using a Boltzmann distribution, where the energy is given by the cost fuction:
+
+
+$$
+p_\theta(\tau) = \frac{1}{Z} \exp(-c_\theta(\tau))
+$$
+
+
+The optimal trajectories have the highest likelihood, and the expert can generate suboptimal paths with a probability that decreases exponentially. The goal is to learn an energy-based model $$-c_\theta(\tau)$$ that assigns low energies to demonstrations (good trajectories) and high energy to bad trajectories. This is similar to an energy-based discriminator.
+
+###### Guided Cost Learning algorithm
+Learning the reward function $$c_\theta(\tau)$$ with unknown parameters $$\theta$$ is then cast as maximizing the likelihood of the above distribution. The algorithm estimates $$Z$$ by training a new sampling distribution $$q(\tau)$$ and using importance sampling. 
+
+
+$$
+\mathcal{L}_{cost} (\theta) = \mathbb{E}_{\tau \sim p}[-\log p_\theta(\tau)] = \mathbb{E}_{\tau \sim p}[c_\theta(\tau)] + \log Z \\
+= \mathbb{E}_{\tau \sim p}[c_\theta(\tau)] + \log (\mathbb{E}_{\tau \sim q}[\frac{\exp(-c_\theta (\tau))}{q(\tau)}])
+$$
+
+
+The importance sampling estimate can have very high variance if the sampling distribution $$q$$ fails to cover some trajectories $$\tau$$ with high values of $$\exp (-c_\theta (\tau))$$. One way to address this is to mix sampling data and demonstrations $$\mu = \frac{1}{2} p + \frac{1}{2} q$$.
+
+
+$$
+\mathcal{L}_{cost} (\theta) = \mathbb{E}_{\tau \sim p}[-\log p_\theta(\tau)] = \mathbb{E}_{\tau \sim p}[c_\theta(\tau)] + \log Z \\= \mathbb{E}_{\tau \sim p}[c_\theta(\tau)] + \log (\mathbb{E}_{\tau \sim \mu}[\frac{\exp(-c_\theta (\tau))}{\mu(\tau)}])
+$$
+
+##### GAN = MaxInt IRL
+
+For GAN the log loss for discriminator is equal to:
+
+
+$$
+\mathcal{L} (D_\theta) = \mathbb{E}_{\tau \sim p}[-\log D_\theta (\tau)] + \mathbb{E}_{\tau \sim q} [-\log (1 - D_\theta(\tau))]
+$$
+
+
+where $$ D_\theta(t) = \frac{\frac{1}{Z}\exp(-c_{\theta}(\tau))}{\frac{1}{Z}\exp(-c_{\theta}(\tau)) + q(\tau)} $$
+
+There are three facts that imply that GANs optimize precisely the MaxEnt IRL problem
+
+1. The value of $$Z$$ which minimizes the discriminator's loss is an importance-sampling estimator for the partition function.n (Compute $$\frac{\partial \mathcal{L}(D_\theta)}{\partial Z}$$)
+2. For this value of $$Z$$, the derivative of the discriminator's loss wrt. $$\theta$$ is equal to the derivative for the MaxEnt IRL objective. (Compute $$\frac{\partial \mathcal{L}(D_\theta)}{\partial \theta}$$ and $$\frac{\partial \mathcal{L}_{cost}(\theta)}{\partial \theta}$$)
+3. The generator's loss is exactly equal to the cost $$c_\theta$$ minus the entropy of $$q(\tau)$$.
