@@ -1,4 +1,4 @@
-x---
+---
 layout: article
 title: Valuation
 comments: true
@@ -6,6 +6,46 @@ categories: finance
 image:
   teaser: jupyter-main-logo.svg
 ---
+
+# core principles and investment policies (Ben Graham - Warren Buffet)
+1. a stock  is not just a ticker symbol or an electronic blip; it is an ownership interest in an actual business, with an underlying value that does not depend on the share price.
+
+2. the market is a pendulum that forever swings between unsustainable optimism (which makes stocks too expensive) and unjustified pessimism (which makes them too cheap). The intelligent investor is a realist who buys from the pessimists and sells to the optimists. 
+
+3. the future value of every investment is a function of its present price. The higher the price that you pay, the lower your return will be. 
+
+4. No matter how careful you are, the one risk that no investor can ever eliminate is the risk of being wrong. Only by insisting on what Graham called the 'margin of safety' - never overpaying no matter how exciting an investment seems to be - can you minimize the odds of the error. 
+
+5. The secret to your financial success is inside yourself. If your become a critical thinker who takes no Wall Street 'fact' on faith, and you invest with patient confidence, you can take steady advantage of even the worst bear market. By developing your discipline and courage, you can refuse to let other people's mood swings govern your financial destiny. In the end, how your investments behave is much less important than how you behave. 
+
+
+
+# circle of competence
+
+1. Can you break down different moving parts of the economics of business and how important each is? Can you understand the economic characteristics of this business? Can you draw a business model canvas for the business? Can you predict how the economics will look like in 5-10 years?
+
+2. put yourself in customer's shoes. why buy from this company and not another? why this product and not alternatives? what do customers value most in each segment of the business?
+
+3. why is this company going to win? can an idiot with 1B$ destroy their business? why buy this company and not its competitor?
+
+4. what is the growth engine (hedgehog principle) of this business ? are they executing on it? For example, Warren understood early on the relationship between a uniquely positioned brand, and pouring money into TV advertisement for accelerating the growth of the brand. Back then, If you bought the top brand in a market, you made the top money, and you could pour more money into TV ads than competitors and even grow faster. This positive feedback loop for growing brands was the hedgehog principle of brands that Warren understood and bought as many businesses with this dynamic as he could.
+
+
+# other Buffet principles:
+
+- Always look for a business with a clear-cut competitive advantage. If you can’t explain to your spouse what makes a company special as a long-term moneymaker, it probably isn’t.
+
+- Try to find companies with a small market share, a huge addressable market, and a large competitive advantage. This was Warren Buffett’s recipe for success with Geico, a once-tiny auto insurer that sold directly to consumers rather than pay agents’ commissions. 
+
+- never confuse a growing industry with a profitable one. 
+
+- Avoid businesses whose best days are behind them. This is true even if you’re paying a cheap price relative to current earnings or book value because, in the long run, underlying business quality trumps price. Exhibit A: Sears Holdings looked cheap all the way down until it declared bankruptcy. 
+
+- With the help of his partner Charlie Munger, Buffett studied and came to deeply understand the ecosystem of brands and media that empowered them—for that’s what it was, an ecosystem, even though there was no such term at the time. Over the next several decades, he and Munger engaged in a series of lucrative investments in branded companies and the television networks and advertising agencies that enabled them. While ­Graham’s cigar-butt investing remained a staple of his trade, Buffett understood that the big money lay elsewhere. As he wrote in 1967, “Although I consider myself to be primarily in the quantitative school, the really sensational ideas I have had over the years have been heavily weighted toward the qualitative side, where I have had a ‘high-probability insight.’ (Value 2.0: finding a superior business and paying a reasonable price for it.)
+	+ The margin of safety lies not in the tangible assets but rather in the sustainability of the business itself. Key to this was the “high-probability insight”—that the company was so dominant, its future so stable, that the multiple one paid in terms of current earnings would not only hold but perhaps also expand. Revolutionary though the insight was at the time, to Buffett this was just math: The more assured the profits in the future, the higher the price you could pay today.
+
+- 
+
 
 Buffett is known for his unrivaled ability to pick "wonderful companies at a fair price." Wonderful has a qualitative and a quantitative aspect. He quantifies these by studying the financials of the companies. 
 
@@ -115,12 +155,6 @@ M = Future value of company (or bond value at maturity)
 C = yearly dividend payment over n years (or bond coupon payment)
 i = the interest rate in %
 n = the number of years in future
-
-
-Model & Random && Artist & Politician & Writer& Scientist && Plant & CelestialBody\\ \hline
-% Clique-Discr. (7) & 73.86 && 00.00 & 00.00 & 00.00 & 71.86 && 65.47 & 61.44 \\
-Clique-Discr. (3) & 76.17 && 73.01 & 73.82 & 73.28 & 74.56 && 66.14 & 60.38 \\
-
 
 
 ## portfolio strategy:

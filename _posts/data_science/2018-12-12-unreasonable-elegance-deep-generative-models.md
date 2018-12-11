@@ -7,33 +7,27 @@ image:
   teaser: jupyter-main-logo.svg
 ---
 
-If you've been tracking the news on machine learnign and "AI", chances are that you've heard of generative models. Models that have gained notable popularity recently for their ability to generate realistic images.   Generative models are statistical models that try to explicitly explain the process of generating a set of data points. The ability to model the data generation process without direct supervision (unsupervised learning) has been a general goal of machine learning for a long time. The advent of deep learning has revived interest in such probabilistic models due to the extraordinary power of deep neural networks as function approximators. 
+If you've been tracking the news on machine learnign and "AI", chances are that you've heard of generative models. Models that have gained notable popularity recently for their ability to generate realistic images. Generative models are statistical models that try to explicitly explain the process of generating a set of data points. The ability to model the data generation process without direct supervision (unsupervised learning) has been a general goal of machine learning for a long time. Although there is [some debate](https://twitter.com/HrSaghir/status/1069631380496224257) regarding whether unsupervised learning should aim to learn everything about the data as opposed to learning specific things, so far learning everything about data (density estimation) has been on a roll and holds [promise](https://twitter.com/dpkingma/status/1070856301868068864). Generative models have been around for the good part of the past couple of decades, however, the advent of deep learning has revived interest in such probabilistic models due to the extraordinary power of deep neural networks as function approximators.
 
-I am specificly interested in generative models due to their unreasonably elegant and principled approach in solving machine learning problems at a time where we don't really understand much about our models. The basic goal of generative models is to perform density estimation meaning that we want to take in a bunch of training data and fit a probability density function to it. We can then use that probability density function to generate new data similar to the training data.
-
-
-The discipline of generative modeling has experienced enormous leaps in capabilities in recent years, mostly with likelihood-based methods (Graves, 2013; Kingma and Welling, 2013, 2018; Dinh et al., 2014; van den Oord et al., 2016a) and generative adversarial networks (GANs) (Goodfellow et al., 2014) (see Section 4). Likelihood-based methods can be divided into three categories:
-    - Autoregressive models (Hochreiter and Schmidhuber, 1997; Graves, 2013; van den Oord et al., 2016a,b; Van Den Oord et al., 2016). Those have the advantage of simplicity, but have as disadvantage that synthesis has limited parallelizability, since the computational length of synthesis is proportional to the dimensionality of the data; this is especially troublesome for large images or video.
-    - Variational autoencoders (VAEs) (Kingma and Welling, 2013, 2018), which optimize a lower bound on the log-likelihood of the data. Variational autoencoders have the advantage of parallelizability of training and synthesis, but can be comparatively challenging to optimize (Kingma et al., 2016).
-    - Flow-based generative models, first described in NICE (Dinh et al., 2014) and extended in RealNVP (Dinh et al., 2016). 
-        + advantage: Exact latent-variable inference and log-likelihood evaluation. In VAEs, one is able to infer only approximately the value of the latent variables that correspond to a datapoint. GAN’s have no encoder at all to infer the latents.
-        + Efficient inference and efficient synthesis, compared to autoregressive models.
-        + Useful latent space for downstream tasks. The hidden layers of autoregressive models have unknown marginal distributions, making it much more difficult to perform valid manipulation of data. In GANs, datapoints can usually not be directly represented in a latent space.
-        + Significant potential for memory savings. Computing gradients in reversible neural networks requires an amount of memory that is constant instead of linear in their depth.
-        + In most flow-based generative models (Dinh et al., 2014, 2016), the generative process is defined as an invertible transformation (g) of a latent variable (z) (usually a simple and tractable distribution e.g. mutlivariate Gaussian) to data points (x). The invertability of the transformation makes inference of latent z from data x easy. 
 
 
 ## What is a generative model?
 - A generative model is a probablistic model that in some sense approximates the natural distribution of the data.
     + an approach is to fit a latent variable model of the form p(x, z|θ) = p(z|θ)p(x|z, θ) to the data, where x are the observed variables, z are the parameterized latent variables. In maximum likelihood learning, we usually fit such models by minimizing a distance/divergence metric between the true data likelihood p(x) and the marginalized model likelihood p(x|θ) (e.g. $$KL[\frac{p(x|\theta)}{p(x)}]$$). 
 
+<img src="/images/Generative_models/what_is_GM.png" alt="a depiction of generative models to provide intuition" width="350" height="350">
 
-- examples: Generate bedrooms, faces, etc (GANs, GLOW, VAEs, etc), image algebra, generate image from text and image caption, visual question answering, art applications, etc. 
+
+If you imagine the red dots in this figure as being the observed data points in our dataset, they basically are samples from the natural distribution of the data that we do not have access to. What we desire the in generative modelling is to fit a probablistic model similar to the green blob at the top to the surface of the natural distribution of the data as closely as we can. You can imagine that if we can approximate the surface of the natural distribution of the data with a probabilistic model, then randomly sampling our model should provide data samples that look like the observed data points. 
 
 
-- 
+-  Examples of some efforts in the literature that have had some relative success in : Generate bedrooms, faces, etc (GANs, GLOW, VAEs, etc), image algebra, generate image from text and image caption, visual question answering, art applications, etc.
 
-## Statistical modelling
+## why?
+
+I am specificly interested in generative models due to their unreasonably elegant and principled approach in solving machine learning problems at a time that coming up with models is still more of a creative curosity than precise engineering. The basic goal of generative models is to perform density estimation, meaning that we want to take in a bunch of training data and fit a probability density function to them. Once learned, we can then use the model probability density function to generate new data similar to the training data.
+
+## Problem setup: the scientific method
 
 Almost everything that we can do with data involves finding the probability distribution underlying our data P(x). This includes finding insights in data, prediction, modeling the world, etc.  Therefore, We are interested in finding the true probability distribution of our data P(x) which is unknown. We usually use the scientific method in a probabilistic pipeline to solve this problem i.e.:
 
@@ -43,9 +37,25 @@ Almost everything that we can do with data involves finding the probability dist
 4. We use the model for prediction, inference and exploration
 5. And we finally criticize and revise the model
 
+
+<img src="/images/Generative_models/scientific_method.png" alt="the scientific method as described by [Box, 1980; Rubin, 1984; Gelman et al., 1996; Blei, 2014]" width="350" height="350">
+
+## Statistical modelling
+In the statistical modelling pipeline, the first assumption that we make is to assume that each data point is a random variable (i.e. a distribution).
+
+$X =\{{x_1,x_2,…,x_n}\}$
+$\{p(x_1), p(x_2), ..., p(x_n)\}$
+
+The goal is usually to find the joint probability distribution of all the random variables (density estimation) so that we can obtain the unerlying distribution of the data:
+
+$P(x_1,x_2, .., x_n) = \prod_i p(x_i)p(x_i|x_m)$
+
+<img src="/images/Generative_models/joint_distribution.png" alt="the joint distribution of two random variables" width="350" height="350">
+
+
 The statistical modeling procedure usually involves the introduction of some hidden variables, $$z_i$$, as hidden causes for the observed variables $$x_i$$, and a mixing procedure that we believe will lead to generation of the data as a model for the unknown true probability distribution of the data $$P(X)$$. The collection of observed variables $$X$$, and hidden variables, $$Z$$, form a joint probability distribution  $$P(X, Z)$$ that constructs our model. 
 
-The joint distribution $$P(X, Z)$$ can be thought of as a combination of other simpler probability distributions  through a hierarchy of component distributions i.e. $$P(X, Z)=P(X|Z)P(Z)$$. This means that we first sample the top distribution over hidden variables $$P(Z)$$ to choose a component that should produce data, then the corresponding component $$P(X|Z)$$ produces a sample x. This makes it easier to express the complex probability distribution of the observed data P(x) using a model P(x,z)=P(x|z)P(z). It is important to note that the real procedure for producing a sample x is unknown to us and the model is merely an attempt to find an estimation for the true distribution.
+The joint distribution $$P(X, Z)$$ can be thought of as a combination of other simpler probability distributions through a hierarchy of component distributions i.e. $$P(X, Z)=P(X|Z)P(Z)$$. This means that we first sample the top distribution over hidden variables $$P(Z)$$ to choose a component that should produce data, then the corresponding component $$P(X|Z)$$ produces a sample x. This makes it easier to express the complex probability distribution of the observed data P(x) using a model P(x,z)=P(x|z)P(z). It is important to note that the real procedure for producing a sample x is unknown to us and the model is merely an attempt to find an estimation for the true distribution.
 
 The task is then to fit the model by "infering" the latent variables from the data i.e. $$P(Z|X)$$. 
 
@@ -81,6 +91,15 @@ At the beginning, the probability of choosing a component in the mixture is base
 
 
 ### Types of models
+The discipline of generative modeling has experienced enormous leaps in capabilities in recent years, mostly with likelihood-based methods (Graves, 2013; Kingma and Welling, 2013, 2018; Dinh et al., 2014; van den Oord et al., 2016a) and generative adversarial networks (GANs) (Goodfellow et al., 2014). Likelihood-based methods can be divided into three categories:
+    - Autoregressive models (Hochreiter and Schmidhuber, 1997; Graves, 2013; van den Oord et al., 2016a,b; Van Den Oord et al., 2016). Those have the advantage of simplicity, but have as disadvantage that synthesis has limited parallelizability, since the computational length of synthesis is proportional to the dimensionality of the data; this is especially troublesome for large images or video.
+    - Variational autoencoders (VAEs) (Kingma and Welling, 2013, 2018), which optimize a lower bound on the log-likelihood of the data. Variational autoencoders have the advantage of parallelizability of training and synthesis, but can be comparatively challenging to optimize (Kingma et al., 2016).
+    - Flow-based generative models, first described in NICE (Dinh et al., 2014) and extended in RealNVP (Dinh et al., 2016), Glow (Kingma 2018). 
+        + advantage: Exact latent-variable inference and log-likelihood evaluation. In VAEs, one is able to infer only approximately the value of the latent variables that correspond to a datapoint. GAN’s have no encoder at all to infer the latents.
+        + Efficient inference and efficient synthesis, compared to autoregressive models.
+        + Useful latent space for downstream tasks. The hidden layers of autoregressive models have unknown marginal distributions, making it much more difficult to perform valid manipulation of data. In GANs, datapoints can usually not be directly represented in a latent space.
+        + Significant potential for memory savings. Computing gradients in reversible neural networks requires an amount of memory that is constant instead of linear in their depth.
+        + In most flow-based generative models (Dinh et al., 2014, 2016), the generative process is defined as an invertible transformation (g) of a latent variable (z) (usually a simple and tractable distribution e.g. mutlivariate Gaussian) to data points (x). The invertability of the transformation makes inference of latent z from data x easy. 
 
 #### 1. Fully-observed models: 
 These Models observe data directly without introducing any new local latent variables but have a deterministic internal hidden representation of the data. Let observations be $$X = {x_1, x_2, .., x_n}$$ as random variables. The joint distribution is described as $$p(X) = p(x_1)p(x_2|x_1)...p(x_n|(x_1,...,x_n))$$. This will be a directed model of only observed variables.
@@ -173,7 +192,16 @@ These models are usually used as generative models to model distributions of obs
 
     - A DIM is simply a deep neural network with random noise injected at certain layers. An additional reason for deep latent structure appears from this perspective: training may be easier if we inject randomness at various layers of a neural net, rather than simply at the input. This relates to noise robustness.
 
-### Inference problems:
+
+### Bayesian rule and inference
+- we assume a generative model, fit the model by "inferring" the latent variables from the data
+- The Bayes rule shows a way. 
+- to use the Bayesian formula for inference and learning, we assume a functional form for the beliefs (density function)
+- We can choose to parameterize these density functions to give more expressibility to our model.
+- Putting parameterized density functions into Bayesian formula, we end up with an equation of unknowns. 
+
+
+#### Inference problems:
 
 1. Evidence estimation
 - marginal likelihood of evidence: Write the log density as the marginalization of the joint. We introduce a variational approximate q, into our marginal integral of joint p(x,z), to get p(x). By taking the log from both sides, and using Jensen's inequality we get the ELBO. Maximizing the ELBO is equivalent to minimizing the KL divergence of the real and variational posterior. 
@@ -419,45 +447,193 @@ Algo:
             * This part can of model can be trained using maximum likelihood with reconstruction cost of adversarially using an additional discriminator. 
 
 
-#### A connection between GANs, IRL, and EBMs
-> By Finn et al. [https://arxiv.org/pdf/1611.03852v3.pdf](https://arxiv.org/pdf/1611.03852v3.pdf)
->
->  A sampled based algorithm for maximum entropy IRL and a GAN in which the generator's density can be evaluated and is provided as an additional input to the discriminator. Interestingly, maximum entropy IRL is a special case of an energy-based model.
 
-##### Inverse Reinforcement Learning
 
-The goal is to infer the cost function underlying demonstrated behavior.
+## Integrating domain knowledge into DGM
 
-###### Maximum Entropy IRL
+- difficult to exploit rich problem structures and domain knowledge in various deep generative models
+
+- Posterior Regularization provides a framework for imposing knowledge constraints on generative models
+
+---
+
+## learning the constraints
+["Deep Generative Models with Learnable Knowledge Constraints"](https://arxiv.org/pdf/1806.09764.pdf)
+
+- many deep generative models (e.g. GANs, autoregressive NN) do not possess a straight-forward probabilistic formulation (i.e. a posterior)
+
+- the constraints need to be known beforehand to use PR. 
+
+- contribution: establishes mathematical relationship between the model and constraints in PR and the policy and reward in entropy-regularized policy optimization.
+
+
+- contribution: Uses max entropy IRL to learn the constraints (i.e. reward) and then PR to do constraint optimization on any type of model. 
+
+---
+# main ideas 
+
+1. Imposing constraints on generative models
+
+- ["Posterior Regularization for Structured Latent Variable Models"](http://www.jmlr.org/papers/volume11/ganchev10a/ganchev10a.pdf)
+
+2. Connection between RL and Generative models 
+
+- ["A Connection Between Generative Adversarial Networks, Inverse Reinforcement Learning, and Energy-Based Models"](https://arxiv.org/abs/1611.03852)
+
+- ["Trust Region Policy Optimization"](https://arxiv.org/pdf/1502.05477)
+
+
+---
+
+## Posterior regularization
+
+- Problem: impose known knowledge constraints $f_\phi (x)$ on the posterior distribution of a probabilistic model $p_\theta (x)$. 
+
+- For efficient optimization: impose the constraint on an auxiliary distribution $q$, which is encouraged to stay close to the posterior $p_\theta$ through a $\mathcal{KL}$ divergence term. 
+
+$$L(\theta, q)= \mathcal{KL}(q(x)||p_\theta (x)) - \alpha E_q[f_\phi(x)]$$
+
+- new objective:
+
+$$
+\min_{\theta, q} L(\theta) + \lambda L(\theta,q)
+$$
+
+solved using an EM-style algorithm.
+
+---
+- the E-step optimizes above equation w.r.t. $q$, which is convex and has a closed-form solution at each iteration given $\theta$:
+
+    $$q^*(x) =  p_\theta(x) \frac{\exp(\alpha f(x))}{Z} $$
+    
+    
+- Given q from the E-step, the M-step optimizes the loss w.r.t $\theta$:
+$$
+\begin{aligned}
+\min_\theta L(\theta) + \lambda L(\theta,q) = \\ \min_\theta L(\theta)-E_q[\log p_\theta(x)] + const
+\end{aligned}
+$$
+
+---
+
+## Entropy regularized policy optimization
+
+-  find the policy that maximizes the expected reward
+$$
+\min_q - E_q[R(x)]
+$$
+
+- regularize objective with $\mathcal{KL}$ between the new and old policy to stablize learning as in TRPO.
+
+$$
+\min_q \mathcal{KL}(q(x)||p(x)) - \alpha E_q[R(x)]
+$$
+
+- resemblence between this objective and PR objective where generative model corresponds to policy and constraint to reward. 
+
+
+- Therefore,learning **the constraints** is equivalent to learning the **reward function**. 
+
+
+---
+## Inverse Reinforcement Learning
+
+learning the reward function from expert demonstrations. 
+
+### Maximum Entropy IRL
 
 Maximum Entropy RL models the demonstrations using a Boltzmann distribution, where the energy is given by the cost fuction:
 
 
 $$
-p_\theta(\tau) = \frac{1}{Z} \exp(-c_\theta(\tau))
+q_\phi(\tau) = \frac{1}{Z} \exp(-c_\phi(\tau))
 $$
 
 
-The optimal trajectories have the highest likelihood, and the expert can generate suboptimal paths with a probability that decreases exponentially. The goal is to learn an energy-based model $$-c_\theta(\tau)$$ that assigns low energies to demonstrations (good trajectories) and high energy to bad trajectories. This is similar to an energy-based discriminator.
+- The optimal trajectories have the highest likelihood, and the expert can generate suboptimal paths with a probability that decreases exponentially. 
 
-###### Guided Cost Learning algorithm
-Learning the reward function $$c_\theta(\tau)$$ with unknown parameters $$\theta$$ is then cast as maximizing the likelihood of the above distribution. The algorithm estimates $$Z$$ by training a new sampling distribution $$q(\tau)$$ and using importance sampling. 
+- Learning the reward function is cast as maximizing the liklihood of above distribution:
+
+$$
+\phi^* = argmax_\phi E_{\tau\sim p} [\log q_\phi(\tau)]
+$$
+
+---
+
+## Algorithm
+
+- Objective 
+
+$$
+\min_{q, \phi, \theta} L(\theta) +\mathcal{KL}(q(x)||p_\theta (x)) - \alpha E_q[f_\phi(x)]
+$$
+
+1. optimize objective w.r.t. $q$, to impose constraints (closed-form solution):
+
+$$
+q^*(x) =  p_\theta(x) \frac{\exp(\alpha f_\phi(x))}{Z} 
+$$
+    
+2. optimize objective w.r.t. $\phi$, to learn constraints (using MaxEnt IRL):
+   
+$$
+\phi^* = argmax_\phi E_{\tau\sim p} [\log q_\phi(\tau)]
+$$
+   
+    
+3. Given $q, \phi$ optimize objective w.r.t. $\theta$, to learn generative model:
+
+$$
+\min_\theta L(\theta)-E_q[\log p_\theta(x)] + const
+$$
+
+---
+## Connections to GANs
+
+- for implicit models, evaluating density is not possible. The paper proposes to minimize the reverse $\mathcal{KL}$ instead. 
+
+$$
+\begin{aligned}
+\min_\theta L(\theta)- \mathcal{KL}(p_\theta (x)||q(x)) = \\
+\min_\theta L(\theta) - E_{p_\theta}[\alpha f_\phi(x)] + \mathcal{KL}[p_\theta||p_\theta] + const
+\end{aligned}
+$$
+
+- the two objectives w.r.t $\phi$ and $\theta$ are similar to a discriminator and a generator in a GAN. 
+    + the constraints (discriminator) assign low energy to real samples from the data distribution $p_d(x)$ and high energy to samples from the constrained posterior $q(x)$. 
+    + the generator $p_\theta(x)$ is optimized to generate samples that confuse the constraints $f_\phi(x)$
+    + The generator uses information from the discriminator in generating a constrained fake data.
+
+
+---
+
+
+## Guided Cost Learning in MaxEnt IRL
+
+ 
+- The algorithm estimates $Z$ by training a new sampling distribution $q(\tau)$ and using importance sampling. 
+
+$$
+\begin{aligned}
+\mathcal{L}_{cost} (\theta) = \mathbb{E}_{\tau \sim p}[-\log p_\theta(\tau)] = \mathbb{E}_{\tau \sim p}[c_\theta(\tau)] + \log Z \\ = \mathbb{E}_{\tau \sim p}[c_\theta(\tau)] + \log (\mathbb{E}_{\tau \sim q} [\frac{\exp(-c_\theta (\tau))}{q(\tau)}])
+\end{aligned}
+$$
+
+
+- The importance sampling estimate can have very high variance if the sampling distribution $q$ fails to cover some trajectories $\tau$ with high values of $\exp (-c_\theta (\tau))$. One way to address this is to mix sampling data and demonstrations $\mu = \frac{1}{2} p + \frac{1}{2} q$.
 
 
 $$
-\mathcal{L}_{cost} (\theta) = \mathbb{E}_{\tau \sim p}[-\log p_\theta(\tau)] = \mathbb{E}_{\tau \sim p}[c_\theta(\tau)] + \log Z \\
-= \mathbb{E}_{\tau \sim p}[c_\theta(\tau)] + \log (\mathbb{E}_{\tau \sim q}[\frac{\exp(-c_\theta (\tau))}{q(\tau)}])
+\begin{aligned}
+\mathcal{L}_{cost} (\theta) = \mathbb{E}_{\tau \sim p}[-\log p_\theta(\tau)] = \mathbb{E}_{\tau \sim p}[c_\theta(\tau)] + \log Z \\ = \mathbb{E}_{\tau \sim p}[c_\theta(\tau)] + \log (\mathbb{E}_{\tau \sim \mu}[\frac{\exp(-c_\theta (\tau))}{\mu(\tau)}])
+\end{aligned}
 $$
 
+---
 
-The importance sampling estimate can have very high variance if the sampling distribution $$q$$ fails to cover some trajectories $$\tau$$ with high values of $$\exp (-c_\theta (\tau))$$. One way to address this is to mix sampling data and demonstrations $$\mu = \frac{1}{2} p + \frac{1}{2} q$$.
+## GAN = MaxInt IRL
 
-
-$$
-\mathcal{L}_{cost} (\theta) = \mathbb{E}_{\tau \sim p}[-\log p_\theta(\tau)] = \mathbb{E}_{\tau \sim p}[c_\theta(\tau)] + \log Z \\= \mathbb{E}_{\tau \sim p}[c_\theta(\tau)] + \log (\mathbb{E}_{\tau \sim \mu}[\frac{\exp(-c_\theta (\tau))}{\mu(\tau)}])
-$$
-
-##### GAN = MaxInt IRL
+["A Connection Between Generative Adversarial Networks, Inverse Reinforcement Learning, and Energy-Based Models"](https://arxiv.org/abs/1611.03852)
 
 For GAN the log loss for discriminator is equal to:
 
@@ -467,10 +643,15 @@ $$
 $$
 
 
-where $$ D_\theta(t) = \frac{\frac{1}{Z}\exp(-c_{\theta}(\tau))}{\frac{1}{Z}\exp(-c_{\theta}(\tau)) + q(\tau)} $$
+where
+
+$$ D_\theta(t) = \frac{\frac{1}{Z}\exp(-c_{\theta}(\tau))}{\frac{1}{Z}\exp(-c_{\theta}(\tau)) + q(\tau)} $$
+
+---
 
 There are three facts that imply that GANs optimize precisely the MaxEnt IRL problem
 
-1. The value of $$Z$$ which minimizes the discriminator's loss is an importance-sampling estimator for the partition function.n (Compute $$\frac{\partial \mathcal{L}(D_\theta)}{\partial Z}$$)
-2. For this value of $$Z$$, the derivative of the discriminator's loss wrt. $$\theta$$ is equal to the derivative for the MaxEnt IRL objective. (Compute $$\frac{\partial \mathcal{L}(D_\theta)}{\partial \theta}$$ and $$\frac{\partial \mathcal{L}_{cost}(\theta)}{\partial \theta}$$)
-3. The generator's loss is exactly equal to the cost $$c_\theta$$ minus the entropy of $$q(\tau)$$.
+1. The value of $Z$ which minimizes the discriminator's loss is an importance-sampling estimator for the partition function.n (Compute $\frac{\partial \mathcal{L}(D_\theta)}{\partial Z}$)
+2. For this value of $Z$, the derivative of the discriminator's loss wrt. $\theta$ is equal to the derivative for the MaxEnt IRL objective. (Compute $\frac{\partial \mathcal{L}(D_\theta)}{\partial \theta}$ and $\frac{\partial \mathcal{L}_{cost}(\theta)}{\partial \theta}$)
+3. The generator's loss is exactly equal to the cost $c_\theta$ minus the entropy of $q(\tau)$.
+

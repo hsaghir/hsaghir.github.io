@@ -157,7 +157,7 @@ A bunch of useful loss functions:
 
         + Computationally, applying an exponential (Softmax) and then taking a log to find log-probabilities is unstable due to over/under-flow problems. so it's natural to combine the two in a single function for numerical stability. pytorch's F.log_softmax combines the two to find log-probabilities in a numerically single stable step.
 
-        + Categorical Cross entropy is just the sum of (real_probability_{category_i} x model_log_probability_{category_i}). Pytorch can do this sum in a single function F.cross_entropy. 
+        + Categorical Cross entropy is just the sum of (real_probability_{category_i} x model_log_probability_{category_i}). Pytorch can do this sum in a single function F.cross_entropy. For computational problems instead of using (softmax + cross_entropy), it is better to use (log_softmax + NLL_loss)  
 
         + Another way to interpret cross-entropy is to see it as negative log-likelihood for the data target $$y_i^'$$, under a model $$y_i$$. i.e. $$-log p(data|model)$$. 
 
