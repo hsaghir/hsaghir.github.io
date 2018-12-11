@@ -43,7 +43,8 @@ Almost everything that we can do with data involves finding the probability dist
 ## Statistical modelling
 In the statistical modelling pipeline, the first assumption that we make is to assume that each data point is a random variable (i.e. a distribution).
 
-$X =\{{x_1,x_2,…,x_n}\}$
+$X =\{ x_1,x_2,…,x_n \}$
+
 $\{p(x_1), p(x_2), ..., p(x_n)\}$
 
 The goal is usually to find the joint probability distribution of all the random variables (density estimation) so that we can obtain the unerlying distribution of the data:
