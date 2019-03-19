@@ -4,8 +4,14 @@ title:  Understand PyTorch code in 10 minutes
 comments: true
 categories: data_science
 image:
-  teaser: practical/pytorch_logo.png
+  teaser: practical/pytorch_logo_new.png
 ---
+<!-- 
+```
+[Edit: updating this post in honor of the release of version 1.0]
+There has been significant changes and improvements to both pytorch front and backend since I originally wrote this post about one and half ago. Since I aim for this post to still be a quick 10-minute introduction to pytorch, I am not going to add many things, but rather update it to reflect the newest of changes in pytorch.
+``` -->
+
 
 So PyTorch is the new popular framework for deep learners and many new papers release code in PyTorch that one might want to inspect. Here is my understanding of it narrowed down to the most basics to help read PyTorch code. This is based on Justin Johnson's [great tutorial](https://github.com/jcjohnson/pytorch-examples). If you want to learn more or have more than 10 minutes for a PyTorch starter go read that!
 
@@ -14,7 +20,7 @@ PyTorch consists of 4 main packages:
 2. torch.autograd: a package for building a computational graph and automatically obtaining gradients 
 3. torch.nn: a neural net library with common layers and cost functions
 4. torch.optim: an optimization package with common optimization algorithms like SGD,Adam, etc
-
+5. torch.jit: a just-in-time (JIT) compiler that at runtime takes your PyTorch models and rewrites them to run at production-efficiency. The JIT compiler can also export your model to run in a C++-only runtime based on Caffe2 bits.
 
 ##### 0. import stuff
 You can import PyTorch stuff like this:
@@ -226,4 +232,24 @@ for epoch in range(10):
         L = loss_func(out,target) #calculate loss
         L.backward() # calculate gradients
         optimizer.step() # make an update step
+```
+
+
+##### 5. torch.jit can compile python code -> useful for production of models
+Regardless of whether you use tracing or @script, the result is a python-free representation of your model, which can be used to optimize the model or to export the model from python for use in production environments.
+
+
+- The PyTorch tracer, torch.jit.trace, is a function that records all the native PyTorch operations performed in a code region, along with the data dependencies between them. In fact, PyTorch has had a tracer since 0.3, which has been used for exporting models through ONNX. What changes now, is that you no longer necessarily need to take the trace and run it elsewhere - PyTorch can re-execute it for you, using a carefully designed high-performance C++ runtime. As we develop PyTorch 1.0 this runtime will integrate all the optimizations and hardware integrations that Caffe2 provides.
+
+- Tracing mode is a great way to minimize the impact on your code, but we’re also very excited about the models that fundamentally make use of control flow such as RNNs. Our solution to this is a scripting mode. In this case you write out a regular Python function, except that you can no longer use certain more complicated language features. Once you isolated the desired functionality, you let us know that you’d like the function to get compiled by decorating it with an @script decorator. This annotation will transform your python function directly into our high-performance C++ runtime. This lets us recover all the PyTorch operations along with loops and conditionals. They will be embedded into our internal representation of this function, and will be accounted for every time this function is run.
+
+```python
+from torch.jit import script
+
+@script
+def rnn_loop(x):
+    hidden = None
+    for x_t in x.split(1):
+        x, hidden = model(x, hidden)
+    return x
 ```
