@@ -70,6 +70,9 @@ A number of problems consist of a hybrid of several learning agents (models), ea
     - Even a sequence model with a teacher forcing the right output?
 
 
+## Stable oponent shaping 
+[Stable Opponent Shaping in Differentiable Games](https://arxiv.org/abs/1811.08469)
+
 ## Adversarial training
 
 

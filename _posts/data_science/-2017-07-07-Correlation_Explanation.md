@@ -43,4 +43,7 @@ image:
 ### MINE (mutual information neural estimation):
 - mutual information between two random variables is the ratio density between their joint distribution and the product of their marginals. GANs can do this density ratio estimation
 
+
+- In practice, MI between two sets of variables using MINE is calculated using a discriminator (regressor to be exact) with two heads for the two sets of variables. By maximizing the distance between regressed value for the original ordering of the two sets of variables and the estimated value for the shuffled ordering of the two sets of variable; the discriminator learns to estimate the mutual information between the two sets of variables. 
+
 - It might be possible to use the [MINE](https://arxiv.org/abs/1801.04062) setting of MI estimation in corex. 

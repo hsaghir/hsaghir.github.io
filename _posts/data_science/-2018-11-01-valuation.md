@@ -7,16 +7,81 @@ image:
   teaser: jupyter-main-logo.svg
 ---
 
+
+# Buffet's 1992 Shareholders' letter
+```text
+ "We select our marketable equity securities in much the way we would evaluate a business for acquisition in its entirety.  We want  the business to be one (a) that we can understand; (b) with 
+favorable long-term prospects; (c) operated by honest and competent people; and (d) available at a very attractive price."
+
+But how, you will ask, does one decide what's "attractive"? In answering this question, most analysts feel they must choose  between two approaches customarily thought to be in opposition:  "value" and "growth." In our opinion, the two approaches are joined at the hip:  Growth is always a component 
+in the calculation of value, constituting a variable whose  importance can range from negligible to enormous and whose impact can be negative as well as positive.
+
+In addition, we think the very term "value investing" is redundant.  What is "investing" if it is not the act of seeking value at least sufficient to justify the amount paid?  Consciously paying more for a stock than its calculated value - in the hope that it can soon be sold for a still-higher price - should be labeled speculation (which is neither illegal, immoral nor - in our view - financially fattening).
+
+Typically, "value" connotes the purchase of stocks having attributes such as a low ratio of price to book value, a low price-earnings ratio, or a high dividend yield.  Unfortunately, such characteristics, even if they appear in combination, are far from determinative as to whether an investor is indeed buying something for what it is worth and is therefore truly operating on the principle of obtaining value in his investments.  Correspondingly, opposite characteristics - a high ratio of price to book value, a high price-earnings ratio, and a low dividend yield - are in no way inconsistent with a "value" purchase.
+
+Similarly, business growth, per se, tells us little about value.  It's true that growth often has a positive impact on value, sometimes one of spectacular proportions.  But such an effect is far from certain.  For example, investors have regularly poured money into the domestic airline business to finance profitless (or worse) growth.  For these investors, it would have been far better if Orville had failed to get off the ground at Kitty Hawk: The more the industry has grown, the worse the disaster for owners.
+
+Growth benefits investors only when the business in point can invest at incremental returns that are enticing - in other words, only when each dollar used to finance the growth creates over a dollar of long-term market value.  In the case of a low-return business requiring incremental funds, growth hurts the investor.
+
+In The Theory of Investment Value, written over 50 years ago, John Burr Williams set forth the equation for value, which we condense here:  The value of any stock, bond or business today is determined by the cash inflows and outflows - discounted at an appropriate interest rate - that can be expected to occur during the remaining life of the asset.  Note that the formula is the same for stocks as for bonds.  Even so, there is an important, and difficult to deal with, difference between the two:  A bond has a coupon and maturity date that define future cash flows; but in the case of equities, the investment analyst must himself estimate the future "coupons."  Furthermore, the quality of management affects the bond coupon only rarely - chiefly when management is so inept or dishonest that payment of interest is suspended.  In contrast, the ability of management can dramatically affect the equity "coupons."
+
+The investment shown by the discounted-flows-of-cash calculation to be the cheapest is the one that the investor should purchase - irrespective of whether the business grows or doesn't, displays volatility or smoothness in its earnings, or carries a high price or low in relation to its current earnings and book value.  Moreover, though the value equation has usually shown equities to be cheaper than bonds, that result is not inevitable: When bonds are calculated to be the more attractive investment, they should be bought.
+
+Leaving the question of price aside, the best business to own is one that over an extended period can employ large amounts of incremental capital at very high rates of return.  The worst business to own is one that must, or will, do the opposite - that is, consistently employ ever-greater amounts of capital at very low rates of return.  Unfortunately, the first type of business is very hard to find:  Most high-return businesses need relatively little capital.  Shareholders of such a business usually will benefit if it pays out most of its earnings in dividends or makes significant stock repurchases.
+
+Though the mathematical calculations required to evaluate equities are not difficult, an analyst - even one who is experienced and intelligent - can easily go wrong in estimating future "coupons."  At Berkshire, we attempt to deal with this problem in two ways.  
+
+	+ First, we try to stick to businesses we believe we understand.  That means they must be relatively simple and stable in character.  If a business is complex or subject to constant change, we're not smart enough to predict future cash flows.  Incidentally, that shortcoming doesn't bother us.  What counts for most people in investing is not how much they know, but rather how realistically they define what they don't know.  An investor needs to do very few things right as long as he or she avoids big mistakes.
+
+	+ Second, and equally important, we insist on a margin of safety in our purchase price.  If we calculate the value of a common stock to be only slightly higher than its price, we're not interested in buying.  We believe this margin-of-safety principle, so strongly emphasized by Ben Graham, to be the cornerstone of investment success.
+```
+
 # core principles and investment policies (Ben Graham - Warren Buffet)
-1. a stock  is not just a ticker symbol or an electronic blip; it is an ownership interest in an actual business, with an underlying value that does not depend on the share price.
 
-2. the market is a pendulum that forever swings between unsustainable optimism (which makes stocks too expensive) and unjustified pessimism (which makes them too cheap). The intelligent investor is a realist who buys from the pessimists and sells to the optimists. 
+```text
+The most realistic distinction between the investor and the spec- ulator is found in their attitude toward stock-market movements. The speculator’s primary interest lies in anticipating and profiting from market fluctuations. The investor’s primary interest lies in acquiring and holding suitable securities at suitable prices. Market movements are important to him in a practical sense, because they alternately create low price levels at which he would be wise to buy and high price levels at which he certainly should refrain from buying and probably would be wise to sell.
 
-3. the future value of every investment is a function of its present price. The higher the price that you pay, the lower your return will be. 
+It is far from certain that the typical investor should regularly hold off buying until low market levels appear, because this may involve a long wait, very likely the loss of income, and the possible missing of investment opportunities. On the whole it may be better for the investor to do his stock buying whenever he has money to put in stocks, except when the general market level is much higher than can be justified by well-established standards of value. If he wants to be shrewd he can look for the ever-present bargain oppor- tunities in individual securities.
 
-4. No matter how careful you are, the one risk that no investor can ever eliminate is the risk of being wrong. Only by insisting on what Graham called the 'margin of safety' - never overpaying no matter how exciting an investment seems to be - can you minimize the odds of the error. 
+Aside from forecasting the movements of the general market, much effort and ability are directed on Wall Street toward selecting stocks or industrial groups that in matter of price will “do better” than the rest over a fairly short period in the future. Logical as this endeavor may seem, we do not believe it is suited to the needs or temperament of the true investor—particularly since he would be competing with a large number of stock-market traders and first- class financial analysts who are trying to do the same thing. As in all other activities that emphasize price movements first and underlying values second, the work of many intelligent minds con- stantly engaged in this field tends to be self-neutralizing and self- defeating over the years.
 
-5. The secret to your financial success is inside yourself. If your become a critical thinker who takes no Wall Street 'fact' on faith, and you invest with patient confidence, you can take steady advantage of even the worst bear market. By developing your discipline and courage, you can refuse to let other people's mood swings govern your financial destiny. In the end, how your investments behave is much less important than how you behave. 
+The investor with a portfolio of sound stocks should expect their prices to fluctuate and should neither be concerned by sizable declines nor become excited by sizable advances. He should always remember that market quotations are there for his convenience, either to be taken advantage of or to be ignored. He should never buy a stock because it has gone up or sell one because it has gone down. He would not be far wrong if this motto read more simply: “Never buy a stock immediately after a substantial rise or sell one immediately after a substantial drop.”
+
+
+
+ But note this important fact: The true investor scarcely ever is forced to sell his shares, and at all other times he is free to disregard the current price quotation. He need pay attention to it and act upon it only to the extent that it suits his book, and no more.* Thus the investor who permits himself to be stampeded or unduly wor- ried by unjustified market declines in his holdings is perversely transforming his basic advantage into a basic disadvantage. That man would be better off if his stocks had no market quotation at all, for he would then be spared the mental anguish caused him by other persons’ mistakes of judgment.
+
+Let us close this section with something in the nature of a para- ble. Imagine that in some private business you own a small share that cost you $1,000. One of your partners, named Mr. Market, is very obliging indeed. Every day he tells you what he thinks your interest is worth and furthermore offers either to buy you out or to sell you an additional interest on that basis. Sometimes his idea of value appears plausible and justified by business developments and prospects as you know them. Often, on the other hand, Mr. Market lets his enthusiasm or his fears run away with him, and the value he proposes seems to you a little short of silly.
+If you are a prudent investor or a sensible businessman, will you let Mr. Market’s daily communication determine your view of the value of a $1,000 interest in the enterprise? Only in case you agree with him, or in case you want to trade with him. You may be happy to sell out to him when he quotes you a ridiculously high price, and equally happy to buy from him when his price is low. But the rest of the time you will be wiser to form your own ideas of the value of your holdings, based on full reports from the company about its operations and financial position.
+```
+
+
+Three core lessons from Ben Graham:
+1. attitude toward the market (chapter 8)
+	- the market is a pendulum that forever swings between unsustainable optimism (which makes stocks too expensive) and unjustified pessimism (which makes them too cheap). The intelligent investor is a realist who buys from the pessimists and sells to the optimists. 
+		+ two ways this can happen is by timing and pricing. If you focus on timing and forcasting the market, you'll end up being an speculator and lose money. But you can make money by focusing on pricing. Buying a company at a price that is a margin of safety lower than the value and selling at value or above is the act of investing. The question is then how do you determine the value of a company considering its business, market, competition, growth, and management?
+
+
+	- The whole structure of stock-market quotations contains a built-in contradiction. This really means that, in a very real sense, the better the quality of a common stock (and the more it is widely believed), the more speculative it is likely to be—at least as compared with the unspectacular middle-grade issues.
+
+
+	- A serious investor is not likely to believe that the day-to-day or even month-to-month fluctuations of the stock market make him richer or poorer. In any case the investor may as well resign himself in advance to the probability rather than the mere possibility that most of his holdings will advance, say, 50% or more from their low point and decline the equivalent one-third or more from their high point at various periods in the next five years.
+
+	- The secret to your financial success is inside yourself. If your become a critical thinker who takes no Wall Street 'fact' on faith, and you invest with patient confidence, you can take steady advantage of even the worst bear market. By developing your discipline and courage, you can refuse to let other people's mood swings govern your financial destiny. In the end, how your investments behave is much less important than how you behave. 
+		+ Your shares have advanced, good! You are richer than you were, good! But has the price risen too high, and should you think of selling? Or should you kick yourself for not having bought more shares when the level was lower? Or— worst thought of all—should you now give way to the bull-market atmosphere, become infected with the enthusiasm, the overconfi- dence and the greed of the great public (of which, after all, you are a part), and make larger and dangerous commitments? Presented thus in print, the answer to the last question is a self-evident no, but even the intelligent investor is likely to need considerable will power to keep from following the crowd.
+
+	- The longer a bull market lasts, the more severely investors will be afflicted with amnesia; after five years or so, many people no longer believe that bear markets are even possible. All those who forget are doomed to be reminded; and, in the stock market, recovered memories are always unpleasant.
+
+
+
+2. the notion of margin of safety
+	- the future value of every investment is a function of its present price. The higher the price that you pay, the lower your return will be. 
+
+	- No matter how careful you are, the one risk that no investor can ever eliminate is the risk of being wrong. Only by insisting on what Graham called the 'margin of safety' - never overpaying no matter how exciting an investment seems to be - can you minimize the odds of the error. 
+
+3. looking at stocks as businesses:
+	- a stock  is not just a ticker symbol or an electronic blip; it is an ownership interest in an actual business, with an underlying value that does not depend on the share price.
 
 
 

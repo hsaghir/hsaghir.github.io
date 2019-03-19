@@ -104,6 +104,26 @@ And connect to it by tunneling the port to your local machine. Run is on your lo
 ssh -A -N -f -L localhost:7003:localhost:8008 -J skynet hamid@compute006
 ```
 
+You can also view tensorboard inside a jupyter notebook in which case you need
+
+```python
+
+# Load the TensorBoard notebook extension
+%load_ext tensorboard.notebook
+
+from tensorboard import notebook
+
+'''list existing tensorboard instances'''
+notebook.list()
+
+'''start notebook server on remote machine at a certain port if not already open'''
+%tensorboard --logdir runs --port 9998
+
+
+'''froward remote port to a local port and connect to it'''
+notebook.display(port=8082, height=1000) # view the notebook at forwarded port
+```
+
 ### python logging module
 
 Logging serves two purposes:

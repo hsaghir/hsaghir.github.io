@@ -20,6 +20,8 @@ Back-propagation (Rumelhart & Hinton, 1986), computes exact gradients for determ
 Stochasticity is the case when we want to calculate the gradient of an expectation of a function with respect to parameters $$\theta$$ i.e. $$ \nabla_\theta (E_q(z) [f(z)])=\nabla_\theta( \int q(z)f(z))$$ . An example is ELBO where gradient is difficult to compute since the expectation integral is unknown or the ELBO is not differentiable. If we have discrete distributions, both of above situations co-occur. These two are used in Gumbel-Softmax to make a latent variable model with discrete latent variables. 
     - Authors reparameterize a categorical latent variable with Gumbel trick to solve stochasticity. Then since the re-parameterization is still dicrete, they relax it by sampling under the softmax approximation.
 
+- a few gradient estimation techniques: (REINFORCE [williams1992], NVIL [mnih2014], VIMCO [mnih2016]
+
 # permuations:
 ## with Gumbel-Sinkhorn 
 
