@@ -4,7 +4,7 @@ title:  Understand PyTorch code in 10 minutes
 comments: true
 categories: data_science
 image:
-  teaser: practical/pytorch_logo_new.png
+  teaser: practical/Pytorch_logo_new.png
 ---
 <!-- 
 ```
