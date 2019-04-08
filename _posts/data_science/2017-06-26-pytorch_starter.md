@@ -6,14 +6,15 @@ categories: data_science
 image:
   teaser: practical/Pytorch_logo_new.png
 ---
+
+So PyTorch is the new popular framework for deep learners and many new papers release code in PyTorch that one might want to inspect. Here is my understanding of it narrowed down to the most basics to help read PyTorch code. This is based on Justin Johnson's [great tutorial](https://github.com/jcjohnson/pytorch-examples). If you want to learn more or have more than 10 minutes for a PyTorch starter go read that!
+
 <!-- 
 ```
 [Edit: updating this post in honor of the release of version 1.0]
 There has been significant changes and improvements to both pytorch front and backend since I originally wrote this post about one and half ago. Since I aim for this post to still be a quick 10-minute introduction to pytorch, I am not going to add many things, but rather update it to reflect the newest of changes in pytorch.
 ``` -->
 
-
-So PyTorch is the new popular framework for deep learners and many new papers release code in PyTorch that one might want to inspect. Here is my understanding of it narrowed down to the most basics to help read PyTorch code. This is based on Justin Johnson's [great tutorial](https://github.com/jcjohnson/pytorch-examples). If you want to learn more or have more than 10 minutes for a PyTorch starter go read that!
 
 PyTorch consists of 4 main packages:
 1. torch: a general purpose array library similar to Numpy that can do computations on GPU when the tensor type is cast to (torch.cuda.TensorFloat)
