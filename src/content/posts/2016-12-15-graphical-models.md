@@ -4,8 +4,8 @@ description: "PCA, factor analysis, logistic regression, Gaussian mixtures, HMMs
 date: 2016-12-15
 tags: ["machine-learning", "unified-views", "bayesian"]
 category: "data_science"
-cover: "/images/pearl-nips2013.jpg"
-coverAlt: "Judea Pearl at NIPS 2013, presenting a poster titled \"Graphical Models for Inference with Missing Data\"."
+cover: "/images/galton-board.jpg"
+coverAlt: "A Galton board: balls bouncing through a grid of pegs accumulate into a bell curve at the bottom. The physical ur-example of a graphical model: local stochastic rules produce a global distribution."
 ---
 
 Most of what we call "machine learning" is a small vocabulary of probabilistic
@@ -132,4 +132,4 @@ the right one. What changed is that the likelihood $p(x \mid z)$ is now
 routinely a deep network, and the posterior $p(z \mid x)$ is now routinely
 approximated by another one. The scaffolding stayed. The bricks got bigger.*
 
-*Cover image: Judea Pearl at NIPS 2013, by [Better Than Bacon](https://www.flickr.com/photos/39057810@N00/11781981594/), [CC BY 2.0](https://creativecommons.org/licenses/by/2.0/).*
+*Cover image: Galton board (Matemateca IME/USP), photo by [Rodrigo Argenton](https://commons.wikimedia.org/wiki/File:Galton_box.jpg), [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/).*

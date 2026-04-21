@@ -1,7 +1,7 @@
 ---
 title: "The pyramid principle for writing clearly"
 description: "Barbara Minto's pyramid: put the answer at the top, let the reader's questions drive the hierarchy, and choose deduction or induction at each branch."
-date: 2026-04-19
+date: 2017-04-06
 tags: ["writing", "thinking"]
 category: "philosophy"
 cover: "/images/pyramid-kheops.jpg"
