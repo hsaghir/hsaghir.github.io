@@ -4,6 +4,8 @@ description: "Barbara Minto's pyramid: put the answer at the top, let the reader
 date: 2026-04-21
 tags: ["writing", "thinking"]
 category: "philosophy"
+cover: "/images/pyramid-kheops.jpg"
+coverAlt: "The Great Pyramid of Khufu at Giza against a clear sky."
 ---
 
 > **Note (2026):** I drafted this in 2017 after reading Barbara Minto's
@@ -80,3 +82,7 @@ signposting every branch, so the reader spends their attention on the
 
 It also forces the writer to actually have a point. If you can't
 write the apex sentence, you don't have a piece yet — you have notes.
+
+---
+
+<small>Cover: *Great Pyramid of Khufu*, photo by Nina (Wikimedia Commons, [CC BY 2.5](https://creativecommons.org/licenses/by/2.5/)).</small>

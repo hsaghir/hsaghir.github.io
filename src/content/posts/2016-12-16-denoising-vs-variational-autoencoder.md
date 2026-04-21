@@ -17,6 +17,14 @@ cover: "/images/VAE_intuitions/manifold.jpg"
 > small example of those ideas. Treat this as a gateway, not a
 > state-of-the-art reference.
 
+**The short version.** A plain autoencoder learns to compress and
+reconstruct, but its latent codes are not a *distribution* you can
+sample from, so it can't generate new data. A variational autoencoder
+fixes that by forcing the latent code to come from a learned
+probability distribution \u2014 and the machinery that makes this work
+(ELBO, reparameterization, amortised inference) is the same machinery
+underneath diffusion, flow matching, and modern variational inference.
+This post is the intuition for all of it, in words and pictures.
 
 I love the simplicity of [autoencoders](https://en.wikipedia.org/wiki/Autoencoder) as a very intuitive [unsupervised learning](https://en.wikipedia.org/wiki/Unsupervised_learning) method. They are in the simplest case, a three layer [neural network](https://hsaghir.github.io/a-primer-on-neural-networks/). In the first layer the data comes in, the second layer typically has smaller number of nodes than the input and the third layer is similar to the input layer. These layers are usually fully connected with each other. Such networks are called auto-encoders since they first "encode" the input to a hidden code and then "decode" it back from the hidden representation. They can be trained by simply measuring the reconstruction error and [back-propagating](https://hsaghir.github.io/a-primer-on-neural-networks/) it to the network's parameters. If you add noise to the input before sending it through the network, they can learn better and in that case, they are called [denoising autoencoders](https://en.wikipedia.org/wiki/Autoencoder). They are useful because they help with understanding the data by trying to extract regularities in them and can compress them into a lower dimensional code.
 

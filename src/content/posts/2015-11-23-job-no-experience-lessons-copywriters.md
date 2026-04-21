@@ -8,8 +8,11 @@ category: "job"
 cover: "/images/job/job-no-experience-copywriters.jpg"
 ---
 
-
-
+**The short version.** A job application is a sales letter with one
+reader. Copywriters have a century of craft for writing sales letters
+that convert, and most of it transfers: know the target audience,
+name the problem they actually have, show how you remove it, and
+close with a clear next step. This post walks those four moves.
 
 I have been blogging about the [qualifications](https://hsaghir.github.io/ten-phd-skills/) of advanced degree holders and how they should be approaching a [job search](https://hsaghir.github.io/how-to-get-job-in-7-steps). However, job rejection is commonplace and it can be a very [frustrating](https://jobs.theguardian.com/article/didn-t-get-the-job-how-to-survive-rejection/) experience. We seem to be doing all the right things. We choose the job we want. We create a list of companies we want to work for. We tailor our resumes to each job opening. We network online and offline, but still no results. So, what is the problem?
 

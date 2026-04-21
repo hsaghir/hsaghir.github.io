@@ -8,6 +8,11 @@ category: "data_science"
 cover: "/images/nnet/Aneuron.jpg"
 ---
 
+**The short version.** A neural network is a long chain of
+multiply-add-then-bend-a-little operations with *tunable knobs*, and
+"training" is just turning the knobs so that the chain ends up
+approximating a function you care about. This post explains that
+without any formulas, just pictures and words.
 
 What is a neural network? To get started, it's beneficial to keep in mind that modern neural network started as an attempt to model the way that brain performs computations. We have billions of [neuron](https://en.wikipedia.org/wiki/Neuron) cells in our brains that are connected to each other and pass information around.
 

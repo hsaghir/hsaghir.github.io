@@ -8,7 +8,12 @@ category: "philosophy"
 cover: "/images/nonlinear_dynamical_system.jpg"
 ---
 
-
+**The short version:** impostor syndrome often reflects a linear
+fallacy. We expect outcomes to scale with effort, and when an outcome
+is bigger than the effort we remember putting in, it feels like a
+mistake we got away with. But the world is mostly nonlinear. Small
+*right* inputs routinely produce outsized outputs, and that is not a
+fluke — it is the shape of most of the systems we live inside.
 
 One of the most exhilarating observations of physics and mathematics for me, comes from understanding the concept of [nonlinearity](http://en.wikipedia.org/wiki/Nonlinear_system). i.e. inputs don't necessarily need to be proportionate to outputs. The understanding that in a non-linear system, increasing the "right inputs" are far more important than "increased average inputs".
 

@@ -4,6 +4,8 @@ description: "From spectral clustering to Gaussian processes to transformer atte
 date: 2026-04-21
 tags: ["machine-learning", "unified-views"]
 category: "data_science"
+cover: "/images/sociogram-moreno.jpg"
+coverAlt: "A sociogram — a graph of social relationships — rendered as nodes and edges, by Martin Grandjean after Jacob Moreno."
 ---
 
 > **Note (2026):** This started as a 2017 scratchpad called "similarity
@@ -149,3 +151,7 @@ ways that matter enormously in practice. But when you're trying to
 > Where's the similarity matrix, and who decides what it contains?
 
 If you can answer that, you usually understand the method.
+
+---
+
+<small>Cover: *Moreno Sociogram, 4th Grade* — a social-network graph in the style of Jacob Moreno, by Martin Grandjean (Wikimedia Commons, [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/)).</small>

@@ -8,7 +8,12 @@ category: "job"
 cover: "/images/job/job-in-7-steps.jpg"
 ---
 
-
+**The short version.** Getting the job you want is a seven-step
+process, not a personality test: (1) know your options, (2) pick a
+target career, (3) plan the missing qualifications, (4) rewrite your
+resume for that target, (5) build relevant experience, (6) network
+with intent, (7) interview like a consultant pitching a client. The
+rest of this post unpacks each step.
 
 Recently, I read a post on the [Chronicle ](http://chronicle.com/article/Why-It-s-So-Hard-to-Leave/233670)where the author had listed all the excuses she could come up with, to justify her decision not to pursue a fulfilling and rewarding career. The author claims that, "rational people have good reasons for staying in a system that has failed them". I don't aim to argue for or against an academic career, however, I hardly agree that staying in an unfulfilling job is logical. Change is always hard and scary. Not just for PhDs but for everyone. Was it an easy decision for the likes of Mark Zuckerberg or Bill Gates to [drop out](http://content.time.com/time/specials/packages/article/0,28804,1988080_1988093_1988082,00.html) of Harvard to pursue a dream? How about [Nobel Laureates](http://www.nobelprize.org/nobel_prizes/), who developed counter-intuitive studies that others thought were stupid at the time? My personal favorite is the story of [Steve Wozniak](http://www.foundersatwork.com/steve-wozniak.html), co-founder of [Apple](http://www.apple.com/). He didn't want to leave his stable job at HP to go and build the largest tech empire ever!
 

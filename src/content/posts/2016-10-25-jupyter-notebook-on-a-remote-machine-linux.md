@@ -8,6 +8,10 @@ category: "data_science"
 cover: "/images/practical/jupyter-main-logo.svg"
 ---
 
+**The short version.** Run `jupyter notebook --no-browser --port=8889`
+on the remote machine, open an SSH tunnel that forwards a local port
+to 8889 on the remote, and point your local browser at
+`http://localhost:8888`. Full steps and copy-paste commands below.
 
 I typically use my computers at home to connect to my work computer. I setup xRDP to remote desktop into my work computer (Linux) which is OK but slow at times depending on the Internet connection. Since I usually use Jupyter notebook, I wanted to be able to run a Jupyter notebook server on my work computer and access it from my home computer browser. I did some search on the Internet and found a method that works, thought I'd share it here.
 

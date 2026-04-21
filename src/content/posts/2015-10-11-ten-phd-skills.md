@@ -18,6 +18,12 @@ cover: "/images/job/10-phd-skills.jpg"
 > itself holds up. The framing of "PhD is a consolation prize you have
 > to explain away" no longer does.
 
+**The short version:** a research PhD is, in effect, four to six years
+of supervised practice in ten transferable skills — working under
+ambiguity, reading primary literature fast, planning and executing
+long projects, writing and presenting to critical audiences, and
+shipping reproducible work. Industry, especially AI-adjacent industry,
+increasingly hires for exactly these. The list is below.
 
 A PhD has traditionally been the path to a career in academia. However, [recent job trends](https://royalsociety.org/%7E/media/Royal_Society_Content/policy/publications/2010/4294970126.pdf) have led to less than 1% placement rate of [STEM](https://en.wikipedia.org/wiki/STEM_fields) PhD graduates in tenure positions. Although this is not the most encouraging trend, there might be a silver lining. With the growing demand of tech companies for highly skilled work force and the ample [reports](https://www.whitehouse.gov/issues/technology/techhire) of unfilled tech jobs, PhD holders and companies can mutually benefit from these trends by keeping an open mind about the possibilities that can be created. The idea of industry jobs after PhD is becoming more popular with graduate students.
 
