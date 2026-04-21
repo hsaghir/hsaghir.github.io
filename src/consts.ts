@@ -18,10 +18,10 @@ export const SITE = {
   },
   // Comments (Giscus). Leave repo empty to disable.
   giscus: {
-    repo: '',
-    repoId: '',
-    category: 'General',
-    categoryId: '',
+    repo: 'hsaghir/hsaghir.github.io',
+    repoId: 'MDEwOlJlcG9zaXRvcnk3MTE2MDQ2NA==',
+    category: 'Announcements',
+    categoryId: 'DIC_kwDOBD3SkM4C7VW2',
     mapping: 'pathname',
     reactionsEnabled: '1',
     theme: 'preferred_color_scheme',
