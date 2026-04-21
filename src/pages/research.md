@@ -38,4 +38,4 @@ robustly when the inputs drift away from the training distribution?
 8. **H. Saghir**, T. Chau, A. Kushki. *Clustering of time-evolving scaling
    dynamics in a complex signal.* **Physical Review E**, 2016.
 
-*Full list on [Google Scholar](https://scholar.google.com/citations?user=N0lNjVcAAAAJ).*
+*Full list on [Google Scholar](https://scholar.google.com/citations?user=0QH0nTcAAAAJ&hl=en).*

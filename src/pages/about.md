@@ -18,6 +18,6 @@ Some of it is just me trying to reason out loud.
 
 - Email — [saghir.hr@gmail.com](mailto:saghir.hr@gmail.com)
 - GitHub — [@hsaghir](https://github.com/hsaghir)
-- Google Scholar — [publications](https://scholar.google.com/citations?user=N0lNjVcAAAAJ)
+- Google Scholar — [publications](https://scholar.google.com/citations?user=0QH0nTcAAAAJ&hl=en)
 
 > The best way to reach me is email. I try to reply, though I may be slow.
