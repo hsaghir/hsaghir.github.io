@@ -80,21 +80,30 @@ toward it. This is the **mode-covering** direction of the KL: the model is
 penalized whenever $\pi^\star$ puts mass somewhere that $\pi_\theta$ does
 not, so $\pi_\theta$ learns to cover every mode of the data.
 
-Reinforcement learning's objective, written with the same Boltzmann
-$\pi^\star$, becomes
+Reinforcement learning's **entropy-regularized** objective
+$\mathbb{E}_{a \sim \pi_\theta}[r(a \mid x)] + \tau\, \mathbb{H}[\pi_\theta]$,
+written with the same Boltzmann $\pi^\star \propto \exp(r/\tau)$, becomes
 
 $$
-\mathcal{L}_{\text{RL}}(\theta) \;=\; -\mathbb{E}_{a \sim \pi_\theta}\!\left[ r(a \mid x) \right]
-\;\propto\; \mathrm{KL}\!\left[ \pi_\theta \,\|\, \pi^\star \right].
+\mathcal{L}_{\text{RL}}(\theta) \;=\; -\mathbb{E}_{a \sim \pi_\theta}\!\left[ r(a \mid x) \right] - \tau\, \mathbb{H}[\pi_\theta]
+\;=\; \tau\,\mathrm{KL}\!\left[ \pi_\theta \,\|\, \pi^\star \right] - \tau \log Z(x).
 $$
+
+The $\log Z$ term does not depend on $\theta$, so minimizing this objective is
+equivalent to minimizing the KL. Plain expected-reward maximization
+(without the entropy term) is *not* a KL by itself; the entropy term is
+exactly what turns the inner product $\langle \pi_\theta, r \rangle$ into a
+divergence to a target distribution. Almost every RL method that works at
+scale (RLHF, maximum-entropy RL, soft actor-critic) carries this term,
+which is why the unification is practically, and not just nominally, useful.
 
 You sample from $\pi_\theta$ (the policy) and push it toward $\pi^\star$.
 This is the **mode-seeking** direction: the model is penalized whenever it
 puts mass where $\pi^\star$ does not, so $\pi_\theta$ learns to concentrate
 on high-reward regions.
 
-The only structural differences between supervised learning and
-reinforcement learning are:
+Once entropy regularization is in the picture, the only structural
+differences between supervised learning and reinforcement learning are:
 
 1. **Which distribution you sample from** at training time, $\pi^\star$
    (data) for SL, $\pi_\theta$ (policy) for RL.
@@ -140,13 +149,16 @@ the (learned) reward. The KL penalty against the base model that every
 RLHF paper includes is the entropy-regularization term, written against
 the prior rather than the uniform distribution.
 
-**Direct Preference Optimization** (Rafailov et al., 2023) is the same
-Boltzmann target, but the authors noticed that if you plug the optimal
+**Direct Preference Optimization** (Rafailov et al., 2023) starts from the
+same Boltzmann target. The authors noticed that if you plug the optimal
 policy form $\pi^\star \propto \pi_{\text{ref}} \exp(r / \tau)$ back into
-the preference likelihood, the reward cancels out and you can optimize the
-policy directly against preference pairs. This is the mode-covering KL
-($\mathrm{KL}[\pi^\star \| \pi_\theta]$) applied to preference data, which
-is why DPO looks like supervised learning.
+the Bradley-Terry preference likelihood, the reward cancels out and you
+can optimize the policy directly against preference pairs as a logistic
+regression on log-ratios $\log \pi_\theta(a)/\pi_{\text{ref}}(a)$. The
+resulting loss is supervised-style (no sampling from $\pi_\theta$, no
+gradient-variance concerns) even though it is derived from the same
+entropy-regularized RL objective, which is why DPO is often described as
+"RLHF done as supervised learning."
 
 **GRPO** and its descendants (the post-training methods behind the 2024-2025
 reasoning models) are online entropy-regularized RL with group baselines

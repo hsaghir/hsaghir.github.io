@@ -126,8 +126,9 @@ is the parameters. EM handles both because it alternates between them.
 **Identifiability.** Several of the parameter settings are equivalent up to
 an invertible linear map on the latent, because $C x = (C M^{-1})(M x)$ for
 any invertible $M$. This is what makes factor analysis and PCA
-rotation-invariant, and it is what ICA exploits (a non-Gaussian prior on $x$
-breaks the symmetry and identifies a specific rotation).
+rotation-invariant, and it is what ICA exploits: a non-Gaussian prior on
+$x$ breaks the rotational symmetry and identifies the latent sources up to
+permutation and sign.
 
 ## Why this matters in 2026
 
