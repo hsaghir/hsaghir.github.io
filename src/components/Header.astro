@@ -37,7 +37,7 @@ function isActive(href: string) {
     </div>
   </div>
 
-  <nav id="mobile-menu" class="nav-mobile" aria-label="Mobile" aria-hidden="true">
+  <nav id="mobile-menu" class="nav-mobile" aria-label="Mobile" inert>
     <ul>
       {SITE.nav.map((item) => (
         <li>
@@ -180,7 +180,7 @@ function isActive(href: string) {
     trigger.addEventListener('click', () => {
       const open = menu.classList.toggle('is-open');
       trigger.setAttribute('aria-expanded', String(open));
-      menu.setAttribute('aria-hidden', String(!open));
+      if (open) menu.removeAttribute('inert'); else menu.setAttribute('inert', '');
     });
   }
   bindMenu();

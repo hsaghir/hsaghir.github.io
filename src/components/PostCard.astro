@@ -34,7 +34,7 @@ const href = `/blog/${post.slug}/`;
         ))}
       </p>
     )}
-    <h3 class="title"><a href={href}>{title}</a></h3>
+    <h2 class="title"><a href={href}>{title}</a></h2>
     {description && <p class="desc">{description}</p>}
     <p class="meta">
       <time datetime={date.toISOString()}>{formatDate(date)}</time>
