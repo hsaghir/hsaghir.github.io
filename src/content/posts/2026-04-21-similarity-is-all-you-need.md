@@ -16,8 +16,8 @@ coverAlt: "A sociogram — a graph of social relationships — rendered as nodes
 > built on a similarity matrix. So here it is, rewritten.
 
 Take a set of points — rows of a dataset, tokens in a sentence, pixels
-in an image, users in a product. Build a matrix \(S\) where \(S_{ij}\)
-is some measure of how similar point \(i\) is to point \(j\). That's
+in an image, users in a product. Build a matrix $S$ where $S_{ij}$
+is some measure of how similar point $i$ is to point $j$. That's
 it. That's the primitive.
 
 An astonishing number of machine-learning methods, once you pull the
@@ -31,10 +31,10 @@ Similarity is whatever you decide it is — it's the modelling prior
 dressed up in algebra. Common choices:
 
 - **Euclidean distance** or its squared form — good for geometry in
-  \(\mathbb{R}^n\).
+  $\mathbb{R}^n$.
 - **Cosine similarity** — ignores magnitude, good for directions (text
   embeddings, word vectors).
-- **RBF / Gaussian kernel** \(\exp(-\|x_i - x_j\|^2 / 2\sigma^2)\) —
+- **RBF / Gaussian kernel** $\exp(-\|x_i - x_j\|^2 / 2\sigma^2)$ —
   smooth, local, differentiable; the workhorse of kernel methods.
 - **Dot product** — cheap, ubiquitous, and, as we'll see, the one the
   GPU loves.
@@ -42,14 +42,14 @@ dressed up in algebra. Common choices:
   rather than between points. Asymmetric in the first case; a proper
   distance in the second.
 
-If your measure doesn't land in \([0, 1]\), squash it with a negative
+If your measure doesn't land in $[0, 1]$, squash it with a negative
 exponential or a softmax and move on. The choice of measure *is* the
 inductive bias of the method; everything downstream is linear algebra.
 
 ## Spectral clustering — similarity as a graph
 
-Build \(S\). Treat it as the weighted adjacency matrix of a graph,
-form the graph Laplacian \(L = D - S\), take its smallest eigenvectors,
+Build $S$. Treat it as the weighted adjacency matrix of a graph,
+form the graph Laplacian $L = D - S$, take its smallest eigenvectors,
 and cluster the resulting embedding with k-means.
 
 The point is that once you've committed to "similarity", clustering
@@ -59,11 +59,11 @@ propagation and normalised cuts are variations on the same theme.
 
 ## Gaussian processes — similarity as a covariance
 
-Now treat \(S\) as a *covariance matrix*. If similar points have high
+Now treat $S$ as a *covariance matrix*. If similar points have high
 covariance, and you assume everything is jointly Gaussian, you get a
 Gaussian process. Prediction at a new point is a conditional Gaussian,
 which has a closed form: invert a block, multiply. Regression becomes
-linear algebra on \(S\).
+linear algebra on $S$.
 
 This is the cleanest example of "the similarity function is the model".
 Pick an RBF kernel and you've chosen smoothness as your prior. Pick a
@@ -101,16 +101,16 @@ Here's the part I couldn't see in 2017. The transformer — the
 architecture behind every LLM you've heard of — is, structurally, a
 similarity-matrix model.
 
-For each pair of tokens \((i, j)\), attention computes
+For each pair of tokens $(i, j)$, attention computes
 
 $$
 A_{ij} = \mathrm{softmax}_j\!\left(\frac{q_i \cdot k_j}{\sqrt{d}}\right)
 $$
 
 That is: a dot-product similarity between a "query" vector for token
-\(i\) and a "key" vector for token \(j\), row-normalised by softmax
-into a probability distribution over \(j\). The output for token
-\(i\) is then a weighted average of the value vectors \(v_j\), with
+$i$ and a "key" vector for token $j$, row-normalised by softmax
+into a probability distribution over $j$. The output for token
+$i$ is then a weighted average of the value vectors $v_j$, with
 the attention weights as mixing coefficients.
 
 Strip away the engineering — multi-head, positional encodings,
@@ -137,7 +137,7 @@ Once you see the pattern, new architectures stop feeling like magic:
   similarity function, and training is an explicit instruction to
   pull similar things together and push dissimilar things apart.
 - **Retrieval-augmented models** — a vector store is a similarity
-  index; retrieval is a sparse, top-\(k\) approximation of an
+  index; retrieval is a sparse, top-$k$ approximation of an
   attention layer over a much larger corpus.
 - **Diffusion models** — less directly, but the denoising score is a
   learned gradient field that smooths toward regions of high data

@@ -8,9 +8,9 @@ cover: "/images/pyramid-kheops.jpg"
 coverAlt: "The Great Pyramid of Khufu at Giza against a clear sky."
 ---
 
-> **Note (2026):** I drafted this in 2017 after reading Barbara Minto's
-> *The Pyramid Principle* and kept coming back to it every time a piece of
-> writing felt stuck. It's the single most useful structural trick I know,
+> I first came across the pyramid principle in Barbara Minto's book
+> years ago, and keep coming back to it every time a piece of writing
+> feels stuck. It's the single most useful structural trick I know,
 > and it's aged better than almost anything else in my notes.
 
 Most unclear writing isn't unclear at the *sentence* level. It's unclear

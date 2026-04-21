@@ -1,5 +1,5 @@
 ---
-title: "A unified view of graph traversal: BFS, Dijkstra, A\\* are the same algorithm"
+title: "A unified view of graph traversal: BFS, Dijkstra, A* are the same algorithm"
 description: "BFS, Dijkstra, and A* differ by one line: the data structure you pop the next node from. A worked maze example that converts each into the next."
 date: 2019-08-04
 tags: [algorithms, intuitions]
