@@ -4,7 +4,6 @@ description: "Back after a long hiatus — what's changed and what's coming."
 date: 2026-04-20
 tags: [meta, writing]
 category: philosophy
-featured: true
 cover: "/images/hello-again.jpg"
 coverAlt: "An open notebook with a pen resting across the page in warm natural light."
 ---
