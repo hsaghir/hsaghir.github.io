@@ -4,8 +4,8 @@ description: "Both fit a distribution over outputs conditioned on an input. Both
 date: 2017-11-12
 tags: ["machine-learning", "unified-views", "reinforcement-learning"]
 category: "data_science"
-cover: "/images/sutton-rl.jpg"
-coverAlt: "Rich Sutton, co-author of the canonical reinforcement learning textbook, on stage talking about RL."
+cover: "/images/longleat-maze.jpg"
+coverAlt: "A hedge maze photographed from above. The swirling walls illustrate the space an RL agent explores when searching for reward."
 ---
 
 Supervised learning and reinforcement learning look like different subjects
@@ -198,6 +198,4 @@ genuinely new, and worth paying attention to. Most methods fit.
 Mohammad Norouzi. I held it because the 2017 RL literature was fragmented
 and the unification felt premature. It is less premature now.*
 
-*Cover image: Rich Sutton on reinforcement learning, photograph by Steve Jurvetson,
-[CC BY 2.0](https://creativecommons.org/licenses/by/2.0/), via
-[Wikimedia Commons](https://commons.wikimedia.org/wiki/File:Rich_Sutton_on_Reinforcement_Learning-_Alpha_Go_Zero_to_60.jpg).*
+*Cover image: Longleat Maze, by [Anthony Parkes](https://www.geograph.org.uk/photo/2768723) via Geograph Britain and Ireland, [CC BY-SA 2.0](https://creativecommons.org/licenses/by-sa/2.0/).*
