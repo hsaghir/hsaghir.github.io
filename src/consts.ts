@@ -16,6 +16,14 @@ export const SITE = {
     twitter: 'https://twitter.com/hrsaghir',
     mastodon: '',
   },
+  // Newsletter. Provider = 'buttondown' | 'none'.
+  // Sign up at https://buttondown.email, then set username below.
+  // Leave username empty to show an RSS-only subscribe card (no email capture).
+  newsletter: {
+    provider: 'buttondown' as 'buttondown' | 'none',
+    username: '', // e.g. 'hsaghir' once you've claimed it at buttondown.email
+    blurb: "Occasional notes on machine learning, AI, and security. No spam, unsubscribe any time.",
+  },
   // Comments (Giscus). Leave repo empty to disable.
   giscus: {
     repo: 'hsaghir/hsaghir.github.io',
@@ -33,6 +41,7 @@ export const SITE = {
     { label: 'Tags', href: '/tags/' },
     { label: 'About', href: '/about/' },
     { label: 'Research', href: '/research/' },
+    { label: 'Subscribe', href: '/subscribe/' },
   ],
   postsPerPage: 20,
 } as const;

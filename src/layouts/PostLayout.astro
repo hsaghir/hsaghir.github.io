@@ -4,6 +4,7 @@ import type { CollectionEntry } from 'astro:content';
 import BaseLayout from './BaseLayout.astro';
 import TableOfContents from '../components/TableOfContents.astro';
 import Giscus from '../components/Giscus.astro';
+import Subscribe from '../components/Subscribe.astro';
 import { formatDate } from '../utils/date';
 import readingTime from 'reading-time';
 
@@ -66,6 +67,8 @@ const stats = readingTime(rawContent);
     </div>
 
     <hr />
+
+    <Subscribe variant="inline" heading="Get new posts" />
 
     <footer class="post-foot prose">
       <p class="muted foot-note">
