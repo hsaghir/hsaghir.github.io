@@ -6,6 +6,7 @@ draft: false
 tags: ["data-science"]
 category: "data_science"
 cover: "/images/practical/Pytorch_logo_new.png"
+archived: true
 ---
 
 > **Archival note (2026):** this post is from 2017 and uses the pre-0.4

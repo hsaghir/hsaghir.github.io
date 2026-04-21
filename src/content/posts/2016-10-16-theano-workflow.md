@@ -6,6 +6,7 @@ draft: false
 tags: ["data-science"]
 category: "data_science"
 cover: "/images/practical/Deep_RBM.png"
+archived: true
 ---
 
 > **Archival note (2026):** Theano was discontinued in 2017. The *concepts*

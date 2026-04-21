@@ -15,6 +15,10 @@ const posts = defineCollection({
     cover: z.string().optional(),
     coverAlt: z.string().optional(),
     featured: z.boolean().default(false),
+    // Hide from the home page (still reachable under /blog/ and tag/category
+    // archives). Use for posts that are published but no longer representative
+    // — e.g. deprecated tooling write-ups.
+    archived: z.boolean().default(false),
   }),
 });
 

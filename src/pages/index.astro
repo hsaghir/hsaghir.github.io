@@ -7,9 +7,14 @@ import { SITE } from '../consts';
 const posts = (await getCollection('posts', ({ data }) => !data.draft))
   .sort((a, b) => b.data.date.getTime() - a.data.date.getTime());
 
+// The featured slot can be any post flagged `featured: true` in frontmatter.
+// The "Recent writing" list intentionally excludes posts flagged `archived: true`
+// (e.g. write-ups of dead tooling). Archived posts are still reachable at
+// /blog/, via tag pages, and via direct URLs.
 const featured = posts.find((p) => p.data.featured) ?? posts[0];
-// Remaining posts (not the feature)
-const rest = posts.filter((p) => p.slug !== featured.slug).slice(0, 8);
+const rest = posts
+  .filter((p) => p.slug !== featured.slug && !p.data.archived)
+  .slice(0, 8);
 ---
 <BaseLayout title={SITE.title} description={SITE.description}>
   <section class="hero container">

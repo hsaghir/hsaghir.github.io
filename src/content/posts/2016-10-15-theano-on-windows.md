@@ -6,6 +6,7 @@ draft: false
 tags: ["data-science"]
 category: "data_science"
 cover: "/images/practical/theano_logo.jpeg"
+archived: true
 ---
 
 > **Archival note (2026):** Theano was officially discontinued in September 2017.
