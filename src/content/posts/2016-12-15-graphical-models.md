@@ -85,8 +85,8 @@ place of `sum`.
 
 Seeing message passing once makes several other algorithms fall into place.
 EM is message passing interleaved with a parameter update. Backpropagation
-is message passing on a computational graph (there is an
-[earlier post](/blog/2017-01-09-incarnations-graphs-dynamic-programming/)
+is message passing on a computational graph (there is a
+[companion post](/blog/2017-01-09-incarnations-graphs-dynamic-programming/)
 that unpacks this). Variational inference is message passing where you have
 replaced intractable messages with tractable approximations.
 

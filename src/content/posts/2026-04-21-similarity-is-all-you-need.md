@@ -86,8 +86,7 @@ Zoom out one level. Instead of similarity *between points*, measure
 similarity *between distributions*. Now the similarity function is a
 divergence:
 
-- **KL divergence** — the engine of variational inference; the ELBO is,
-  underneath, a KL between an approximate posterior and the true one.
+- **KL divergence** — the engine of variational inference; the ELBO is, underneath, a KL between an approximate posterior and the true one (there is a [companion post on VAEs](/blog/2016-12-16-denoising-vs-variational-autoencoder/) that unpacks this).
 - **Jensen–Shannon** — the original GAN objective.
 - **Wasserstein** — the WGAN objective; more stable because it
   degrades gracefully when distributions don't overlap.

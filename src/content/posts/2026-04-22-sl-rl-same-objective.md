@@ -22,7 +22,7 @@ distribution over outputs conditioned on an input. Both can be cast as
 minimizing a KL divergence to an implicit "optimal" target distribution.
 The only differences are which distribution you sample from and which
 direction of the KL you use. Entropy regularization is the knob that turns
-one into the other.
+one into the other. (This post is a close cousin of the [similarity post](/blog/2026-04-21-similarity-is-all-you-need/): similarity-between-distributions is another name for what we are doing here.)
 
 ## The shared setup
 
