@@ -4,6 +4,8 @@ description: "BFS, Dijkstra, and A* differ by one line: the data structure you p
 date: 2019-08-04
 tags: [algorithms, intuitions]
 category: data_science
+cover: "/images/graph-traversal.jpg"
+coverAlt: "A fork in a green hedge maze with a single dirt path leading deeper into the labyrinth."
 ---
 
 Breadth-first search, Dijkstra, and A\* are usually introduced as three
@@ -62,13 +64,14 @@ def has_path(grid, start):
     return False
 ```
 
-For an unweighted grid this also happens to return the shortest path
-(measured in number of steps).
+For an unweighted grid, the first visit to any node reaches it in the
+fewest steps — which is why BFS doubles as a shortest-path algorithm when
+every edge has cost 1.
 
 ## Dijkstra — pop the cheapest
 
-Now suppose each cell has a cost — walking through sand costs more than
-walking through grass. BFS no longer works: the first time we reach a node
+Now suppose each cell has a cost — some corridors are gravel, some are
+mud, some are water. BFS no longer works: the first time we reach a node
 may not be the cheapest way to reach it.
 
 The fix is one line. Replace the FIFO queue with a **min-heap keyed by the

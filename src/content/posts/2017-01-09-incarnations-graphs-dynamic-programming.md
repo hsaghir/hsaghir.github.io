@@ -4,6 +4,8 @@ description: "Backpropagation, belief propagation, the Viterbi algorithm, and ma
 date: 2017-01-09
 tags: [machine-learning, intuitions, autodiff]
 category: data_science
+cover: "/images/computational-graphs.jpg"
+coverAlt: "Aerial view of Clapham Junction railway station, where dozens of tracks converge, branch, and merge through the same shared crossings."
 ---
 
 Backpropagation is usually taught as "the chain rule, applied carefully".
@@ -21,10 +23,10 @@ local derivatives, local probabilities, local costs. You want a global
 quantity that is defined as a sum (or product) over all paths from some
 source to some sink.
 
-Done naively this is exponential. A graph with three layers and three
-nodes per layer already has $3 \times 3 = 9$ paths between the outer
-nodes; deep networks have astronomically many. But notice what happens if
-you push the sum through the factorisation:
+Done naively this is exponential. A graph where every node has fan-out
+three and depth ten already has $3^{10} \approx 60{,}000$ paths; deep
+neural networks have astronomically more. But notice what happens if you
+push the sum through the factorisation:
 
 $$
 \sum_{\text{paths } p} \prod_{e \in p} w_e
