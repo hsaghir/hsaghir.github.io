@@ -4,8 +4,8 @@ description: "Both fit a distribution over outputs conditioned on an input. Both
 date: 2017-11-12
 tags: ["machine-learning", "unified-views", "reinforcement-learning"]
 category: "data_science"
-cover: "/images/karakorams-ridge.jpg"
-coverAlt: "Snow-capped peaks and ridges of the Western Karakorams from the air. A literal reward landscape: peaks, valleys, and the paths between them."
+cover: "/images/go-board.jpg"
+coverAlt: "Close-up of black and white stones on a Go board mid-game. AlphaGo learned the same objective twice: first by supervised learning on expert games, then by self-play reinforcement learning."
 ---
 
 Supervised learning and reinforcement learning look like different subjects
@@ -198,4 +198,4 @@ genuinely new, and worth paying attention to. Most methods fit.
 Mohammad Norouzi. I held it because the 2017 RL literature was fragmented
 and the unification felt premature. It is less premature now.*
 
-*Cover image: Western Karakorams aerial view, by Moiz Ismaili via [Wikimedia Commons](https://commons.wikimedia.org/wiki/File:Western_Karakorams_Aerial_View.jpg), [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/).*
+*Cover image: Go stones on a goban, by [Dietmar Rabich](https://commons.wikimedia.org/wiki/File:Go_--_2021_--_6732.jpg), [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/).*
