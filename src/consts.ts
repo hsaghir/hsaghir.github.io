@@ -16,12 +16,14 @@ export const SITE = {
     twitter: 'https://twitter.com/hrsaghir',
     mastodon: '',
   },
-  // Newsletter. Provider = 'buttondown' | 'none'.
-  // Sign up at https://buttondown.email, then set username below.
-  // Leave username empty to show an RSS-only subscribe card (no email capture).
+  // Newsletter. Provider = 'mailerlite' | 'none'.
+  // Sign up at https://mailerlite.com (free up to 1,000 subscribers, 12k sends/mo).
+  // Create an embedded form, then paste the form's accountId + formId below.
+  // Leave them empty to ship an RSS + Kill-the-Newsletter fallback (no email capture).
   newsletter: {
-    provider: 'buttondown' as 'buttondown' | 'none',
-    username: '', // e.g. 'hsaghir' once you've claimed it at buttondown.email
+    provider: 'mailerlite' as 'mailerlite' | 'none',
+    accountId: '', // e.g. '1234567' from the MailerLite embed snippet
+    formId: '',    // e.g. '9876543' from the MailerLite embed snippet
     blurb: "Occasional notes on machine learning, AI, and security. No spam, unsubscribe any time.",
   },
   // Comments (Giscus). Leave repo empty to disable.

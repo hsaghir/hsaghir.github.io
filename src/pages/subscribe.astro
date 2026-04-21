@@ -17,12 +17,23 @@ import { SITE } from '../consts';
 
     <h2>Other ways to follow</h2>
     <ul>
-      <li><strong><a href="/rss.xml">RSS feed</a></strong> — works in any feed reader (Feedly, NetNewsWire, Reeder, etc.). Auto-discovered from the homepage.</li>
+      <li>
+        <strong><a href="/rss.xml">RSS feed</a></strong> — works in any feed reader (Feedly,
+        NetNewsWire, Reeder, etc.). Auto-discovered from the homepage.
+      </li>
+      <li>
+        <strong><a href="https://kill-the-newsletter.com/" rel="noopener">Email via RSS
+        (Kill the Newsletter)</a></strong> — zero-signup bridge that turns any RSS feed into
+        an email. Paste <code>{SITE.url}/rss.xml</code>, get a personal inbox address, new
+        posts arrive as email. I never see your address.
+      </li>
       {SITE.social.twitter && (
-        <li><strong><a href={SITE.social.twitter} rel="me noopener">X / Twitter</a></strong> — I post a short thread when something new goes up.</li>
+        <li><strong><a href={SITE.social.twitter} rel="me noopener">X / Twitter</a></strong>
+        — I post a short thread when something new goes up.</li>
       )}
       {SITE.social.github && (
-        <li><strong><a href={SITE.social.github} rel="me noopener">GitHub</a></strong> — the blog source lives here; star or watch for releases.</li>
+        <li><strong><a href={SITE.social.github} rel="me noopener">GitHub</a></strong> — the
+        blog source lives here; star or watch for releases.</li>
       )}
     </ul>
 

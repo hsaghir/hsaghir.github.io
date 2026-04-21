@@ -1,6 +1,7 @@
 ---
 // Subscribe.astro — email subscribe block.
-// Gated on SITE.newsletter.username; falls back to RSS-only CTA when unset.
+// Uses MailerLite's classic embedded-form POST endpoint (no external JS).
+// Gated on SITE.newsletter.{accountId,formId}; falls back to RSS + Kill-the-Newsletter CTA when unset.
 import { SITE } from '../consts';
 
 interface Props {
@@ -10,10 +11,14 @@ interface Props {
 const { variant = 'card', heading = 'Subscribe' } = Astro.props;
 
 const hasEmail =
-  SITE.newsletter.provider === 'buttondown' && SITE.newsletter.username.length > 0;
+  SITE.newsletter.provider === 'mailerlite' &&
+  SITE.newsletter.accountId.length > 0 &&
+  SITE.newsletter.formId.length > 0;
 
+// MailerLite classic embedded-form endpoint. Accepts CORS POSTs from any origin
+// and redirects to MailerLite's confirmation page.
 const actionUrl = hasEmail
-  ? `https://buttondown.email/api/emails/embed-subscribe/${SITE.newsletter.username}`
+  ? `https://assets.mailerlite.com/jsonp/${SITE.newsletter.accountId}/forms/${SITE.newsletter.formId}/subscribe`
   : '';
 ---
 <aside class={`subscribe subscribe--${variant}`} aria-labelledby="subscribe-heading">
@@ -22,22 +27,18 @@ const actionUrl = hasEmail
     <p class="blurb">{SITE.newsletter.blurb}</p>
 
     {hasEmail && (
-      <form
-        action={actionUrl}
-        method="post"
-        target="popupwindow"
-        onsubmit={`window.open('https://buttondown.email/${SITE.newsletter.username}', 'popupwindow')`}
-        class="form"
-      >
-        <label class="sr-only" for="bd-email">Your email</label>
+      <form action={actionUrl} method="post" class="form">
+        <label class="sr-only" for="ml-email">Your email</label>
         <input
           type="email"
-          name="email"
-          id="bd-email"
+          name="fields[email]"
+          id="ml-email"
           required
           placeholder="you@example.com"
           autocomplete="email"
         />
+        <input type="hidden" name="ml-submit" value="1" />
+        <input type="hidden" name="anticsrf" value="true" />
         <button type="submit">Subscribe</button>
       </form>
     )}
@@ -45,6 +46,7 @@ const actionUrl = hasEmail
     <p class="alt">
       {hasEmail ? 'Prefer a feed reader? ' : 'Follow via '}
       <a href="/rss.xml">RSS</a>
+      {' · '}<a href="https://kill-the-newsletter.com/" rel="noopener">Email-via-RSS</a>
       {SITE.social.twitter && <>{' · '}<a href={SITE.social.twitter} rel="me noopener">X / Twitter</a></>}
     </p>
   </div>
