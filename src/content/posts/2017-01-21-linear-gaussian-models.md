@@ -4,8 +4,8 @@ description: "PCA, factor analysis, ICA, Gaussian mixtures, vector quantization,
 date: 2017-01-21
 tags: ["machine-learning", "unified-views", "bayesian"]
 category: "data_science"
-cover: "/images/kalman-portrait.jpg"
-coverAlt: "Rudolf E. Kalman, inventor of the Kalman filter, photographed by ETH Zürich."
+cover: "/images/artemis-trajectory.jpg"
+coverAlt: "A spacecraft trajectory looping from Earth around the Moon. The state-space orbit Kalman's filter was built to track."
 ---
 
 Seven models in the standard textbook (PCA, factor analysis, ICA, Gaussian
@@ -161,4 +161,4 @@ did not change.
 
 ---
 
-*Cover image: Rudolf E. Kalman (1930-2016), [ETH Library Zürich](https://commons.wikimedia.org/wiki/File:ETH-BIB-Kalman,_Rudolf_E._(1930-2016)-HK_04-01925.jpg), [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/).*
+*Cover image: Artemis-II lunar flyby trajectory, [NASA's Scientific Visualization Studio](https://commons.wikimedia.org/wiki/File:Artemis_Science-_Visualizing_NASA%E2%80%99s_Next_Lunar_Flyby_(SVS14938_-_Artemis-II-Trajectory-Thumbnail).jpg), public domain.*

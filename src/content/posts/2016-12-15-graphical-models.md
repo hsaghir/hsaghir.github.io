@@ -4,8 +4,8 @@ description: "PCA, factor analysis, logistic regression, Gaussian mixtures, HMMs
 date: 2016-12-15
 tags: ["machine-learning", "unified-views", "bayesian"]
 category: "data_science"
-cover: "/images/galton-board.jpg"
-coverAlt: "A Galton board: balls bouncing through a grid of pegs accumulate into a bell curve at the bottom. The physical ur-example of a graphical model: local stochastic rules produce a global distribution."
+cover: "/images/spider-web.jpg"
+coverAlt: "A dew-laden spider web backlit by sunrise. Nodes and edges, radial strands and spirals — a graphical model rendered in silk."
 ---
 
 Most of what we call "machine learning" is a small vocabulary of probabilistic
@@ -132,4 +132,4 @@ the right one. What changed is that the likelihood $p(x \mid z)$ is now
 routinely a deep network, and the posterior $p(z \mid x)$ is now routinely
 approximated by another one. The scaffolding stayed. The bricks got bigger.*
 
-*Cover image: Galton board (Matemateca IME/USP), photo by [Rodrigo Argenton](https://commons.wikimedia.org/wiki/File:Galton_box.jpg), [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/).*
+*Cover image: Orb spider web backlit by sunrise, Sand Lake Wetland Management District, [USFWS Mountain-Prairie](https://commons.wikimedia.org/wiki/File:Orb_spider_web_backlit_by_sunrise_Sand_Lake_Wetland_Management_District_(14612974494).jpg), public domain.*
