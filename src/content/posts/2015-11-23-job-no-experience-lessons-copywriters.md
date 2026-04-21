@@ -1,6 +1,6 @@
 ---
 title: "How to get the job you want with no experience, lessons from top copywriters"
-description: "have been blogging about about the qualifications of advanced degree holders and how they should be approaching a job search. However, job rejection is commonplace and it can be a…"
+description: "I have been blogging about the qualifications of advanced degree holders and how they should be approaching a job search. However, job rejection is commonplace and it can be a very frustrating experience."
 date: "2015-11-23"
 draft: false
 tags: ["job"]
@@ -11,7 +11,7 @@ cover: "/images/job/job-no-experience-copywriters.jpg"
 
 
 
-have been blogging about about the [qualifications](https://hsaghir.github.io/ten-phd-skills/) of advanced degree holders and how they should be approaching a [job search](https://hsaghir.github.io/how-to-get-job-in-7-steps). However, job rejection is commonplace and it can be a very [frustrating](https://jobs.theguardian.com/article/didn-t-get-the-job-how-to-survive-rejection/) experience. We seem to be doing all the right things. We choose the job we want. We create a list of companies we want to work for. We tailor our resumes to each job opening. We network online and offline, but still no results. So, what is the problem?
+I have been blogging about the [qualifications](https://hsaghir.github.io/ten-phd-skills/) of advanced degree holders and how they should be approaching a [job search](https://hsaghir.github.io/how-to-get-job-in-7-steps). However, job rejection is commonplace and it can be a very [frustrating](https://jobs.theguardian.com/article/didn-t-get-the-job-how-to-survive-rejection/) experience. We seem to be doing all the right things. We choose the job we want. We create a list of companies we want to work for. We tailor our resumes to each job opening. We network online and offline, but still no results. So, what is the problem?
 
 I believe that finding a job is a matter of the unique [positioning](https://en.wikipedia.org/wiki/Positioning_%28marketing%29) of skills, and proper addressing of weaknesses. We usually think about how we have the skills required for the job but not why a company should pick us vs another candidate. We focus on why they should hire us but not as much on why they shouldn't. In short, we look at the job search from our perspectives while we should be thinking about the employer's perspectives.
 
@@ -25,7 +25,7 @@ Find as much information as you can. See how their problems are related to the o
 
 **Solution:** Demonstrating your understanding of the problem gets you the attention of the employer. This is a very important first step but it does not automatically translate into your getting the job. You need to convince the employer that you are "the solution" to their problem. This requires a careful positioning of yourself as the perfect solution while addressing the employer's possible objections. You need to think about this from the employer's perspective.
 
-**Positioning:** The research you have done about the company's problem comes handy in your positioning. You know their pain point. Ask yourself, If I were having this problem what exactly would I be looking for? What is the perfect solution to this problem? How can someone is this position contribute to solving the problem? What skills does she/he need to have to be able to do this job? What experiences strengthens a candidate's claim that they can solve the problem? etc.
+**Positioning:** The research you have done about the company's problem comes handy in your positioning. You know their pain point. Ask yourself, If I were having this problem what exactly would I be looking for? What is the perfect solution to this problem? How can someone in this position contribute to solving the problem? What skills does she/he need to have to be able to do this job? What experiences strengthens a candidate's claim that they can solve the problem? etc.
 
 I would even go further with the research and try to find other companies in the same industry or even other industries that have faced the same problem. Find out how they have solved this problem. Equip your positioning with the knowledge of the ways to solve the problem. This information will also be extremely useful during your interview.
 

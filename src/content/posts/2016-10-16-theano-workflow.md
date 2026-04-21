@@ -8,6 +8,9 @@ category: "data_science"
 cover: "/images/practical/Deep_RBM.png"
 ---
 
+> **Archival note (2026):** Theano was discontinued in 2017. The concepts
+> below — tensors, computational graphs, symbolic autodiff — are still the
+> right mental model for PyTorch and JAX, but the API in this post is dead.
 
 Theano might look intimidating, but there are a few concepts that if understood, would make the engineering involved in deep learning more tangible. The first is the concept of tensors and operations on them. A tensor is simply a multi-dimensional array. For example a 1d tensor is a vector and a 2d tensor is a matrix. We also want to do efficient operations on tensors such as addition, multiplication, etc . Tensors are useful in deep learning since we usually want to work with multi-dimensional data (e.g. images are 2d plus color channels i.e. 3d) and we also want to send a number of data points into the model at a time (minibatch which adds another dimension). 
 
@@ -36,7 +39,7 @@ updt=[(W, W - lr*g_w), (B, B - lr*g_b)]
 
 model_train=theano.function(input=X, output=loss, updates=updt) # training model
 
-model_pred=theano.funtion(input=X, output=y_out) # prediction model
+model_pred=theano.function(input=X, output=y_out) # prediction model
 
 for i in range(iter): # number of iterations
   cost=model_train(X)
