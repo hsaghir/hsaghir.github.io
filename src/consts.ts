@@ -11,7 +11,7 @@ export const SITE = {
   // Social links — leave empty string to hide
   social: {
     github: 'https://github.com/hsaghir',
-    scholar: 'https://scholar.google.com/citations?user=N0lNjVcAAAAJ',
+    scholar: 'https://scholar.google.com/citations?user=0QH0nTcAAAAJ&hl=en',
     linkedin: '',
     twitter: 'https://twitter.com/hrsaghir',
     mastodon: '',
