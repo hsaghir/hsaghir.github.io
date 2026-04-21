@@ -8,7 +8,15 @@ category: "job"
 cover: "/images/job/10-phd-skills.jpg"
 ---
 
-
+> **Note from 2026.** When I wrote this in 2015, the STEM-PhD job market
+> looked bleak: under 1% tenure placement, and industry didn't yet know
+> what to do with research-trained generalists. The AI boom has since
+> flipped much of that. ML-adjacent PhDs are in unusual demand, and
+> several of the "soft" skills below — working under ambiguity, reading
+> primary literature fast, shipping reproducible experiments — have
+> become the actual job description in industry research labs. The list
+> itself holds up. The framing of "PhD is a consolation prize you have
+> to explain away" no longer does.
 
 
 A PhD has traditionally been the path to a career in academia. However, [recent job trends](https://royalsociety.org/%7E/media/Royal_Society_Content/policy/publications/2010/4294970126.pdf) have led to less than 1% placement rate of [STEM](https://en.wikipedia.org/wiki/STEM_fields) PhD graduates in tenure positions. Although this is not the most encouraging trend, there might be a silver lining. With the growing demand of tech companies for highly skilled work force and the ample [reports](https://www.whitehouse.gov/issues/technology/techhire) of unfilled tech jobs, PhD holders and companies can mutually benefit from these trends by keeping an open mind about the possibilities that can be created. The idea of industry jobs after PhD is becoming more popular with graduate students.

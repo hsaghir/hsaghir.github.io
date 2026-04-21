@@ -1,6 +1,6 @@
 ---
-title: "Elon Musk's Reasoning Process"
-description: "Elon Musk is my real life super-hero. He knows a thing or two about solving extremely hard problems after founding and building companies in the hardest of industries. First he…"
+title: "First-principles reasoning (a note on separating ideas from the people who held them)"
+description: "An old note on Elon Musk's first-principles reasoning, updated for 2026. The politics and the personality have not aged well; the reasoning technique still has."
 date: "2015-06-14"
 draft: false
 tags: ["philosophy"]
@@ -8,23 +8,64 @@ category: "philosophy"
 cover: "/images/Elon_Musk_-_The_Summit_2013.jpg"
 ---
 
+> **Note from 2026.** I originally wrote this post in 2015 and called Elon
+> Musk my "real-life superhero". That framing has not aged well. I do not
+> agree with much of his politics or the way he treats people, and I've
+> kept a steady distance from the cult of personality that formed around
+> him. But I still think the *reasoning technique* described here is worth
+> preserving, and worth separating from the man. Ideas travel; you don't
+> have to endorse everyone who has ever used them. This post keeps the
+> technique and drops the hero-worship.
 
+When Musk was [asked](https://www.ted.com/talks/elon_musk_the_mind_behind_tesla_spacex_solarcity?language=en) how he'd managed to take on so many hard problems in so many hard industries — PayPal, then rockets at [SpaceX](https://www.spacex.com), then electric cars at [Tesla](https://www.tesla.com), then residential energy at SolarCity, then satellite internet — he answered with something that wasn't about him at all. He described a habit, not a talent. The habit is **reasoning from first principles** instead of reasoning by analogy, and it is stealable.
 
-[Elon Musk](https://en.wikipedia.org/wiki/Elon_Musk) is a polarising figure today, but when I wrote this post in 2015 he had built an unusually effective record of taking on hard problems in hard industries. He co-founded [PayPal](https://www.paypal.com/), then started a [private rocket company](https://www.spacex.com) to send humanity to [Mars](https://www.space.com/19881-elon-musk-spacex-mars-colony.html) at a time when [NASA](https://www.nasa.gov) was not planning one. He started [Tesla](https://www.tesla.com) to build electric cars that don't have an emission problem and, while he was at it, built one of the [safest cars ever tested](http://www.forbes.com/sites/joannmuller/2013/12/23/teslas-5-star-safety-rating-is-reaffirmed/). He founded SolarCity to address residential energy production, began the Gigafactory to produce more lithium-ion cells than the entire world's output in 2013, and introduced the Tesla Powerwall — a battery pack for home and business use. Around the same time he filed to build a giant network of satellites to provide [wireless internet](http://www.businessinsider.com/space-x-is-trying-to-serve-up-internet-service-from-space-2015-6) from orbit.
+## The habit
 
-Whatever you make of the last decade, the *reasoning pattern* he described is the part I still find useful. When [asked](https://www.ted.com/talks/elon_musk_the_mind_behind_tesla_spacex_solarcity?language=en) how he did all this, he pointed to **first-principles thinking**. We usually reason by analogy — you already have rockets, so you build a slightly better control system — and that leads to incremental improvements. First-principles reasoning starts from the most basic facts you know to be true and builds up from there. "That is how you find counter-intuitive things like quantum mechanics," he says.
+Most of the time, when we "solve" a problem, we don't actually solve it. We reach for the closest neighbour in problem-space and copy its solution, with small edits.
 
-For example, consider his thinking about [SpaceX](https://www.spacex.com). Reasoning by analogy says that rockets are fundamentally expensive. Reasoning from first principles asks a different question: *why* are rockets expensive? Is there an element that has to go into a rocket that is intrinsically expensive and can't be removed? If not, then the problem reduces to finding a smarter way of arranging the atoms to build a cheaper rocket. That line of thinking is reportedly how SpaceX drove launch costs down by an order of magnitude. It is not how we usually teach problem-solving in school, where [reasoning by analogy](https://plato.stanford.edu/entries/reasoning-analogy/) dominates. Analogical reasoning is useful, but it has failure modes that prevent us from finding radical solutions or tackling problems that look intractable.
+> You already have rockets. So you design a slightly better control system.
+> You already have cars. So you add a bigger battery.
+> You already have a database. So you add an index.
 
-p.s.
+This is reasoning *by analogy*. It is fast, usually correct, and the main thing every organisation on Earth rewards. It is also how you end up with incremental improvements to an obviously broken baseline — and never ask whether the baseline itself is necessary.
 
-You might also like [this](https://www.khanacademy.org/talks-and-interviews/khan-academy-living-room-chats/v/elon-musk) conversation of Elon with Sal Khan of [Khan Academy](https://www.khanacademy.org/).
+First-principles reasoning is the opposite posture. You strip the problem down to things you are forced to believe — physics, math, identities — and build back up. The test you apply to every assumption on the way down is brutal: *is this true because the universe makes it true, or is it true because someone built it this way and I inherited their choice?*
+
+## The SpaceX example
+
+The canonical illustration — and the one Musk himself used — is rocket cost. Rockets are expensive. Everyone knows this. Reasoning by analogy, you accept the price tag and argue about discount curves. Reasoning from first principles, you ask a different question:
+
+> *Why* are rockets expensive? What do they physically have to contain?
+> Aluminium, titanium, carbon fiber, copper, some kerosene and liquid
+> oxygen. What do those raw materials cost on the commodities market?
+> And what is the markup on the finished rocket?
+
+The gap between "raw-material cost" and "market price of a rocket" was apparently around two orders of magnitude. Which means the problem wasn't *physics*. It was *supply chain, institutional habit, and cost-plus contracting*. That is a completely different problem, with a completely different set of solutions. SpaceX drove launch cost down roughly ten-fold by attacking the second problem instead of the first.
+
+The important claim here isn't "Musk is a genius". The important claim is: **if you keep reasoning by analogy, you will never find an order-of-magnitude improvement, because every analogy you reach for already assumes the old answer.**
+
+## Where this applies in normal work
+
+First-principles reasoning sounds like it only matters for rocket companies. It doesn't. Every field has inherited answers that no one can currently defend from scratch:
+
+- *Why* does this training job take 40 GPU-hours? Because the data loader is I/O-bound, or because we are, out of habit, re-tokenising a dataset that hasn't changed since the last run?
+- *Why* does this meeting recur? Because it solves a current problem, or because it was created three reorgs ago for a problem nobody remembers?
+- *Why* is this codebase this size? Because the domain is that complex, or because every refactor was cheaper to skip than to do?
+
+The technique is uncomfortable because it keeps forcing you to admit *I don't know why we are doing this, actually*. And that is the exact feeling it's trying to produce.
+
+## How to separate the idea from the person
+
+The reason I'm keeping this post up — rewritten, but up — is that I think one of the quietly important skills of an educated life is learning to absorb a technique from someone whose choices you would never want to imitate. History is full of important ideas held by unpleasant people, and full of unpleasant ideas held by charming ones. The job is to keep the ideas and throw out the politics, the personality cults, and the follow-me-off-a-cliff energy that often comes stapled to them.
+
+So: keep first-principles reasoning. Keep "what problem are we actually solving, measured in atoms and dollars, before any inherited answer". Drop the rest.
 
 ---
 
-*This post is from 2015. I'm leaving it up because the first-principles
-reasoning idea is worth preserving — independent of anyone's later choices
-about what to build with it.*
+*This is the original 2015 post, substantially rewritten in 2026 to keep
+what still holds and remove what doesn't. The Khan Academy
+[conversation](https://www.khanacademy.org/talks-and-interviews/khan-academy-living-room-chats/v/elon-musk)
+is still a decent introduction to the technique if you want to hear it
+from the source.*
 
-Photo credit:
-The Summit 2013 -- Picture by Dan Taylor / Heisenberg Media
+Photo credit: The Summit 2013 — Dan Taylor / Heisenberg Media.
