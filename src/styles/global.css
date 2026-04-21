@@ -1,0 +1,295 @@
+@import './variables.css';
+@import 'katex/dist/katex.min.css';
+
+*, *::before, *::after { box-sizing: border-box; }
+
+html {
+  font-size: var(--text-size);
+  background: var(--c-bg);
+  color: var(--c-text);
+  scroll-behavior: smooth;
+  -webkit-text-size-adjust: 100%;
+  /* Subtle paper texture — tiny SVG noise, CPU-cheap */
+  background-image:
+    radial-gradient(1200px 500px at 85% -10%, color-mix(in srgb, var(--c-accent) 8%, transparent), transparent 60%),
+    radial-gradient(900px 400px at -10% 10%, color-mix(in srgb, var(--c-accent) 5%, transparent), transparent 55%);
+  background-attachment: fixed;
+}
+
+body {
+  margin: 0;
+  font-family: var(--font-body);
+  font-weight: 400;
+  line-height: var(--text-line);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  transition: background var(--transition), color var(--transition);
+  /* Fraunces refinements */
+  font-optical-sizing: auto;
+  font-variation-settings: 'opsz' 14, 'SOFT' 50;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+  font-feature-settings: 'liga' 1, 'kern' 1, 'calt' 1;
+}
+
+main { flex: 1; }
+
+/* ---------- Typography ---------- */
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-display);
+  font-weight: 500;
+  line-height: 1.12;
+  letter-spacing: -0.015em;
+  margin: 2.4rem 0 0.9rem;
+  color: var(--c-text);
+  font-optical-sizing: auto;
+}
+h1 {
+  font-size: clamp(2.1rem, 4.5vw, 3.4rem);
+  font-weight: 400;
+  font-variation-settings: 'opsz' 144, 'SOFT' 30;
+  letter-spacing: -0.022em;
+}
+h2 {
+  font-size: clamp(1.5rem, 2.5vw, 1.9rem);
+  font-weight: 500;
+  font-variation-settings: 'opsz' 72, 'SOFT' 30;
+}
+h3 {
+  font-size: 1.35rem;
+  font-weight: 600;
+  font-variation-settings: 'opsz' 36;
+}
+h4 { font-size: 1.12rem; font-weight: 600; }
+
+p, ul, ol, blockquote, pre, table { margin: 0 0 1.15rem; }
+
+a {
+  color: var(--c-link);
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.18em;
+  text-decoration-color: color-mix(in srgb, var(--c-link) 40%, transparent);
+  transition: color var(--transition), text-decoration-color var(--transition);
+}
+a:hover {
+  color: var(--c-link-hover);
+  text-decoration-color: currentColor;
+}
+
+strong { color: var(--c-text); font-weight: 600; }
+em { font-style: italic; }
+small { color: var(--c-muted); font-size: 0.88em; }
+
+hr {
+  border: 0;
+  height: 1px;
+  background: linear-gradient(to right, transparent, var(--c-rule), transparent);
+  margin: 3rem auto;
+  max-width: 20rem;
+}
+
+blockquote {
+  border-left: 2px solid var(--c-accent);
+  padding: 0.2rem 0 0.2rem 1.4rem;
+  color: var(--c-text-soft);
+  font-style: italic;
+  font-family: var(--font-display);
+  font-size: 1.08em;
+  line-height: 1.55;
+}
+blockquote p:last-child { margin-bottom: 0; }
+
+ul, ol { padding-left: 1.4rem; }
+li { margin-top: .35rem; }
+li::marker { color: var(--c-muted); }
+
+img, video {
+  max-width: 100%;
+  height: auto;
+  border-radius: var(--radius);
+}
+
+figure { margin: 2rem 0; }
+figcaption {
+  font-family: var(--font-ui);
+  font-size: .82rem;
+  color: var(--c-muted);
+  text-align: center;
+  margin-top: .55rem;
+  font-style: italic;
+}
+
+/* ---------- Code ---------- */
+code {
+  font-family: var(--font-mono);
+  font-size: 0.88em;
+  background: var(--c-code-bg);
+  padding: 0.14em 0.42em;
+  border-radius: 4px;
+  color: var(--c-text);
+}
+pre {
+  padding: 1.1rem 1.2rem;
+  border-radius: var(--radius-lg);
+  overflow-x: auto;
+  font-size: 0.88rem;
+  line-height: 1.6;
+  border: 1px solid var(--c-rule);
+  box-shadow: var(--shadow-sm);
+}
+pre code { background: transparent; padding: 0; border-radius: 0; font-size: inherit; }
+
+/* Shiki dual-theme: toggle via data-theme */
+:root[data-theme='dark'] .astro-code,
+:root[data-theme='dark'] .astro-code span {
+  color: var(--shiki-dark) !important;
+  background-color: var(--shiki-dark-bg) !important;
+  font-style: var(--shiki-dark-font-style) !important;
+  font-weight: var(--shiki-dark-font-weight) !important;
+  text-decoration: var(--shiki-dark-text-decoration) !important;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme='light']) .astro-code,
+  :root:not([data-theme='light']) .astro-code span {
+    color: var(--shiki-dark) !important;
+    background-color: var(--shiki-dark-bg) !important;
+    font-style: var(--shiki-dark-font-style) !important;
+    font-weight: var(--shiki-dark-font-weight) !important;
+    text-decoration: var(--shiki-dark-text-decoration) !important;
+  }
+}
+
+/* ---------- Tables ---------- */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.95rem;
+  font-family: var(--font-ui);
+}
+th, td {
+  text-align: left;
+  padding: 0.6rem 0.8rem;
+  border-bottom: 1px solid var(--c-rule);
+}
+th {
+  font-weight: 600;
+  font-size: 0.82rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--c-muted);
+  border-bottom-width: 2px;
+}
+
+kbd {
+  font-family: var(--font-mono);
+  background: var(--c-kbd-bg);
+  border: 1px solid var(--c-rule);
+  border-bottom-width: 2px;
+  border-radius: 4px;
+  padding: 0.1em 0.5em;
+  font-size: 0.82em;
+}
+
+mark {
+  background: var(--c-highlight);
+  color: var(--c-text);
+  padding: 0 0.2em;
+  border-radius: 2px;
+}
+
+/* ---------- Layout ---------- */
+.container {
+  width: 100%;
+  max-width: var(--container);
+  padding: 0 var(--gutter);
+  margin: 0 auto;
+}
+
+.prose {
+  max-width: var(--measure);
+  margin: 0 auto;
+  font-size: 1.05rem;
+}
+.prose > * { max-width: var(--measure); }
+.prose > figure,
+.prose > .wide,
+.prose > pre,
+.prose > .astro-code {
+  max-width: min(56rem, 95vw);
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* First-letter drop cap on article bodies */
+.prose > p:first-of-type::first-letter {
+  font-family: var(--font-display);
+  font-weight: 500;
+  font-variation-settings: 'opsz' 144, 'SOFT' 30;
+  float: left;
+  font-size: 3.4em;
+  line-height: 0.95;
+  padding: 0.05em 0.12em 0 0;
+  color: var(--c-accent);
+}
+
+/* ---------- UI elements ---------- */
+.muted { color: var(--c-muted); }
+.sr-only {
+  position: absolute; width: 1px; height: 1px;
+  padding: 0; margin: -1px; overflow: hidden;
+  clip: rect(0,0,0,0); white-space: nowrap; border: 0;
+}
+
+.eyebrow {
+  font-family: var(--font-ui);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.18em;
+  font-size: 0.72rem;
+  color: var(--c-accent);
+}
+
+.tag {
+  display: inline-flex;
+  align-items: center;
+  font-family: var(--font-ui);
+  font-weight: 500;
+  font-size: .72rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  padding: .25rem .6rem;
+  border-radius: 3px;
+  color: var(--c-muted);
+  background: transparent;
+  border: 1px solid var(--c-rule);
+  text-decoration: none;
+  transition: all var(--transition);
+}
+.tag:hover {
+  color: var(--c-bg);
+  background: var(--c-accent);
+  border-color: var(--c-accent);
+  text-decoration: none;
+}
+
+/* Selection + focus */
+::selection { background: var(--c-accent); color: var(--c-bg); }
+:focus-visible {
+  outline: 2px solid var(--c-accent);
+  outline-offset: 3px;
+  border-radius: 3px;
+}
+
+/* Math block */
+.katex-display {
+  overflow-x: auto;
+  overflow-y: hidden;
+  padding: 0.5rem 0;
+}
+
+@view-transition { navigation: auto; }
+

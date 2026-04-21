@@ -1,0 +1,32 @@
+---
+// Giscus.astro — GitHub-Discussions-based comments. Controlled via SITE.giscus.
+import { SITE } from '../consts';
+const g = SITE.giscus;
+const enabled = g.repo && g.repoId && g.categoryId;
+---
+{enabled && (
+  <section class="comments" aria-label="Comments">
+    <h2>Comments</h2>
+    <script
+      is:inline
+      src="https://giscus.app/client.js"
+      data-repo={g.repo}
+      data-repo-id={g.repoId}
+      data-category={g.category}
+      data-category-id={g.categoryId}
+      data-mapping={g.mapping}
+      data-strict="0"
+      data-reactions-enabled={g.reactionsEnabled}
+      data-emit-metadata="0"
+      data-input-position="top"
+      data-theme={g.theme}
+      data-lang="en"
+      crossorigin="anonymous"
+      async
+    />
+  </section>
+)}
+
+<style>
+  .comments { margin-top: 3rem; }
+</style>

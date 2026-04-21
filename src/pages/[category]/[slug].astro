@@ -1,0 +1,37 @@
+---
+/**
+ * Legacy URL redirects.
+ * Old Jekyll permalinks were `/:categories/:title/` (e.g. /data_science/pytorch_starter/).
+ * This file produces a static HTML page at each old URL that redirects to the new one,
+ * so external backlinks keep working.
+ */
+import { getCollection } from 'astro:content';
+
+export async function getStaticPaths() {
+  const posts = await getCollection('posts', ({ data }) => !data.draft && data.category);
+  return posts.map((post) => {
+    const oldSlug = post.slug.replace(/^\d{4}-\d{2}-\d{2}-/, '');
+    return {
+      params: { category: post.data.category, slug: oldSlug },
+      props: { target: `/blog/${post.slug}/` },
+    };
+  });
+}
+
+const { target } = Astro.props;
+const fullUrl = new URL(target, Astro.site).toString();
+---
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>Redirecting…</title>
+    <link rel="canonical" href={fullUrl} />
+    <meta http-equiv="refresh" content={`0; url=${target}`} />
+    <meta name="robots" content="noindex" />
+    <script is:inline set:html={`location.replace(${JSON.stringify(target)});`} />
+  </head>
+  <body>
+    <p>Redirecting to <a href={target}>{target}</a>…</p>
+  </body>
+</html>

@@ -1,0 +1,158 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import PostCard from '../components/PostCard.astro';
+import { getCollection } from 'astro:content';
+import { SITE } from '../consts';
+
+const posts = (await getCollection('posts', ({ data }) => !data.draft))
+  .sort((a, b) => b.data.date.getTime() - a.data.date.getTime());
+
+const featured = posts.find((p) => p.data.featured) ?? posts[0];
+// Remaining posts (not the feature)
+const rest = posts.filter((p) => p.slug !== featured.slug).slice(0, 8);
+---
+<BaseLayout title={SITE.title} description={SITE.description}>
+  <section class="hero container">
+    <p class="eyebrow">A notebook</p>
+    <h1 class="hero-title">
+      Intuitions&nbsp;<em>behind</em><br />
+      the&nbsp;world.
+    </h1>
+    <p class="lede">
+      Essays, notes, and experiments on machine learning, AI,
+      and the non-linear nature of things — by <a href="/about/">{SITE.author}</a>.
+    </p>
+    <p class="cta">
+      <a class="btn" href="/blog/">Read the blog <span aria-hidden="true">→</span></a>
+      <a class="btn btn-ghost" href="/research/">Research</a>
+    </p>
+  </section>
+
+  <div class="container">
+    <div class="rule" aria-hidden="true"></div>
+  </div>
+
+  {featured && (
+    <section class="container section">
+      <header class="section-head">
+        <p class="section-eyebrow">Featured</p>
+        <a class="see-all" href="/blog/">All posts →</a>
+      </header>
+      <PostCard post={featured} variant="feature" />
+    </section>
+  )}
+
+  <section class="container section">
+    <header class="section-head">
+      <p class="section-eyebrow">Recent writing</p>
+      <a class="see-all" href="/blog/">Archive →</a>
+    </header>
+    <div class="post-list">
+      {rest.map((post) => <PostCard post={post} />)}
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .hero {
+    padding: clamp(3rem, 8vw, 5.5rem) var(--gutter) clamp(1.5rem, 4vw, 3rem);
+    max-width: 58rem;
+  }
+  .hero .eyebrow { margin: 0 0 1rem; }
+  .hero-title {
+    font-family: var(--font-display);
+    font-weight: 300;
+    font-variation-settings: 'opsz' 144, 'SOFT' 30;
+    font-size: clamp(2.6rem, 7.5vw, 5.4rem);
+    line-height: 1.02;
+    letter-spacing: -0.03em;
+    margin: 0 0 1.4rem;
+    color: var(--c-text);
+  }
+  .hero-title em {
+    font-style: italic;
+    font-weight: 300;
+    color: var(--c-accent);
+    font-variation-settings: 'opsz' 144, 'SOFT' 80;
+  }
+  .lede {
+    font-family: var(--font-body);
+    font-size: clamp(1.08rem, 1.8vw, 1.3rem);
+    line-height: 1.55;
+    color: var(--c-text-soft);
+    max-width: 38rem;
+    margin: 0 0 2rem;
+  }
+  .lede a { color: var(--c-text); text-decoration-color: var(--c-accent); }
+
+  .cta { display: flex; flex-wrap: wrap; gap: .9rem; margin: 0; }
+  .btn {
+    font-family: var(--font-ui);
+    font-weight: 500;
+    font-size: 0.92rem;
+    letter-spacing: 0.02em;
+    display: inline-flex; align-items: center; gap: .45rem;
+    padding: .7rem 1.25rem;
+    border-radius: var(--radius);
+    background: var(--c-text);
+    color: var(--c-bg);
+    border: 1px solid var(--c-text);
+    text-decoration: none;
+    transition: transform var(--transition), box-shadow var(--transition), background var(--transition), color var(--transition);
+    box-shadow: var(--shadow-sm);
+  }
+  .btn:hover {
+    transform: translateY(-1px);
+    box-shadow: var(--shadow-md);
+    background: var(--c-accent);
+    border-color: var(--c-accent);
+    color: var(--c-bg);
+    text-decoration: none;
+  }
+  .btn-ghost {
+    background: transparent;
+    color: var(--c-text);
+    border-color: var(--c-rule);
+    box-shadow: none;
+  }
+  .btn-ghost:hover {
+    background: var(--c-bg-tint);
+    color: var(--c-text);
+    border-color: var(--c-text);
+  }
+
+  .rule {
+    height: 1px;
+    background: linear-gradient(to right, transparent 0%, var(--c-rule) 20%, var(--c-rule) 80%, transparent 100%);
+    margin: 1rem 0 0;
+  }
+
+  .section { padding: clamp(2rem, 5vw, 3.2rem) var(--gutter); max-width: var(--container); margin: 0 auto; width: 100%; }
+  .section-head {
+    display: flex; justify-content: space-between; align-items: baseline;
+    margin-bottom: 1.2rem;
+    padding-bottom: .7rem;
+    border-bottom: 1px solid var(--c-rule);
+  }
+  .section-eyebrow {
+    font-family: var(--font-ui);
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.2em;
+    color: var(--c-accent);
+    margin: 0;
+  }
+  .see-all {
+    font-family: var(--font-ui);
+    font-size: 0.82rem;
+    font-weight: 500;
+    color: var(--c-muted);
+    text-decoration: none;
+    letter-spacing: 0.03em;
+    text-transform: uppercase;
+  }
+  .see-all:hover { color: var(--c-accent); text-decoration: none; }
+
+  .post-list { display: flex; flex-direction: column; }
+</style>

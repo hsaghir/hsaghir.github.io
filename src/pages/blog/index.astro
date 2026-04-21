@@ -1,0 +1,116 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { getCollection } from 'astro:content';
+import { formatDateShort, yearOf } from '../../utils/date';
+
+const posts = (await getCollection('posts', ({ data }) => !data.draft))
+  .sort((a, b) => b.data.date.getTime() - a.data.date.getTime());
+
+// Group by year
+const byYear = new Map<number, typeof posts>();
+for (const p of posts) {
+  const y = yearOf(p.data.date);
+  if (!byYear.has(y)) byYear.set(y, []);
+  byYear.get(y)!.push(p);
+}
+const years = [...byYear.keys()].sort((a, b) => b - a);
+---
+<BaseLayout title="Blog" description="All posts, newest first.">
+  <section class="container archive">
+    <header class="archive-head">
+      <p class="eyebrow">The Archive</p>
+      <h1>Blog</h1>
+      <p class="muted">
+        {posts.length} {posts.length === 1 ? 'post' : 'posts'} ·
+        <a href="/rss.xml">RSS</a> · <a href="/tags/">Tags</a>
+      </p>
+    </header>
+
+    {years.map((year) => (
+      <section class="year-group">
+        <h2 class="year">{year}</h2>
+        <ul class="post-list">
+          {byYear.get(year)!.map((post) => (
+            <li>
+              <time datetime={post.data.date.toISOString()}>
+                {formatDateShort(post.data.date)}
+              </time>
+              <a href={`/blog/${post.slug}/`}>{post.data.title}</a>
+            </li>
+          ))}
+        </ul>
+      </section>
+    ))}
+  </section>
+</BaseLayout>
+
+<style>
+  .archive {
+    padding: clamp(2.5rem, 6vw, 4.5rem) var(--gutter);
+    max-width: 52rem;
+  }
+  .archive-head { margin-bottom: 3rem; text-align: center; }
+  .archive-head .eyebrow { margin: 0 0 1rem; }
+  .archive-head h1 {
+    font-family: var(--font-display);
+    font-weight: 400;
+    font-variation-settings: 'opsz' 144, 'SOFT' 30;
+    font-size: clamp(2.4rem, 5vw, 3.4rem);
+    letter-spacing: -0.022em;
+    margin: 0 0 .6rem;
+  }
+  .archive-head p { font-family: var(--font-ui); font-size: 0.85rem; margin: 0; letter-spacing: 0.02em; }
+
+  .year-group { margin-bottom: 3rem; }
+  .year {
+    font-family: var(--font-ui);
+    font-size: 0.78rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.22em;
+    color: var(--c-accent);
+    border-bottom: 1px solid var(--c-rule);
+    padding-bottom: .6rem;
+    margin: 0 0 .3rem;
+  }
+
+  .post-list { list-style: none; padding: 0; margin: 0; }
+  .post-list li {
+    display: grid;
+    grid-template-columns: 7rem 1fr;
+    gap: 1.2rem;
+    padding: .9rem 0;
+    border-bottom: 1px solid var(--c-rule-soft);
+    align-items: baseline;
+  }
+  .post-list li:last-child { border-bottom: 0; }
+  .post-list time {
+    font-family: var(--font-ui);
+    font-size: 0.78rem;
+    font-weight: 500;
+    letter-spacing: 0.04em;
+    color: var(--c-muted);
+    white-space: nowrap;
+  }
+  .post-list a {
+    font-family: var(--font-display);
+    font-weight: 500;
+    font-variation-settings: 'opsz' 36, 'SOFT' 40;
+    font-size: 1.1rem;
+    line-height: 1.3;
+    color: var(--c-text);
+    text-decoration: none;
+    transition: color var(--transition);
+  }
+  .post-list a:hover {
+    color: var(--c-accent);
+    text-decoration: underline;
+    text-underline-offset: .18em;
+    text-decoration-thickness: 1px;
+  }
+
+  @media (max-width: 560px) {
+    .post-list li { grid-template-columns: 1fr; gap: .15rem; padding: .75rem 0; }
+  }
+</style>
+

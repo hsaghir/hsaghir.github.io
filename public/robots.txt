@@ -1,0 +1,13 @@
+# Place site-wide static assets here. They're served at the site root.
+#
+# Common files to add:
+#   - favicon.ico
+#   - apple-touch-icon.png
+#   - robots.txt
+#   - images/og-default.png
+#   - CNAME (for custom domain)
+
+User-agent: *
+Allow: /
+
+Sitemap: https://hsaghir.github.io/sitemap-index.xml

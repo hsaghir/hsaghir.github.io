@@ -1,0 +1,43 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import PostCard from '../../components/PostCard.astro';
+import { getCollection } from 'astro:content';
+
+export async function getStaticPaths() {
+  const posts = await getCollection('posts', ({ data }) => !data.draft);
+  const tags = new Set<string>();
+  for (const p of posts) for (const t of p.data.tags) tags.add(t);
+  return [...tags].map((tag) => ({
+    params: { tag },
+    props: {
+      tag,
+      posts: posts
+        .filter((p) => p.data.tags.includes(tag))
+        .sort((a, b) => b.data.date.getTime() - a.data.date.getTime()),
+    },
+  }));
+}
+
+const { tag, posts } = Astro.props;
+---
+<BaseLayout title={`#${tag}`} description={`Posts tagged with ${tag}`}>
+  <section class="container tag-page">
+    <header>
+      <p class="muted"><a href="/tags/">← All tags</a></p>
+      <h1>#{tag}</h1>
+      <p class="muted">{posts.length} post{posts.length === 1 ? '' : 's'}</p>
+    </header>
+    <div class="grid">
+      {posts.map((post) => <PostCard post={post} />)}
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .tag-page { padding: 2rem 0 3rem; }
+  .grid {
+    display: grid; gap: 1.2rem;
+    grid-template-columns: repeat(auto-fill, minmax(16rem, 1fr));
+    margin-top: 1.5rem;
+  }
+</style>

@@ -1,20 +1,30 @@
 {
-  "name": "skinny-bones-jekyll",
+  "name": "hsaghir-blog",
+  "type": "module",
   "version": "1.0.0",
   "private": true,
-  "description": "A Jekyll starter site",
-  "author": "Michael Rose <michael@mademistakes.com>",
-  "homepage": "http://mademistakes.com/",
-  "license": "The MIT License (MIT)",
+  "description": "Intuitions behind the world — personal blog of Hamidreza Saghir",
+  "scripts": {
+    "dev": "astro dev",
+    "start": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview",
+    "astro": "astro",
+    "check": "astro check"
+  },
+  "dependencies": {
+    "@astrojs/mdx": "^4.3.14",
+    "@astrojs/rss": "^4.0.18",
+    "@astrojs/sitemap": "^3.7.2",
+    "astro": "^5.18.1",
+    "katex": "^0.16.11",
+    "reading-time": "^1.5.0",
+    "rehype-katex": "^7.0.1",
+    "remark-math": "^6.0.0",
+    "sharp": "^0.33.5"
+  },
   "devDependencies": {
-    "grunt": "~0.4.2",
-    "grunt-contrib-jshint": "~0.8.0",
-    "grunt-contrib-uglify": "~0.3.2",
-    "grunt-contrib-watch": "~0.5.3",
-    "grunt-contrib-imagemin": "~0.5.0",
-    "grunt-svgmin": "~0.3.1",
-    "grunt-imgcompress": "~0.1.1",
-    "grunt-newer": "^0.7.0",
-    "grunt-surround": "^0.1.0"
+    "@astrojs/check": "^0.9.8",
+    "typescript": "^5.6.3"
   }
 }
