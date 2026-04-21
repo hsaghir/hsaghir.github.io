@@ -1,7 +1,7 @@
 ---
 title: "Similarity is (almost) all you need"
 description: "From spectral clustering to Gaussian processes to transformer attention — the same primitive, a similarity matrix between points, keeps showing up as the load-bearing piece of very different models."
-date: 2026-04-21
+date: 2026-04-18
 tags: ["machine-learning", "unified-views"]
 category: "data_science"
 cover: "/images/sociogram-moreno.jpg"

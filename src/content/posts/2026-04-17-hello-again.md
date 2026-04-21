@@ -1,7 +1,7 @@
 ---
 title: "Hello again"
 description: "Back after a long hiatus — what's changed and what's coming."
-date: 2026-04-20
+date: 2026-04-17
 tags: [meta, writing]
 category: philosophy
 cover: "/images/hello-again.jpg"

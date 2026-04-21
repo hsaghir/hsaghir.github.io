@@ -1,7 +1,7 @@
 ---
 title: "Supervised learning and reinforcement learning are the same objective"
 description: "Both fit a distribution over outputs conditioned on an input. Both minimize a KL divergence between their model and an optimal target. The only differences are which distribution you sample from and which direction of the KL. Entropy regularization bridges them."
-date: 2026-04-22
+date: 2026-04-19
 tags: ["machine-learning", "unified-views", "reinforcement-learning"]
 category: "data_science"
 cover: "/images/go-board.jpg"
