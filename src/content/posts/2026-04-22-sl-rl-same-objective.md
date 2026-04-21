@@ -1,12 +1,20 @@
 ---
 title: "Supervised learning and reinforcement learning are the same objective"
 description: "Both fit a distribution over outputs conditioned on an input. Both minimize a KL divergence between their model and an optimal target. The only differences are which distribution you sample from and which direction of the KL. Entropy regularization bridges them."
-date: 2017-11-12
+date: 2026-04-22
 tags: ["machine-learning", "unified-views", "reinforcement-learning"]
 category: "data_science"
 cover: "/images/go-board.jpg"
 coverAlt: "Close-up of black and white stones on a Go board mid-game. AlphaGo learned the same objective twice: first by supervised learning on expert games, then by self-play reinforcement learning."
 ---
+
+> **Note (2026):** This started as a 2017 note on a Berkeley
+> [lecture](https://www.youtube.com/watch?v=fZNyHoXgV7M) by Mohammad
+> Norouzi. I held it because the 2017 RL literature was fragmented and
+> the unification felt premature. Nine years later the methods that
+> actually scaled to frontier models (RLHF, DPO, GRPO, reasoning-model
+> fine-tuning) turned out to be instantiations of exactly this
+> framing, so here it is, rewritten.
 
 Supervised learning and reinforcement learning look like different subjects
 in a textbook. They are the same objective written two ways. Both fit a
@@ -15,12 +23,6 @@ minimizing a KL divergence to an implicit "optimal" target distribution.
 The only differences are which distribution you sample from and which
 direction of the KL you use. Entropy regularization is the knob that turns
 one into the other.
-
-This post is a condensed form of a 2017 Berkeley
-[lecture](https://www.youtube.com/watch?v=fZNyHoXgV7M) by Mohammad Norouzi.
-I am writing it up now because the framing turned out to predict the shape
-of 2024-2026 post-training methods (RLHF, DPO, GRPO, reasoning-model
-fine-tuning) almost exactly.
 
 ## The shared setup
 
@@ -205,9 +207,5 @@ genuinely new, and worth paying attention to. Most methods fit.
 - Shao et al., [*DeepSeekMath / GRPO*](https://arxiv.org/abs/2402.03300) (2024).
 
 ---
-
-*2026 note: this post was drafted in late 2017 after a Berkeley lecture by
-Mohammad Norouzi. I held it because the 2017 RL literature was fragmented
-and the unification felt premature. It is less premature now.*
 
 *Cover image: Go stones on a goban, by [Dietmar Rabich](https://commons.wikimedia.org/wiki/File:Go_--_2021_--_6732.jpg), [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/).*
