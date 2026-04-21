@@ -15,11 +15,11 @@ note to mark the restart.
 
 ## What changed
 
-- **The theme.** The old [Skinny Bones](https://mmistakes.github.io/skinny-bones-jekyll/)
-  setup was built on jQuery 1.9, Grunt, and Jekyll 3. It served me well, but
-  pipe-cleaning it turned out to be harder than rebuilding. The new site runs
-  on **Astro** with Markdown/MDX content, dark mode, view transitions, and
-  KaTeX for math — familiar bones, modern skin.
+- **The site.** The previous version of this blog was on a Jekyll stack
+  that had quietly rotted — old jQuery, old build tools, a theme that
+  wouldn't cleanly rebuild. Pipe-cleaning turned out to be harder than
+  starting over, so I did. The new site is a modern static setup with
+  Markdown content, dark mode, view transitions, and KaTeX for math.
 - **The scope.** I'm still drawn to the ideas behind machine learning, but
   I'll also be writing about evaluation, agents, and the practical side of
   building research tooling. Less *tutorial*, more *notebook*.

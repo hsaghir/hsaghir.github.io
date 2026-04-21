@@ -13,7 +13,7 @@ export const SITE = {
     github: 'https://github.com/hsaghir',
     scholar: 'https://scholar.google.com/citations?user=N0lNjVcAAAAJ',
     linkedin: '',
-    twitter: '',
+    twitter: 'https://twitter.com/hrsaghir',
     mastodon: '',
   },
   // Comments (Giscus). Leave repo empty to disable.
