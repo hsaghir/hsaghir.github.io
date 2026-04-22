@@ -29,7 +29,7 @@ const hasEmail =
     <p class="alt">
       {hasEmail ? 'Prefer a feed reader? ' : 'Follow via '}
       <a href="/rss.xml">RSS</a>
-      {' · '}<a href="https://kill-the-newsletter.com/" rel="noopener">Email-via-RSS</a>
+      {' · '}<a href={`https://blogtrottr.com/?subscribe=${SITE.url}/rss.xml`} rel="noopener">RSS→email</a>
       {SITE.social.twitter && <>{' · '}<a href={SITE.social.twitter} rel="me noopener">X / Twitter</a></>}
     </p>
   </div>

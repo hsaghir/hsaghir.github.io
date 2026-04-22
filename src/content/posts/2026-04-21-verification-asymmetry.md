@@ -2,6 +2,7 @@
 title: "The verification asymmetry"
 description: "Offense asks 'does a bug exist?' Defense asks 'are all bugs gone?' One is an existential claim you can check with a single example. The other is a universal claim nobody can check. This asymmetry, not model capability, is what determines where AI agents work in security."
 date: 2026-04-21
+featured: true
 tags: ["security", "agents", "unified-views"]
 category: "security"
 cover: "/images/dijkstra-portrait.jpg"

@@ -5,7 +5,7 @@ date: "2014-12-31"
 draft: false
 tags: ["philosophy"]
 category: "philosophy"
-featured: true
+featured: false
 cover: "/images/nonlinear-life.JPG"
 ---
 

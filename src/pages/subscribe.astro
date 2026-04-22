@@ -22,10 +22,11 @@ import { SITE } from '../consts';
         NetNewsWire, Reeder, etc.). Auto-discovered from the homepage.
       </li>
       <li>
-        <strong><a href="https://kill-the-newsletter.com/" rel="noopener">Email via RSS
-        (Kill the Newsletter)</a></strong> — zero-signup bridge that turns any RSS feed into
-        an email. Paste <code>{SITE.url}/rss.xml</code>, get a personal inbox address, new
-        posts arrive as email. I never see your address.
+        <strong><a href={`https://blogtrottr.com/?subscribe=${SITE.url}/rss.xml`} rel="noopener">RSS→email via Blogtrottr</a></strong>
+        — a free RSS-to-email bridge. Click the link, enter your address, and
+        every new post arrives in your inbox. Blogtrottr holds your email, not me
+        — a good option if you want the convenience of email without joining my
+        list.
       </li>
       {SITE.social.twitter && (
         <li><strong><a href={SITE.social.twitter} rel="me noopener">X / Twitter</a></strong>
