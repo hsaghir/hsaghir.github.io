@@ -17,13 +17,12 @@ export const SITE = {
     mastodon: '',
   },
   // Newsletter. Provider = 'mailerlite' | 'none'.
-  // Sign up at https://mailerlite.com (free up to 1,000 subscribers, 12k sends/mo).
-  // Create an embedded form, then paste the form's accountId + formId below.
-  // Leave them empty to ship an RSS + Kill-the-Newsletter fallback (no email capture).
+  // Uses MailerLite's Universal embed (loads assets.mailerlite.com/js/universal.js).
+  // Leave accountId/formId empty to ship an RSS + Kill-the-Newsletter fallback.
   newsletter: {
     provider: 'mailerlite' as 'mailerlite' | 'none',
-    accountId: '', // e.g. '1234567' from the MailerLite embed snippet
-    formId: '',    // e.g. '9876543' from the MailerLite embed snippet
+    accountId: '2284644',
+    formId: '7ohleY',
     blurb: "Occasional notes on machine learning, AI, and security. No spam, unsubscribe any time.",
   },
   // Comments (Giscus). Leave repo empty to disable.

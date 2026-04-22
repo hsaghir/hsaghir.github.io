@@ -1,7 +1,9 @@
 ---
 // Subscribe.astro — email subscribe block.
-// Uses MailerLite's classic embedded-form POST endpoint (no external JS).
-// Gated on SITE.newsletter.{accountId,formId}; falls back to RSS + Kill-the-Newsletter CTA when unset.
+// Uses MailerLite's Universal embed: the assets.mailerlite.com/js/universal.js
+// script (loaded once in BaseHead) replaces the .ml-embedded div with the form.
+// Gated on SITE.newsletter.{accountId,formId}; falls back to RSS + Kill-the-Newsletter
+// CTA when unset.
 import { SITE } from '../consts';
 
 interface Props {
@@ -14,12 +16,6 @@ const hasEmail =
   SITE.newsletter.provider === 'mailerlite' &&
   SITE.newsletter.accountId.length > 0 &&
   SITE.newsletter.formId.length > 0;
-
-// MailerLite classic embedded-form endpoint. Accepts CORS POSTs from any origin
-// and redirects to MailerLite's confirmation page.
-const actionUrl = hasEmail
-  ? `https://assets.mailerlite.com/jsonp/${SITE.newsletter.accountId}/forms/${SITE.newsletter.formId}/subscribe`
-  : '';
 ---
 <aside class={`subscribe subscribe--${variant}`} aria-labelledby="subscribe-heading">
   <div class="inner">
@@ -27,20 +23,7 @@ const actionUrl = hasEmail
     <p class="blurb">{SITE.newsletter.blurb}</p>
 
     {hasEmail && (
-      <form action={actionUrl} method="post" class="form">
-        <label class="sr-only" for="ml-email">Your email</label>
-        <input
-          type="email"
-          name="fields[email]"
-          id="ml-email"
-          required
-          placeholder="you@example.com"
-          autocomplete="email"
-        />
-        <input type="hidden" name="ml-submit" value="1" />
-        <input type="hidden" name="anticsrf" value="true" />
-        <button type="submit">Subscribe</button>
-      </form>
+      <div class="ml-embedded" data-form={SITE.newsletter.formId}></div>
     )}
 
     <p class="alt">
