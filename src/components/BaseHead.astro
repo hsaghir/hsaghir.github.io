@@ -94,3 +94,12 @@ const fullTitle = title === SITE.title ? title : `${title} · ${SITE.title}`;
     ml('account', accountId);
   </script>
 )}
+
+{SITE.analytics.provider === 'goatcounter' && SITE.analytics.code.length > 0 && (
+  <script
+    is:inline
+    data-goatcounter={`https://${SITE.analytics.code}.goatcounter.com/count`}
+    async
+    src="//gc.zgo.at/count.js"
+  />
+)}

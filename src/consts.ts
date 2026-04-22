@@ -25,6 +25,13 @@ export const SITE = {
     formId: '7ohleY',
     blurb: "Occasional notes on machine learning, AI, and security. No spam, unsubscribe any time.",
   },
+  // Analytics. Privacy-respecting, no cookies, no consent banner needed.
+  // To activate: claim a code at https://goatcounter.com (free for personal blogs),
+  // then paste the code below. Leave empty to ship with no analytics.
+  analytics: {
+    provider: 'goatcounter' as 'goatcounter' | 'none',
+    code: '', // e.g. 'hsaghir' once claimed
+  },
   // Comments (Giscus). Leave repo empty to disable.
   giscus: {
     repo: 'hsaghir/hsaghir.github.io',
