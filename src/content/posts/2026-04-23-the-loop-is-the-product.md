@@ -185,6 +185,54 @@ compliance trail, and a `check_done` hook that stops the agent if
 it has been running for more than 60 seconds. That is the level of
 control looplet gives you, for any agent you build.
 
+## Sub-agents are just nested loops
+
+Once the loop is the product, sub-agents stop being a special
+feature. They are a tool that happens to run another loop.
+
+Claude Code's `Task` tool spawns a sub-agent with its own context,
+its own tools, and its own stopping condition, then returns a
+summary to the parent. In looplet, that is a regular tool:
+
+```python
+def research(query: str) -> str:
+    sub_task = f"Research: {query}. Return a 3-bullet summary."
+    steps = list(composable_loop(
+        llm=cheap_llm,
+        tools=[search, fetch_url],
+        task=sub_task,
+        hooks=[BudgetCap(tokens=4000)],
+        max_steps=10,
+    ))
+    return steps[-1].message.content
+
+for step in composable_loop(
+    llm=smart_llm,
+    tools=[research, write_file, run_tests],
+    task=user_task,
+):
+    print(step.pretty())
+```
+
+The parent agent sees `research` as a normal tool call. Inside,
+a whole sub-loop runs with its own model (cheaper), its own tool
+set (narrower), its own hooks (tighter budget), and its own
+trajectory that you can inspect and evaluate independently.
+
+This gives you the three things people actually want from
+sub-agents: **context isolation** (the parent never sees the
+sub-agent's 50-step browsing trajectory, just the answer), **cost
+control** (run the explorer on a cheap model, the planner on a
+smart one), and **specialisation** (different tools, different
+prompts, different stopping rules per sub-agent). No orchestrator,
+no agent registry, no message bus. Just a function that calls
+`composable_loop` and returns a string.
+
+The same `ProvenanceSink` dumps the parent and child trajectories
+to the same store with a parent-child link. The same `eval_*`
+helpers work on either level. Debugging a sub-agent is debugging
+a loop, because that is all it is.
+
 ## What it costs
 
 Zero runtime dependencies. `pip install looplet` pulls in nothing.
