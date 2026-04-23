@@ -17,7 +17,7 @@ cover: "/images/Elon_Musk_-_The_Summit_2013.jpg"
 > have to endorse everyone who has ever used them. This post keeps the
 > technique and drops the hero-worship.
 
-When Musk was [asked](https://www.ted.com/talks/elon_musk_the_mind_behind_tesla_spacex_solarcity?language=en) how he'd managed to take on so many hard problems in so many hard industries — PayPal, then rockets at [SpaceX](https://www.spacex.com), then electric cars at [Tesla](https://www.tesla.com), then residential energy at SolarCity, then satellite internet — he answered with something that wasn't about him at all. He described a habit, not a talent. The habit is **reasoning from first principles** instead of reasoning by analogy, and it is stealable.
+When Musk was [asked](https://www.ted.com/talks/elon_musk_the_mind_behind_tesla_spacex_solarcity?language=en) how he'd managed to take on so many hard problems in so many hard industries, PayPal, then rockets at [SpaceX](https://www.spacex.com), then electric cars at [Tesla](https://www.tesla.com), then residential energy at SolarCity, then satellite internet, he answered with something that wasn't about him at all. He described a habit, not a talent. The habit is **reasoning from first principles** instead of reasoning by analogy, and it is stealable.
 
 ## The habit
 
@@ -27,13 +27,13 @@ Most of the time, when we "solve" a problem, we don't actually solve it. We reac
 > You already have cars. So you add a bigger battery.
 > You already have a database. So you add an index.
 
-This is reasoning *by analogy*. It is fast, usually correct, and the main thing every organisation on Earth rewards. It is also how you end up with incremental improvements to an obviously broken baseline — and never ask whether the baseline itself is necessary.
+This is reasoning *by analogy*. It is fast, usually correct, and the main thing every organisation on Earth rewards. It is also how you end up with incremental improvements to an obviously broken baseline, and never ask whether the baseline itself is necessary.
 
-First-principles reasoning is the opposite posture. You strip the problem down to things you are forced to believe — physics, math, identities — and build back up. The test you apply to every assumption on the way down is brutal: *is this true because the universe makes it true, or is it true because someone built it this way and I inherited their choice?*
+First-principles reasoning is the opposite posture. You strip the problem down to things you are forced to believe, physics, math, identities, and build back up. The test you apply to every assumption on the way down is brutal: *is this true because the universe makes it true, or is it true because someone built it this way and I inherited their choice?*
 
 ## The SpaceX example
 
-The canonical illustration — and the one Musk himself used — is rocket cost. Rockets are expensive. Everyone knows this. Reasoning by analogy, you accept the price tag and argue about discount curves. Reasoning from first principles, you ask a different question:
+The canonical illustration, and the one Musk himself used, is rocket cost. Rockets are expensive. Everyone knows this. Reasoning by analogy, you accept the price tag and argue about discount curves. Reasoning from first principles, you ask a different question:
 
 > *Why* are rockets expensive? What do they physically have to contain?
 > Aluminium, titanium, carbon fiber, copper, some kerosene and liquid
@@ -56,7 +56,7 @@ The technique is uncomfortable because it keeps forcing you to admit *I don't kn
 
 ## How to separate the idea from the person
 
-The reason I'm keeping this post up — rewritten, but up — is that I think one of the quietly important skills of an educated life is learning to absorb a technique from someone whose choices you would never want to imitate. History is full of important ideas held by unpleasant people, and full of unpleasant ideas held by charming ones. The job is to keep the ideas and throw out the politics, the personality cults, and the follow-me-off-a-cliff energy that often comes stapled to them.
+The reason I'm keeping this post up, rewritten, but up, is that I think one of the quietly important skills of an educated life is learning to absorb a technique from someone whose choices you would never want to imitate. History is full of important ideas held by unpleasant people, and full of unpleasant ideas held by charming ones. The job is to keep the ideas and throw out the politics, the personality cults, and the follow-me-off-a-cliff energy that often comes stapled to them.
 
 So: keep first-principles reasoning. Keep "what problem are we actually solving, measured in atoms and dollars, before any inherited answer". Drop the rest.
 
@@ -68,4 +68,4 @@ what still holds and remove what doesn't. The Khan Academy
 is still a decent introduction to the technique if you want to hear it
 from the source.*
 
-Photo credit: The Summit 2013 — Dan Taylor / Heisenberg Media.
+Photo credit: The Summit 2013, Dan Taylor / Heisenberg Media.

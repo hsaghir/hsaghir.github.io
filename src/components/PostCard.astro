@@ -5,7 +5,7 @@ import { formatDate } from '../utils/date';
 interface Props {
   post: CollectionEntry<'posts'>;
   /** Layout variant. 'feature' is larger with stacked image; 'row' is a horizontal
-   *  editorial item (image left, content right) — the default. */
+   *  editorial item (image left, content right), the default. */
   variant?: 'row' | 'feature';
 }
 const { post, variant = 'row' } = Astro.props;

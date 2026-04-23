@@ -9,7 +9,7 @@ html {
   color: var(--c-text);
   scroll-behavior: smooth;
   -webkit-text-size-adjust: 100%;
-  /* Subtle paper texture — tiny SVG noise, CPU-cheap */
+  /* Subtle paper texture, tiny SVG noise, CPU-cheap */
   background-image:
     radial-gradient(1200px 500px at 85% -10%, color-mix(in srgb, var(--c-accent) 8%, transparent), transparent 60%),
     radial-gradient(900px 400px at -10% 10%, color-mix(in srgb, var(--c-accent) 5%, transparent), transparent 55%);

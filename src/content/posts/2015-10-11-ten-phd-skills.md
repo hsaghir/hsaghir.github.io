@@ -12,14 +12,14 @@ cover: "/images/job/10-phd-skills.jpg"
 > looked bleak: under 1% tenure placement, and industry didn't yet know
 > what to do with research-trained generalists. The AI boom has since
 > flipped much of that. ML-adjacent PhDs are in unusual demand, and
-> several of the "soft" skills below — working under ambiguity, reading
-> primary literature fast, shipping reproducible experiments — have
+> several of the "soft" skills below, working under ambiguity, reading
+> primary literature fast, shipping reproducible experiments, have
 > become the actual job description in industry research labs. The list
 > itself holds up. The framing of "PhD is a consolation prize you have
 > to explain away" no longer does.
 
 **The short version:** a research PhD is, in effect, four to six years
-of supervised practice in ten transferable skills — working under
+of supervised practice in ten transferable skills, working under
 ambiguity, reading primary literature fast, planning and executing
 long projects, writing and presenting to critical audiences, and
 shipping reproducible work. Industry, especially AI-adjacent industry,

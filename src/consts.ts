@@ -1,14 +1,14 @@
 // Site-wide constants. Edit these to rebrand.
 export const SITE = {
   title: 'Intuitions behind the world',
-  description: 'Notes on machine learning, AI, and the non-linear nature of things — by Hamidreza Saghir.',
+  description: 'Notes on machine learning, AI, and the non-linear nature of things, by Hamidreza Saghir.',
   author: 'Hamidreza Saghir',
   authorBio: 'A notebook on machine learning, AI, and the non-linear nature of things.',
   email: 'saghir.hr@gmail.com',
   url: 'https://hsaghir.github.io',
   locale: 'en',
   avatar: '/images/avatar.jpg',
-  // Social links — leave empty string to hide
+  // Social links, leave empty string to hide
   social: {
     github: 'https://github.com/hsaghir',
     scholar: 'https://scholar.google.com/citations?user=0QH0nTcAAAAJ&hl=en',

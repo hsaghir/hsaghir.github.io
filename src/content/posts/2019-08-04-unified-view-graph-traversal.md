@@ -39,7 +39,7 @@ solution will be the same:
 
 The only thing that changes between the algorithms is *which element we pop*.
 
-## BFS — pop the oldest
+## BFS, pop the oldest
 
 A FIFO queue gives us BFS. We visit nodes in the order they were
 discovered, so the first time we reach the goal we have reached it in the
@@ -51,7 +51,7 @@ def has_path(grid, start):
     queue = [start]
     visited = set()
     while queue:
-        r, c = queue.pop(0)          # FIFO — oldest first
+        r, c = queue.pop(0)          # FIFO, oldest first
         if (r, c) in visited:
             continue
         visited.add((r, c))
@@ -65,12 +65,12 @@ def has_path(grid, start):
 ```
 
 For an unweighted grid, the first visit to any node reaches it in the
-fewest steps — which is why BFS doubles as a shortest-path algorithm when
+fewest steps, which is why BFS doubles as a shortest-path algorithm when
 every edge has cost 1.
 
-## Dijkstra — pop the cheapest
+## Dijkstra, pop the cheapest
 
-Now suppose each cell has a cost — some corridors are gravel, some are
+Now suppose each cell has a cost, some corridors are gravel, some are
 mud, some are water. BFS no longer works: the first time we reach a node
 may not be the cheapest way to reach it.
 
@@ -102,7 +102,7 @@ That is Dijkstra. A FIFO queue is a min-heap keyed by insertion order;
 swapping it for a heap keyed by cost gives you shortest-path for weighted
 graphs, for free.
 
-## A\* — pop the cheapest *plus* a guess
+## A\*, pop the cheapest *plus* a guess
 
 Dijkstra explores uniformly outwards from the start. If we know where the
 goal is, we can do better by preferring nodes that *look closer* to the

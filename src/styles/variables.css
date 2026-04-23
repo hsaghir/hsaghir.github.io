@@ -1,5 +1,5 @@
 /* =======================================================================
-   Design tokens — "Editorial Paper" system
+   Design tokens, "Editorial Paper" system
    -----------------------------------------------------------------------
    A warm, magazine-quality palette with a variable-serif display family
    (Fraunces) paired with Inter for UI chrome and Georgia for body fallback.
@@ -14,7 +14,7 @@
   /* Legacy alias (so existing components still work) */
   --font-head: var(--font-ui);
 
-  --text-size:  19px;           /* base — slightly larger for editorial feel */
+  --text-size:  19px;           /* base, slightly larger for editorial feel */
   --text-line:  1.72;           /* generous for serif */
   --measure:    38rem;          /* ~ 65-72 characters */
 

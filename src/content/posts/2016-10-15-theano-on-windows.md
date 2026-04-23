@@ -11,7 +11,7 @@ archived: true
 
 > **Archival note (2026):** Theano was officially discontinued in September 2017.
 > If you landed here from a search engine, you're almost certainly in the
-> wrong place — use **[PyTorch](https://pytorch.org)** or **[JAX](https://jax.readthedocs.io)**
+> wrong place, use **[PyTorch](https://pytorch.org)** or **[JAX](https://jax.readthedocs.io)**
 > on a current NVIDIA driver + CUDA, and follow their install docs. This
 > post is kept for historical reference only.
 

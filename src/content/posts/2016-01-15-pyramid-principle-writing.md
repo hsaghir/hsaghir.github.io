@@ -14,7 +14,7 @@ coverAlt: "The Great Pyramid of Khufu at Giza against a clear sky."
 > and it's aged better than almost anything else in my notes.
 
 Most unclear writing isn't unclear at the *sentence* level. It's unclear
-at the *structure* level — the reader can parse every sentence but still
+at the *structure* level, the reader can parse every sentence but still
 has no idea what the point is, which is the part that matters, or why
 they should keep reading. The pyramid principle is Barbara Minto's fix
 for that, and it's surprisingly mechanical once you see it.
@@ -26,7 +26,7 @@ naturally ask drive the hierarchy beneath it.
 
 A good document has the shape of a pyramid:
 
-- At the **apex** is a single idea — the answer to the question your
+- At the **apex** is a single idea, the answer to the question your
   piece is really asking.
 - Each level below is a group of supporting points that together answer
   a specific question raised by the level above.
@@ -48,13 +48,13 @@ interrogate it with the six questions readers silently ask:
 
 Group the answers. At each branch you make one structural choice:
 
-- **Deductive** — "Birds fly. I am a bird. Therefore I fly." Good when
+- **Deductive**, "Birds fly. I am a bird. Therefore I fly." Good when
   the argument is a chain and each step depends on the previous one.
-- **Inductive** — "Birds fly for three reasons: they have wings, they
+- **Inductive**, "Birds fly for three reasons: they have wings, they
   are lightweight, they are aerodynamic." Good when you have parallel
   evidence for a single claim.
 
-Deductive chains are rigorous but brittle — break a link, lose the
+Deductive chains are rigorous but brittle, break a link, lose the
 reader. Inductive groupings are robust but only as strong as their
 weakest parallel point. Pick per branch, not per document.
 
@@ -81,7 +81,7 @@ signposting every branch, so the reader spends their attention on the
 *evidence* instead of reconstructing the argument.
 
 It also forces the writer to actually have a point. If you can't
-write the apex sentence, you don't have a piece yet — you have notes.
+write the apex sentence, you don't have a piece yet, you have notes.
 
 ---
 

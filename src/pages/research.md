@@ -4,19 +4,29 @@ title: Research
 description: Selected publications and the questions I keep coming back to.
 ---
 
-A few questions I keep returning to: how do we know a system is doing what
-we think it's doing? How do we shrink a big model into something that still
-works under tight constraints? And how do we get learned systems to behave
-robustly when the inputs drift away from the training distribution?
+A few questions I keep returning to: how do we know a learned system is
+doing what we think it's doing? When do very different-looking methods
+turn out to be the same thing underneath? And how do we design tooling
+(evaluation, agents, interfaces) so that the answers to those questions
+stay honest as the models get bigger?
 
 ## Current interests
 
-- **Evaluation** — measurement design, LLM-as-judge methods, and the long
+- **Unified views of machine learning**: cases where spectral methods,
+  probabilistic models, kernels, and neural networks collapse to the
+  same underlying object (similarity, message passing, KL divergence).
+- **Evaluation**: measurement design, LLM-as-judge methods, and the long
   tail of *the metric went up but the product got worse*.
-- **Agents and planning** — how learned decision-makers behave in
-  adversarial or long-horizon settings.
-- **On-device & edge ML** — compressing and factorizing transformers for
-  strict memory / latency budgets.
+- **Agents and planning**: how learned decision-makers behave in
+  adversarial or long-horizon settings, and what loop-level tooling
+  they need.
+- **AI and security**: the verification asymmetry between offense and
+  defense, and what that implies for where agents actually land.
+- **Probabilistic ML and complex systems**: variational inference,
+  deep generative models, stochastic processes, and the occasional
+  detour into multifractal signal analysis.
+- **On-device and edge ML**: compressing and factorizing transformers
+  for strict memory and latency budgets.
 
 ## Selected publications
 

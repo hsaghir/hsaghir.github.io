@@ -17,7 +17,7 @@ const posts = defineCollection({
     featured: z.boolean().default(false),
     // Hide from the home page (still reachable under /blog/ and tag/category
     // archives). Use for posts that are published but no longer representative
-    // — e.g. deprecated tooling write-ups.
+    //, e.g. deprecated tooling write-ups.
     archived: z.boolean().default(false),
   }),
 });

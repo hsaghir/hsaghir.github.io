@@ -10,7 +10,7 @@ import { SITE } from '../consts';
   <article class="page prose">
     <h1>Subscribe</h1>
     <p class="lede">
-      Get new posts by email or RSS. I write when I have something to say — usually every few weeks, sometimes less. No tracking, no cross-promotion, easy to leave.
+      Get new posts by email or RSS. I write when I have something to say, usually every few weeks, sometimes less. No tracking, no cross-promotion, easy to leave.
     </p>
 
     <Subscribe heading="Subscribe by email" />
@@ -18,29 +18,29 @@ import { SITE } from '../consts';
     <h2>Other ways to follow</h2>
     <ul>
       <li>
-        <strong><a href="/rss.xml">RSS feed</a></strong> — works in any feed reader (Feedly,
+        <strong><a href="/rss.xml">RSS feed</a></strong>: works in any feed reader (Feedly,
         NetNewsWire, Reeder, etc.). Auto-discovered from the homepage.
       </li>
       <li>
-        <strong><a href={`https://blogtrottr.com/?subscribe=${SITE.url}/rss.xml`} rel="noopener">RSS→email via Blogtrottr</a></strong>
-        — a free RSS-to-email bridge. Click the link, enter your address, and
-        every new post arrives in your inbox. Blogtrottr holds your email, not me
-        — a good option if you want the convenience of email without joining my
+        <strong><a href={`https://blogtrottr.com/?subscribe=${SITE.url}/rss.xml`} rel="noopener">RSS→email via Blogtrottr</a></strong>:
+        a free RSS-to-email bridge. Click the link, enter your address, and
+        every new post arrives in your inbox. Blogtrottr holds your email, not me,
+        a good option if you want the convenience of email without joining my
         list.
       </li>
       {SITE.social.twitter && (
-        <li><strong><a href={SITE.social.twitter} rel="me noopener">X / Twitter</a></strong>
-        — I post a short thread when something new goes up.</li>
+        <li><strong><a href={SITE.social.twitter} rel="me noopener">X / Twitter</a></strong>:
+        I post a short thread when something new goes up.</li>
       )}
       {SITE.social.github && (
-        <li><strong><a href={SITE.social.github} rel="me noopener">GitHub</a></strong> — the
+        <li><strong><a href={SITE.social.github} rel="me noopener">GitHub</a></strong>: the
         blog source lives here; star or watch for releases.</li>
       )}
     </ul>
 
     <h2>What to expect</h2>
     <p>
-      Notes on machine learning, AI, security, and the non-linear nature of things. Occasional deep dives, occasional short takes. If a post generates follow-up questions worth answering, you'll get a follow-up — never filler.
+      Notes on machine learning, AI, security, and the non-linear nature of things. Occasional deep dives, occasional short takes. If a post generates follow-up questions worth answering, you'll get a follow-up, never filler.
     </p>
   </article>
 </BaseLayout>

@@ -18,7 +18,7 @@ effort I know of.
 
 ## The problem
 
-You have a directed acyclic graph. The edges carry local information —
+You have a directed acyclic graph. The edges carry local information,
 local derivatives, local probabilities, local costs. You want a global
 quantity that is defined as a sum (or product) over all paths from some
 source to some sink.
@@ -65,14 +65,14 @@ forward; one pass, back to recover the argmax.
 **Matrix-chain multiplication.** Forget probabilities for a moment. If you
 compose functions $f(g(h(x)))$ whose derivatives are Jacobians $F, G, H$,
 the total derivative is the matrix product $F \cdot G \cdot H$. Matrix
-multiplication is associative but not commutative in cost — the order in
+multiplication is associative but not commutative in cost, the order in
 which you multiply changes the flop count. If the input is a single
 scalar and the output is a vector ($H$ is tall and thin), you want
 $F \cdot (G \cdot H)$, which is **forward-mode AD**. If the input is a
 vector and the output is a scalar ($F$ is short and wide), you want
 $(F \cdot G) \cdot H$, which is **reverse-mode AD**, a.k.a.
 backpropagation. For intermediate shapes, neither is optimal and you get a
-classical optimisation problem — the same matrix-chain problem you meet in
+classical optimisation problem, the same matrix-chain problem you meet in
 an undergraduate algorithms class.
 
 That last one is the punchline. **Backprop is what matrix-chain
@@ -108,7 +108,7 @@ a, b \longrightarrow c = a+b, \quad b \longrightarrow d = b+1, \quad c, d \longr
 $$
 
 We want $\partial e / \partial b$. Notice that $b$ affects $e$ through
-**two** paths — once via $c$, once via $d$. Naively:
+**two** paths, once via $c$, once via $d$. Naively:
 
 $$
 \frac{\partial e}{\partial b}
@@ -145,9 +145,9 @@ and the dynamic-programming algorithm are hiding just behind it.
 There is one algorithm. It has a forward pass that propagates local
 information from source to sink, and a backward pass that propagates the
 accumulated global information back. The "local information" is whatever
-object has a chain rule — derivatives, probabilities, costs, entropies.
+object has a chain rule, derivatives, probabilities, costs, entropies.
 The "accumulation" is whatever operation is distributive over the chain
-rule — sum, max, multiplication.
+rule, sum, max, multiplication.
 
 Backpropagation, belief propagation, the Viterbi algorithm, and the
 Bellman–Ford dynamic program are not four things to memorise. They are
@@ -156,6 +156,6 @@ one thing, parameterised four ways.
 ---
 
 *This is an old note from 2017, lightly polished. I am publishing it now
-because the pattern has only gotten more useful — transformers, diffusion
+because the pattern has only gotten more useful, transformers, diffusion
 models, and modern probabilistic programming frameworks all live or die by
 it.*

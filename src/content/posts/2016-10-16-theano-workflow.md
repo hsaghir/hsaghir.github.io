@@ -10,7 +10,7 @@ archived: true
 ---
 
 > **Archival note (2026):** Theano was discontinued in 2017. The *concepts*
-> below — tensors, computational graphs, symbolic autodiff — are still
+> below, tensors, computational graphs, symbolic autodiff, are still
 > exactly the right mental model for [PyTorch](https://pytorch.org) and
 > [JAX](https://jax.readthedocs.io), and in fact map almost one-to-one to
 > them. The **API** is dead. Read this post for the mental model, then

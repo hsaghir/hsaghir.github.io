@@ -13,14 +13,14 @@ archived: true
 > PyTorch API. Two things to know before you read it:
 >
 > 1. `torch.autograd.Variable` was deprecated in PyTorch 0.4 (2018).
->    `Tensor` now carries gradient info directly — just set
+>    `Tensor` now carries gradient info directly, just set
 >    `requires_grad=True`. Anywhere this post wraps a tensor in
 >    `Variable(...)`, modern code just uses the tensor.
 > 2. The `print` statements are Python 2. Translate them mentally to
 >    `print(...)`.
 >
-> The *ideas* — tensors, computational graphs, autograd, `nn`, `optim`
-> — are unchanged, which is why I still point people here as a
+> The *ideas*, tensors, computational graphs, autograd, `nn`, `optim`
+>, are unchanged, which is why I still point people here as a
 > ten-minute tour.
 
 So PyTorch is the new popular framework for deep learners and many new papers release code in PyTorch that one might want to inspect. Here is my understanding of it narrowed down to the most basics to help read PyTorch code. This is based on Justin Johnson's [great tutorial](https://github.com/jcjohnson/pytorch-examples). If you want to learn more or have more than 10 minutes for a PyTorch starter go read that!
