@@ -5,6 +5,8 @@ date: 2026-04-23
 featured: true
 tags: ["agents", "python", "design", "open-source"]
 category: "engineering"
+cover: "/images/ouroboros.jpg"
+coverAlt: "An ouroboros, the snake eating its own tail, from a 1478 drawing by Theodoros Pelecanos in the alchemical treatise Synosius. Public domain."
 ---
 
 ## The claim
