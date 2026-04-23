@@ -33,16 +33,11 @@ export const SITE = {
     code: '', // e.g. 'hsaghir' once claimed
   },
   // Comments (Giscus). Leave repo empty to disable.
-  // To re-enable:
-  //   1. Install the giscus GitHub App on the repo: https://github.com/apps/giscus
-  //   2. Create a Discussions category named "Announcements" (type: Announcement).
-  //   3. Run the giscus configurator at https://giscus.app to get categoryId,
-  //      then paste it below and restore repo to 'hsaghir/hsaghir.github.io'.
   giscus: {
-    repo: '',
-    repoId: 'R_kgDOSKPBpg', // new repo node_id (post-fork-detach)
+    repo: 'hsaghir/hsaghir.github.io',
+    repoId: 'MDEwOlJlcG9zaXRvcnk3MTE2MDQ2NA==',
     category: 'Announcements',
-    categoryId: '',
+    categoryId: 'DIC_kwDOBD3SkM4C7VW2',
     mapping: 'pathname',
     reactionsEnabled: '1',
     theme: 'preferred_color_scheme',

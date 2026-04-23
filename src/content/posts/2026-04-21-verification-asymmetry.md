@@ -225,7 +225,7 @@ forever*.
 
 This has a non-obvious consequence for the "replace SaaS with custom
 code" thesis. If you vibe-code a replacement for a SaaS tool you are
-paying $200/month for, you have eliminated the subscription. But you
+paying \$200/month for, you have eliminated the subscription. But you
 have also taken ownership of the entire security surface. You now
 need to spend tokens hardening that code, monitoring it in production,
 and patching it when new vulnerability classes emerge. Nobody else is

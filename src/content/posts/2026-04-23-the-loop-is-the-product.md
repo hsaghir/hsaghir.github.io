@@ -54,7 +54,7 @@ The model decides which tool to call. That part is handled. The
 decisions that *you* need to make are all between iterations:
 
 - **When to stop.** Not just "the model said done" but "we have
-  spent $0.40 and the user's budget is $0.50" or "the last three
+  spent \$0.40 and the user's budget is \$0.50" or "the last three
   calls returned the same error."
 - **What the model sees.** Context management (pruning, summarising,
   injecting retrieved documents) is the difference between an agent
