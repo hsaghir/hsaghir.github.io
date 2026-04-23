@@ -185,53 +185,86 @@ compliance trail, and a `check_done` hook that stops the agent if
 it has been running for more than 60 seconds. That is the level of
 control looplet gives you, for any agent you build.
 
-## Sub-agents are just nested loops
+## Agents compose as tools
 
-Once the loop is the product, sub-agents stop being a special
-feature. They are a tool that happens to run another loop.
+Once the loop is the product, composing agents stops being a
+special feature. An agent is just a function that runs a loop and
+returns a result. Any function can be a tool. Therefore any agent
+can be a tool for another agent.
 
-Claude Code's `Task` tool spawns a sub-agent with its own context,
-its own tools, and its own stopping condition, then returns a
-summary to the parent. In looplet, that is a regular tool:
+looplet ships `run_sub_loop` for exactly this pattern. Build a
+deep-research agent once, expose it as a tool, and plug it into
+any other looplet agent (or into a hook, or into a `Task`-style
+dispatcher):
 
 ```python
-def research(query: str) -> str:
-    sub_task = f"Research: {query}. Return a 3-bullet summary."
-    steps = list(composable_loop(
-        llm=cheap_llm,
-        tools=[search, fetch_url],
-        task=sub_task,
-        hooks=[BudgetCap(tokens=4000)],
-        max_steps=10,
-    ))
-    return steps[-1].message.content
+from looplet import composable_loop, run_sub_loop
 
+def deep_research(question: str) -> str:
+    """Multi-step research agent. Returns a cited summary."""
+    result = run_sub_loop(
+        llm=cheap_llm,
+        task={"question": question},
+        tools=[web_search, fetch_url, read_pdf],
+        system_prompt="Research deeply. Cite every claim.",
+        max_steps=20,
+    )
+    return result["summary"]
+
+# Plug it into a bigger agent as a regular tool
 for step in composable_loop(
     llm=smart_llm,
-    tools=[research, write_file, run_tests],
+    tools=[deep_research, write_file, run_tests],
     task=user_task,
 ):
     print(step.pretty())
 ```
 
-The parent agent sees `research` as a normal tool call. Inside,
-a whole sub-loop runs with its own model (cheaper), its own tool
-set (narrower), its own hooks (tighter budget), and its own
-trajectory that you can inspect and evaluate independently.
+The parent sees `deep_research` as a normal tool call. Inside, a
+whole sub-loop runs with its own model, its own tool set, its own
+hooks, and its own trajectory that you can inspect and evaluate
+independently. This gives you the three things people actually
+want from sub-agents: **context isolation** (the parent never
+sees the sub-agent's 50-step browsing trajectory, only the
+answer), **cost control** (explorer on a cheap model, planner on
+a smart one), and **specialisation** (different tools, different
+prompts, different stopping rules per agent). No orchestrator, no
+agent registry, no message bus.
 
-This gives you the three things people actually want from
-sub-agents: **context isolation** (the parent never sees the
-sub-agent's 50-step browsing trajectory, just the answer), **cost
-control** (run the explorer on a cheap model, the planner on a
-smart one), and **specialisation** (different tools, different
-prompts, different stopping rules per sub-agent). No orchestrator,
-no agent registry, no message bus. Just a function that calls
-`composable_loop` and returns a string.
+The same `ProvenanceSink` captures parent and child trajectories
+with a parent-child link. The same `eval_*` helpers work on
+either level. You can stack this arbitrarily deep: a planner
+agent that calls a research agent that calls a fact-checker
+agent. Each level is a loop you can observe, interrupt, and test.
 
-The same `ProvenanceSink` dumps the parent and child trajectories
-to the same store with a parent-child link. The same `eval_*`
-helpers work on either level. Debugging a sub-agent is debugging
-a loop, because that is all it is.
+## Ten minutes with your coding agent
+
+There is a nice property that falls out of keeping the core API
+this small: a coding agent like Claude Code or Cursor can read
+the entire looplet surface in a single pass. One `for` loop, four
+hook interfaces, a `run_sub_loop` helper, a `ProvenanceSink`.
+
+Point your coding agent at the [quickstart](https://hsaghir.github.io/looplet/)
+and ask it to build what you need:
+
+> "Build me a deep-research agent using looplet. It should use
+> web search and URL fetching, cap tokens at 10k, redact PII
+> from prompts, log every step to JSONL, and stop when it has
+> three independent sources. Write pytest evals that check the
+> agent returns sources and stays within budget."
+
+In ten minutes you get back a file that is structurally correct:
+a `composable_loop` call with the right hooks, a `ProvenanceSink`
+for tracing, and `eval_*` assertions against the trajectory. The
+agent cannot accidentally invent a parallel logging system or a
+custom state machine, because looplet does not offer one. There
+is one way to do each thing, and it is obvious from the API.
+
+This is the difference between a framework designed for humans
+reading docs and one designed for agents reading code. Small
+surface, obvious extension points, no hidden state. Your coding
+agent will not get it wrong in the same way it gets LangChain
+wrong, because there is less to get wrong.
 
 ## What it costs
 
