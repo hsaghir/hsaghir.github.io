@@ -1,105 +1,140 @@
 ---
 title: "The loop is the product"
-description: "Most LLM agent frameworks give you a graph DSL and hide the loop. But the loop is where all the interesting decisions happen. What if the framework was just the loop, and you owned it?"
+description: "Agent frameworks hide the loop behind agent.run() and a graph DSL. But the loop is where every interesting decision happens: what the model sees, whether a tool call proceeds, when to stop, what to record. What if you owned the loop and the framework just made it composable?"
 date: 2026-04-23
+featured: true
 tags: ["agents", "python", "design", "open-source"]
 category: "engineering"
-cover: "/images/jacquard-loom.jpg"
-coverAlt: "Close-up of a Jacquard loom's punch-card chain, Science Museum, London."
 ---
 
-I shipped [looplet](https://github.com/hsaghir/looplet) last week.
-It is a Python library for building LLM agents that call tools. The
-entire API is a `for` loop:
+## The claim
+
+The right abstraction for most LLM agents is not a graph, not a
+state machine, and not a pipeline of nodes. It is a `for` loop that
+you own and can observe, interrupt, or extend at every step.
+
+I built [looplet](https://github.com/hsaghir/looplet) around this
+idea. The entire API is one iterator:
 
 ```python
 for step in composable_loop(llm=llm, tools=tools, task=task, ...):
-    print(step.pretty())
+    print(step.pretty())   # "#1 search(query='...') -> 12 items [340ms, 1.2k tok]"
 ```
 
-Each `step` is a dataclass containing the prompt the model saw, the
-tool call it made, the result, token usage, and wall-clock time. You
-own the iterator. `break`, `continue`, `try/except`, `asyncio.sleep` --
-just Python. Zero runtime dependencies.
+Zero runtime dependencies. Four extension points. Works with any
+OpenAI-compatible endpoint or Anthropic directly. The rest of this
+post explains why the loop is the right cut, not the library itself.
 
-This post is about *why* the loop is the right abstraction, not about
-the library itself. The library is a consequence of the argument.
+## Three reasons the loop is the right abstraction
 
-## The shape of most agents
+### 1. Most agents are loops, not graphs
 
-Draw a picture of what an LLM agent does:
+Draw a picture of what a tool-calling agent does: build a prompt,
+call the model, parse the response, run the tool, decide whether to
+stop, repeat. That is a loop with a body and a termination condition.
+Not a DAG, not a state machine.
 
-1. Build a prompt (system message + history + tool schemas).
-2. Call the model.
-3. Parse the response into a tool call.
-4. Execute the tool.
-5. Decide whether to stop.
-6. If not, go to 1.
+Some agents genuinely are graphs. A triage node routing to research
+and coding branches, each with their own state, joining at a review
+node: that is a graph, and LangGraph is the right tool for it. But
+most agents I have built, and most I see other people build, are
+loops. One model, a bag of tools, a stopping condition. The graph
+has one node and one edge.
 
-That is a loop. Not a DAG, not a state machine, not a pipeline of
-nodes with conditional edges. A loop with a body and a termination
-condition.
+When a framework forces you to express a loop as a graph, you pay a
+conceptual tax: node types, edge types, state schemas, checkpoint
+semantics, a graph compiler. All to describe a structure that `for`
+already describes.
 
-Some agents genuinely are graphs. A triage node that routes to
-separate research and coding branches, each with their own state,
-joining at a review node -- that is a graph, and LangGraph is the
-right tool for it. But most agents I have built, and most agents I
-see other people build, are loops. One model, a bag of tools, a
-stopping condition. The graph has one node and one edge.
+### 2. The interesting decisions are loop-body decisions
 
-When a framework forces you to express a loop as a graph, two things
-happen. First, you pay a conceptual tax: you learn node types, edge
-types, state schemas, checkpoint semantics, and a graph compiler, all
-to describe a structure that `for` already describes. Second, and
-worse, the framework takes ownership of the loop. You hand it a graph
-definition and call `.invoke()`. The loop runs inside the framework.
-You get callbacks, not control.
+The model decides which tool to call. That part is handled. The
+decisions that *you* need to make are all between iterations:
 
-## Why control of the loop matters
-
-The interesting decisions in an agent are not "which tool to call" --
-the model handles that. The interesting decisions are:
-
-- **When to stop.** Not just "the model said done" but "we've spent
-  $0.40 and the user's budget is $0.50" or "the last three tool calls
-  returned the same error."
-- **What to show the model.** Context management -- pruning old
-  messages, summarising, injecting retrieved documents -- is the
-  difference between an agent that works on toy problems and one that
-  works on real ones.
-- **Whether to let a tool call proceed.** Permission checks, PII
+- **When to stop.** Not just "the model said done" but "we have
+  spent $0.40 and the user's budget is $0.50" or "the last three
+  calls returned the same error."
+- **What the model sees.** Context management (pruning, summarising,
+  injecting retrieved documents) is the difference between an agent
+  that works on toy problems and one that works on real ones.
+- **Whether a tool call proceeds.** Permission checks, PII
   redaction, argument rewriting, human approval gates.
-- **What to record.** The full prompt the model saw, not just the
-  tool call. The wall-clock time of each step, not just the final
-  result. Token usage per step, not just the total.
+- **What gets recorded.** The full prompt, not just the tool name.
+  Wall-clock time per step, not just the final result. Token usage
+  per step, not just the total.
 
-All of these are *loop-body decisions*. They happen between iterations,
-not at graph edges. When you own the loop, they are just Python:
+When you own the loop, these are just Python:
 
 ```python
 for step in composable_loop(...):
     if step.usage.total_tokens > budget:
         break
     if step.tool_call.name == "delete_file":
-        approval = input(f"Allow {step.tool_call}? [y/n] ")
-        if approval != "y":
+        if input(f"Allow {step.tool_call}? [y/n] ") != "y":
             break
     log.append(step)
 ```
 
-When the framework owns the loop, each of these becomes a callback
-registration, a hook class, a middleware layer, or a custom node type.
-The complexity is the same, but the indirection is not.
+When the framework owns the loop, each of these becomes a callback,
+a hook class, a middleware layer, or a custom node type. Same
+complexity, more indirection.
 
-## The Protocol pattern
+### 3. Debugging and evaluation become the same thing
 
-Putting everything in the loop body doesn't scale either. If every
-agent needs PII redaction, approval gates, tracing, and context
-compaction, you end up with a 200-line loop body that is just as
-opaque as the framework you were trying to avoid.
+This is the design choice I care most about.
 
-The fix is Python's `Protocol` pattern (PEP 544). Define four
-structural interfaces:
+Think about how you debug a coding agent like Claude Code. You look at
+the sequence of tool calls, check what the model saw at each step,
+and ask: did it have the right context? Did it call the right tool
+with the right arguments? Did it stop at the right time? You are
+inspecting a trajectory.
+
+Now think about how you evaluate an agent. You run it on a set of
+tasks, record the trajectories, and check: did it find the answer?
+Did it use the expected tools? Did it stay within budget? You are
+inspecting the same trajectory, just with assertions instead of eyes.
+
+Debugging and evaluation are the same activity at different levels
+of automation. If your framework gives you full trajectories as
+first-class objects, the path from "I am staring at this in a
+terminal" to "I have a regression test for this" is just wrapping
+your observation in a function:
+
+```python
+# What you do while debugging
+for step in composable_loop(...):
+    print(step.pretty())
+    # "Hmm, step 3 called search but got zero results"
+
+# What you write as an eval
+def eval_found_results(ctx: EvalContext) -> bool:
+    return any(
+        s.tool_call.name == "search" and len(s.tool_result.data) > 0
+        for s in ctx.steps
+    )
+```
+
+The `step.pretty()` trace, the `ProvenanceSink` that dumps it to
+disk, and the `eval_*` helpers that read it back are all operating on
+the same `Step` dataclass. No separate logging pipeline. No eval
+framework. No telemetry SDK. One artifact, three uses.
+
+If you have used Claude Code or a similar coding agent, you know the
+feeling of watching the tool calls scroll by and thinking "that was
+the wrong move." Now imagine you could intercept that step, rewrite
+the tool arguments, inject missing context, enforce a permission
+check, or just log it to a file that your test suite reads tomorrow.
+That is what owning the loop gives you. Not for coding tasks
+specifically, but for any task you point an agent at.
+
+## How the extension model works
+
+Putting everything in the loop body does not scale. If every agent
+needs PII redaction, approval gates, tracing, and context compaction,
+you end up with a 200-line loop body.
+
+The fix is Python's `Protocol` pattern (PEP 544). Four structural
+interfaces:
 
 ```python
 class PrePrompt(Protocol):
@@ -115,7 +150,7 @@ class CheckDone(Protocol):
     def check_done(self, state, log, step): ...
 ```
 
-A *hook* is any object that implements one or more of these methods.
+A hook is any object that implements one or more of these methods.
 No base class, no inheritance, no registration:
 
 ```python
@@ -127,91 +162,55 @@ class ApprovalGate:
     def pre_dispatch(self, state, log, tc, step):
         if tc.tool in SENSITIVE_TOOLS:
             return Deny("needs human approval")
+
+for step in composable_loop(..., hooks=[RedactPII(), ApprovalGate()]):
+    print(step.pretty())
 ```
 
 Hooks compose by stacking in a list. The loop calls them in order.
-That is the entire extension model.
 
-Why Protocol instead of base classes? Because base classes create a
-coupling between the hook and the framework. If `RedactPII` inherits
-from `looplet.Hook`, it cannot be used outside looplet without
-carrying looplet as a dependency. With Protocol, `RedactPII` is just
-a class with a `pre_prompt` method. It works in looplet, it works in
-your test harness, it works in a completely different agent library
-that happens to call the same method name. Structural typing is the
-right abstraction for extension points.
+Why Protocol instead of base classes? Because structural typing
+decouples the hook from the framework. `RedactPII` is just a class
+with a `pre_prompt` method. It works in looplet, it works in a test
+harness, it works in a different agent library that calls the same
+method name. No import dependency, no vendor lock-in at the extension
+layer.
 
-## The eval trick
+Imagine you could take Claude Code's tool-calling loop and slot in
+your own `pre_dispatch` hook that enforces file-write permissions, a
+`post_dispatch` hook that logs every shell command to a
+compliance trail, and a `check_done` hook that stops the agent if
+it has been running for more than 60 seconds. That is the level of
+control looplet gives you, for any agent you build.
 
-Here is a design choice I am particularly happy with: the debug trace
-and the evaluation harness are the same artifact.
+## What it costs
 
-`step.pretty()` prints a human-readable one-liner:
+Zero runtime dependencies. `pip install looplet` pulls in nothing.
+The `openai` and `anthropic` packages are optional extras, imported
+lazily when you instantiate a backend.
 
-```
-#1 search(query='quarterly revenue') -> 12 results [340ms, 1.2k tok]
-```
-
-`ProvenanceSink` writes each step to disk as JSON:
-
-```python
-sink = ProvenanceSink(dir="traces/run_42/")
-for step in composable_loop(..., hooks=[sink]):
-    ...
-```
-
-The `eval_*` helpers read `ProvenanceSink` output directly:
-
-```python
-def eval_found_answer(ctx: EvalContext) -> bool:
-    return any("revenue" in s.tool_result.text for s in ctx.steps)
-```
-
-There is no separate logging pipeline, no eval framework, no
-telemetry SDK. The thing you print while debugging is the thing
-you save to disk is the thing you evaluate against. One artifact,
-three uses.
-
-This is only possible because the loop yields `Step` objects with
-full provenance. If the framework owns the loop and gives you
-callbacks, you get fragments -- a tool name here, a result there --
-and you have to reconstruct the full picture yourself.
-
-## Zero dependencies
-
-looplet's core has zero runtime dependencies. `pip install looplet`
-pulls in nothing. The `openai` and `anthropic` packages are optional
-extras, imported lazily when you instantiate a backend.
-
-This is a deliberate choice, not an accident. Cold-import time for
-looplet is 289 ms. For comparison:
-
-| Framework | Cold import |
-|-----------|------------|
-| looplet | 289 ms |
-| strands-agents | 1,885 ms (6.5x) |
-| LangGraph | 2,294 ms (7.9x) |
-| Claude Agent SDK | 2,409 ms (8.3x) |
-| Pydantic AI | 3,975 ms (13.8x) |
+| Framework | Cold import | PyPI deps |
+|-----------|------------|-----------|
+| looplet | 289 ms | 0 |
+| strands-agents | 1,885 ms | 6 |
+| LangGraph | 2,294 ms | 31 |
+| Claude Agent SDK | 2,409 ms | 13 |
+| Pydantic AI | 3,975 ms | 12 |
 
 (Median of 9 runs, Python 3.11, Linux x86_64. Scripts in the repo.)
 
-Why does this matter? Agents are increasingly invoked as CLI tools,
-serverless functions, and dev-loop scripts that restart on every save.
-A 4-second import tax on every invocation is the difference between
-"snappy" and "go get coffee." And dependency trees are liability
-trees: every transitive dependency is a surface for breaking changes,
-CVEs, and version conflicts.
+Agents are increasingly invoked as CLI tools, serverless functions,
+and dev-loop scripts that restart on every save. A 4-second import
+tax on every invocation is the difference between snappy and slow.
+And dependency trees are liability trees: every transitive dependency
+is a surface for breaking changes, CVEs, and version conflicts.
 
 ## When not to use it
 
-Honesty about limitations is more useful than marketing.
-
-**Use LangGraph when** your agent is genuinely a multi-node graph --
-a triage node routing to research and coding branches with separate
-state, joining at a review node. That is the shape LangGraph is
-designed for, and expressing it as a single loop with hooks is
-fighting the abstraction.
+**Use LangGraph when** your agent is genuinely a multi-node graph
+with branching state. A triage node routing to separate research and
+coding branches, joining at a review node. That is the shape
+LangGraph is designed for.
 
 **Use LangGraph when** you need durable checkpointing with built-in
 backends (SQLite, Postgres, Redis) tied to node boundaries. looplet
@@ -220,24 +219,22 @@ LangGraph gives it to you out of the box.
 
 **Stay in LangChain when** your prompts are `ChatPromptTemplate`s,
 your retrievers are LangChain retrievers, and your consumers expect
-LangChain events. Bridging all of that through looplet adds friction
-for no gain.
+LangChain events.
 
 ## The punchline
 
 The agent framework landscape in 2026 looks like the web framework
-landscape in 2010. Lots of large, opinionated systems competing to
-own your entire stack. The history of web frameworks suggests that
-the systems which survive are the ones that bet on the language's
-own control flow rather than replacing it. Flask beat most of its
-contemporaries not because it was more powerful, but because a Flask
-app was just a Python function.
+landscape in 2010. Large, opinionated systems competing to own your
+stack. The frameworks that survived that era were the ones that bet
+on the language's control flow rather than replacing it. Flask beat
+most of its contemporaries not because it was more powerful, but
+because a Flask app was just a Python function.
 
 looplet is the same bet. A `for` loop is the right abstraction for
-"call an LLM, run a tool, repeat." If you keep the abstraction honest,
-the language gives you control flow, error handling, concurrency,
-and testing for free. The framework's job is to make the loop
-composable and observable, not to own it.
+"call an LLM, run a tool, repeat." If you keep the abstraction
+honest, the language gives you control flow, error handling,
+concurrency, and testing for free. The framework's job is to make
+the loop composable and observable, not to own it.
 
 ```bash
 pip install looplet
