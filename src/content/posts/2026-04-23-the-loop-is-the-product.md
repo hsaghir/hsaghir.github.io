@@ -9,6 +9,22 @@ cover: "/images/ouroboros.jpg"
 coverAlt: "An ouroboros, the snake eating its own tail, from a 1478 drawing by Theodoros Pelecanos in the alchemical treatise Synosius. Public domain."
 ---
 
+## Why this exists
+
+For the last year I have been writing agents that do real work:
+research, code review, security triage. Every time I reached for an
+agent framework, I ended up rewriting the loop from scratch. I
+wanted to own when to stop, what the model sees, whether a tool
+call proceeds, and what gets recorded. The frameworks all hid that
+loop behind an `agent.run()` call and a graph DSL, and pulled in
+thirty dependencies on the way.
+
+So I deleted the framework and kept the loop. That is looplet.
+
+If you remember the moment Flask beat Django for a generation of
+web apps by being *just a Python function with a decorator*, this
+post is making the same bet for agents.
+
 ## The claim
 
 The right abstraction for most LLM agents is not a graph, not a
@@ -23,9 +39,11 @@ for step in composable_loop(llm=llm, tools=tools, task=task, ...):
     print(step.pretty())   # "#1 search(query='...') -> 12 items [340ms, 1.2k tok]"
 ```
 
-Zero runtime dependencies. Four extension points. Works with any
+Zero runtime dependencies. Five hook methods. Works with any
 OpenAI-compatible endpoint or Anthropic directly. The rest of this
 post explains why the loop is the right cut, not the library itself.
+
+![Black-box agent.run() on the left versus an open for-loop you can step through on the right](/images/looplet/mental-model.png "The mental model: an agent.run() black box on one side, a for-loop you own on the other.")
 
 ## Three reasons the loop is the right abstraction
 
@@ -69,10 +87,10 @@ When you own the loop, these are just Python:
 
 ```python
 for step in composable_loop(...):
-    if step.usage.total_tokens > budget:
+    if state.usage.total_tokens > budget:
         break
-    if step.tool_call.name == "delete_file":
-        if input(f"Allow {step.tool_call}? [y/n] ") != "y":
+    if step.tool_call.tool == "delete_file":
+        if input(f"Allow {step.tool_call.tool}({step.tool_call.args})? [y/n] ") != "y":
             break
     log.append(step)
 ```
@@ -102,6 +120,8 @@ first-class objects, the path from "I am staring at this in a
 terminal" to "I have a regression test for this" is just wrapping
 your observation in a function:
 
+![A faux-terminal trace showing step.pretty() output for each step of an agent run](/images/looplet/step-trace.png "step.pretty() in a terminal: the same artifact you read when debugging is the one you assert against in evals.")
+
 ```python
 # What you do while debugging
 for step in composable_loop(...):
@@ -111,7 +131,7 @@ for step in composable_loop(...):
 # What you write as an eval
 def eval_found_results(ctx: EvalContext) -> bool:
     return any(
-        s.tool_call.name == "search" and len(s.tool_result.data) > 0
+        s.tool_call.tool == "search" and len(s.tool_result.data) > 0
         for s in ctx.steps
     )
 ```
@@ -135,21 +155,18 @@ Putting everything in the loop body does not scale. If every agent
 needs PII redaction, approval gates, tracing, and context compaction,
 you end up with a 200-line loop body.
 
-The fix is Python's `Protocol` pattern (PEP 544). Four structural
-interfaces:
+![Five hook callsites pinned around the agent loop body: pre_prompt, pre_dispatch, check_permission, post_dispatch, check_done](/images/looplet/hook-stack.png "Five points where you can intercept the loop. Implement only the methods you need.")
+
+The fix is Python's `Protocol` pattern (PEP 544). One structural
+interface, `LoopHook`, with five extension methods on it:
 
 ```python
-class PrePrompt(Protocol):
-    def pre_prompt(self, state, log, ctx, step): ...
-
-class PreDispatch(Protocol):
-    def pre_dispatch(self, state, log, tool_call, step): ...
-
-class PostDispatch(Protocol):
-    def post_dispatch(self, state, log, tool_call, result, step): ...
-
-class CheckDone(Protocol):
-    def check_done(self, state, log, step): ...
+class LoopHook(Protocol):
+    def pre_prompt(self, state, log, ctx, step_num): ...
+    def pre_dispatch(self, state, log, tool_call, step_num): ...
+    def check_permission(self, tool_call, state): ...
+    def post_dispatch(self, state, log, tool_call, result, step_num): ...
+    def check_done(self, state, log, ctx, step_num): ...
 ```
 
 A hook is any object that implements one or more of these methods.
@@ -157,13 +174,12 @@ No base class, no inheritance, no registration:
 
 ```python
 class RedactPII:
-    def pre_prompt(self, state, log, ctx, step):
+    def pre_prompt(self, state, log, ctx, step_num):
         return scrub_emails(ctx)
 
 class ApprovalGate:
-    def pre_dispatch(self, state, log, tc, step):
-        if tc.tool in SENSITIVE_TOOLS:
-            return Deny("needs human approval")
+    def check_permission(self, tool_call, state):
+        return tool_call.tool not in SENSITIVE_TOOLS
 
 for step in composable_loop(..., hooks=[RedactPII(), ApprovalGate()]):
     print(step.pretty())
@@ -241,8 +257,9 @@ agent. Each level is a loop you can observe, interrupt, and test.
 
 There is a nice property that falls out of keeping the core API
 this small: a coding agent like Claude Code or Cursor can read
-the entire looplet surface in a single pass. One `for` loop, four
-hook interfaces, a `run_sub_loop` helper, a `ProvenanceSink`.
+the entire looplet surface in a single pass. One `for` loop, one
+`LoopHook` Protocol with five methods, a `run_sub_loop` helper, a
+`ProvenanceSink`.
 
 Point your coding agent at the [quickstart](https://hsaghir.github.io/looplet/)
 and ask it to build what you need:
