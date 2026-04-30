@@ -1,0 +1,51 @@
+---
+import BaseLayout from './BaseLayout.astro';
+
+interface Props {
+  title?: string;
+  description?: string;
+  frontmatter?: { title?: string; description?: string };
+}
+// Markdown pages pass frontmatter as Astro.props.frontmatter; .astro pages pass direct props.
+const { frontmatter } = Astro.props;
+const title = Astro.props.title ?? frontmatter?.title ?? '';
+const description = Astro.props.description ?? frontmatter?.description;
+---
+<BaseLayout title={title} description={description}>
+  <article class="page">
+    <header class="page-head">
+      <h1>{title}</h1>
+      {description && <p class="lede">{description}</p>}
+    </header>
+    <div class="prose page-body">
+      <slot />
+    </div>
+  </article>
+</BaseLayout>
+
+<style>
+  .page {
+    max-width: var(--container-narrow);
+    margin: 0 auto;
+    padding: clamp(2rem, 5vw, 4rem) var(--gutter) clamp(3rem, 6vw, 5rem);
+  }
+  .page-head { margin-bottom: 2.2rem; text-align: center; }
+  .page-head h1 {
+    font-family: var(--font-display);
+    font-weight: 400;
+    font-variation-settings: 'opsz' 144, 'SOFT' 30;
+    font-size: clamp(2.2rem, 5vw, 3.2rem);
+    letter-spacing: -0.022em;
+    margin: 0 0 .8rem;
+  }
+  .lede {
+    font-family: var(--font-body);
+    font-size: clamp(1.05rem, 1.7vw, 1.2rem);
+    line-height: 1.55;
+    font-style: italic;
+    color: var(--c-text-soft);
+    max-width: 40rem;
+    margin: 0 auto;
+  }
+  .page-body { margin-top: 1rem; }
+</style>

@@ -1,0 +1,110 @@
+---
+// Subscribe.astro, email subscribe block.
+// Uses MailerLite's Universal embed: the assets.mailerlite.com/js/universal.js
+// script (loaded once in BaseHead) replaces the .ml-embedded div with the form.
+// Gated on SITE.newsletter.{accountId,formId}; falls back to RSS + Kill-the-Newsletter
+// CTA when unset.
+import { SITE } from '../consts';
+
+interface Props {
+  variant?: 'card' | 'inline';
+  heading?: string;
+}
+const { variant = 'card', heading = 'Subscribe' } = Astro.props;
+
+const hasEmail =
+  SITE.newsletter.provider === 'mailerlite' &&
+  SITE.newsletter.accountId.length > 0 &&
+  SITE.newsletter.formId.length > 0;
+---
+<aside class={`subscribe subscribe--${variant}`} aria-labelledby="subscribe-heading">
+  <div class="inner">
+    <h2 id="subscribe-heading" class="title">{heading}</h2>
+    <p class="blurb">{SITE.newsletter.blurb}</p>
+
+    {hasEmail && (
+      <div class="ml-embedded" data-form={SITE.newsletter.formId}></div>
+    )}
+
+    <p class="alt">
+      {hasEmail ? 'Prefer a feed reader? ' : 'Follow via '}
+      <a href="/rss.xml">RSS</a>
+      {' · '}<a href={`https://blogtrottr.com/?subscribe=${SITE.url}/rss.xml`} rel="noopener">RSS→email</a>
+      {SITE.social.twitter && <>{' · '}<a href={SITE.social.twitter} rel="me noopener">X / Twitter</a></>}
+    </p>
+  </div>
+</aside>
+
+<style>
+  .subscribe {
+    margin: 2.5rem 0 0;
+    padding: 1.6rem 1.4rem;
+    border: 1px solid var(--c-rule);
+    border-radius: var(--radius-lg);
+    background: var(--c-bg-tint);
+  }
+  .subscribe--inline {
+    margin-top: 3rem;
+  }
+  .inner { max-width: 34rem; margin: 0 auto; }
+  .title {
+    font-family: var(--font-display);
+    font-weight: 400;
+    font-variation-settings: 'opsz' 72;
+    font-size: 1.35rem;
+    margin: 0 0 .4rem;
+    letter-spacing: -0.01em;
+  }
+  .blurb {
+    font-family: var(--font-body);
+    font-size: .95rem;
+    color: var(--c-text-soft);
+    margin: 0 0 1rem;
+    line-height: 1.5;
+  }
+  .form {
+    display: flex;
+    gap: .5rem;
+    flex-wrap: wrap;
+  }
+  .form input[type="email"] {
+    flex: 1 1 16rem;
+    font-family: var(--font-ui);
+    font-size: .95rem;
+    padding: .65rem .8rem;
+    border: 1px solid var(--c-rule);
+    border-radius: var(--radius);
+    background: var(--c-bg);
+    color: var(--c-text);
+  }
+  .form input[type="email"]:focus {
+    outline: 2px solid var(--c-accent);
+    outline-offset: 1px;
+    border-color: var(--c-accent);
+  }
+  .form button {
+    font-family: var(--font-ui);
+    font-size: .92rem;
+    font-weight: 600;
+    padding: .65rem 1.2rem;
+    border: 1px solid var(--c-accent);
+    border-radius: var(--radius);
+    background: var(--c-accent);
+    color: var(--c-bg);
+    cursor: pointer;
+    transition: filter .15s ease;
+  }
+  .form button:hover { filter: brightness(1.08); }
+  .alt {
+    font-family: var(--font-ui);
+    font-size: .82rem;
+    color: var(--c-muted);
+    margin: .9rem 0 0;
+  }
+  .alt a { color: var(--c-text-soft); }
+  .alt a:hover { color: var(--c-accent); }
+  .sr-only {
+    position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
+    overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border: 0;
+  }
+</style>

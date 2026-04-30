@@ -1,0 +1,40 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+<BaseLayout title="Not found" description="That page doesn't exist.">
+  <section class="container notfound">
+    <p class="code">404</p>
+    <h1>Page not found</h1>
+    <p class="muted">The page you're looking for may have moved, or never existed.</p>
+    <p>
+      <a href="/">← Go home</a> · <a href="/blog/">Browse posts</a>
+    </p>
+  </section>
+</BaseLayout>
+
+<style>
+  .notfound {
+    padding: clamp(5rem, 14vw, 9rem) var(--gutter);
+    text-align: center;
+    max-width: 40rem;
+  }
+  .code {
+    font-family: var(--font-display);
+    font-weight: 300;
+    font-variation-settings: 'opsz' 144, 'SOFT' 80;
+    font-size: clamp(6rem, 22vw, 12rem);
+    color: var(--c-accent);
+    margin: 0 0 .5rem;
+    line-height: 0.9;
+    letter-spacing: -0.04em;
+    font-style: italic;
+  }
+  .notfound h1 {
+    font-family: var(--font-display);
+    font-weight: 400;
+    font-variation-settings: 'opsz' 72, 'SOFT' 30;
+    font-size: clamp(1.6rem, 3vw, 2.2rem);
+    margin: 0 0 .8rem;
+  }
+  .notfound .muted { font-size: 1.05rem; margin-bottom: 1.5rem; }
+</style>

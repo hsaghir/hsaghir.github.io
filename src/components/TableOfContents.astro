@@ -1,0 +1,42 @@
+---
+// TableOfContents.astro, renders from Astro's generated `headings`
+import type { MarkdownHeading } from 'astro';
+
+interface Props { headings: MarkdownHeading[]; }
+const { headings } = Astro.props;
+const items = headings.filter((h) => h.depth === 2 || h.depth === 3);
+---
+{items.length > 2 && (
+  <aside class="toc" aria-label="Table of contents">
+    <p class="toc-title">Contents</p>
+    <ol>
+      {items.map((h) => (
+        <li class:list={[`depth-${h.depth}`]}>
+          <a href={`#${h.slug}`}>{h.text}</a>
+        </li>
+      ))}
+    </ol>
+  </aside>
+)}
+
+<style>
+  .toc {
+    font-family: var(--font-head);
+    font-size: 0.85rem;
+    border-left: 2px solid var(--c-rule);
+    padding: .2rem 0 .2rem 1rem;
+    margin: 1.5rem 0 2rem;
+    color: var(--c-muted);
+  }
+  .toc-title {
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    font-size: 0.72rem;
+    margin: 0 0 .5rem;
+  }
+  .toc ol { list-style: none; padding: 0; margin: 0; }
+  .toc li { margin: .25rem 0; }
+  .toc li.depth-3 { padding-left: 1rem; font-size: 0.82rem; }
+  .toc a { color: var(--c-muted); border: none; }
+  .toc a:hover { color: var(--c-link); }
+</style>

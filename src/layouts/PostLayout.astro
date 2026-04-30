@@ -1,0 +1,162 @@
+---
+import type { MarkdownHeading } from 'astro';
+import type { CollectionEntry } from 'astro:content';
+import BaseLayout from './BaseLayout.astro';
+import TableOfContents from '../components/TableOfContents.astro';
+import Giscus from '../components/Giscus.astro';
+import Subscribe from '../components/Subscribe.astro';
+import { formatDate } from '../utils/date';
+import readingTime from 'reading-time';
+
+interface Props {
+  post: CollectionEntry<'posts'>;
+  headings: MarkdownHeading[];
+  rawContent: string;
+}
+const { post, headings, rawContent } = Astro.props;
+const { title, description, date, updated, tags, cover, coverAlt } = post.data;
+const stats = readingTime(rawContent);
+---
+<BaseLayout
+  title={title}
+  description={description}
+  image={cover}
+  article
+  publishedTime={date}
+  modifiedTime={updated}
+  tags={tags}
+>
+  <article class="post" itemscope itemtype="https://schema.org/BlogPosting">
+    <header class="post-head">
+      {tags.length > 0 && (
+        <p class="kicker">
+          {tags.slice(0, 3).map((t, i) => (
+            <>
+              {i > 0 && <span class="kicker-sep">·</span>}
+              <a href={`/tags/${t}/`}>{t.replace(/-/g, ' ')}</a>
+            </>
+          ))}
+        </p>
+      )}
+      <h1 itemprop="headline">{title}</h1>
+      {description && <p class="lede" itemprop="description">{description}</p>}
+      <div class="post-meta">
+        <time itemprop="datePublished" datetime={date.toISOString()}>
+          {formatDate(date)}
+        </time>
+        <span class="dot">·</span>
+        <span>{Math.max(1, Math.round(stats.minutes))} min read</span>
+        {updated && (
+          <>
+            <span class="dot">·</span>
+            <span>Updated {formatDate(updated)}</span>
+          </>
+        )}
+      </div>
+    </header>
+
+    {cover && (
+      <figure class="post-cover">
+        <img src={cover} alt={coverAlt ?? ''} loading="eager" />
+      </figure>
+    )}
+
+    <div class="prose post-body" itemprop="articleBody">
+      <TableOfContents headings={headings} />
+      <slot />
+    </div>
+
+    <hr />
+
+    <Subscribe variant="inline" heading="Get new posts" />
+
+    <footer class="post-foot prose">
+      <p class="muted foot-note">
+        <strong>Found this useful?</strong> Share it, or
+        <a href="mailto:saghir.hr@gmail.com">let me know what you think</a>.
+      </p>
+      <Giscus />
+    </footer>
+  </article>
+</BaseLayout>
+
+<style>
+  .post {
+    max-width: var(--container-narrow);
+    margin: 0 auto;
+    padding: clamp(2rem, 5vw, 4rem) var(--gutter) clamp(3rem, 6vw, 5rem);
+  }
+
+  .post-head { text-align: center; margin-bottom: 2.2rem; }
+
+  .kicker {
+    font-family: var(--font-ui);
+    font-size: 0.72rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.22em;
+    color: var(--c-accent);
+    margin: 0 0 1.2rem;
+  }
+  .kicker a { color: inherit; text-decoration: none; }
+  .kicker a:hover { color: var(--c-link-hover); text-decoration: underline; text-underline-offset: .2em; }
+  .kicker-sep { margin: 0 .5rem; opacity: .5; }
+
+  .post-head h1 {
+    font-family: var(--font-display);
+    font-weight: 400;
+    font-variation-settings: 'opsz' 144, 'SOFT' 30;
+    font-size: clamp(2rem, 5vw, 3.4rem);
+    line-height: 1.08;
+    letter-spacing: -0.022em;
+    margin: 0 0 1rem;
+  }
+
+  .lede {
+    font-family: var(--font-body);
+    font-size: clamp(1.05rem, 1.7vw, 1.25rem);
+    line-height: 1.55;
+    font-style: italic;
+    color: var(--c-text-soft);
+    max-width: 42rem;
+    margin: 0 auto 1.4rem;
+  }
+
+  .post-meta {
+    font-family: var(--font-ui);
+    font-size: 0.78rem;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--c-muted);
+    display: inline-flex; flex-wrap: wrap; gap: .55rem;
+    justify-content: center;
+  }
+  .dot { opacity: .4; }
+
+  .post-cover {
+    margin: 0 auto 2.4rem;
+    max-width: min(56rem, 100%);
+  }
+  .post-cover img {
+    width: 100%;
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-md);
+  }
+
+  .post-body { margin: 0 auto; }
+  .post-body :global(h2) {
+    margin-top: 2.8rem;
+    padding-bottom: .4rem;
+    border-bottom: 1px solid var(--c-rule);
+  }
+
+  .post-foot { margin-top: 2rem; }
+  .foot-note {
+    font-family: var(--font-ui);
+    font-size: 0.92rem;
+    padding: 1rem 1.2rem;
+    border-left: 2px solid var(--c-accent);
+    background: var(--c-bg-tint);
+    border-radius: 0 var(--radius) var(--radius) 0;
+  }
+</style>

@@ -1,0 +1,105 @@
+---
+// BaseHead.astro, <head> metadata, SEO, Open Graph, favicons, RSS
+import { SITE } from '../consts';
+
+interface Props {
+  title: string;
+  description?: string;
+  image?: string;
+  article?: boolean;
+  publishedTime?: Date;
+  modifiedTime?: Date;
+  tags?: string[];
+}
+
+const {
+  title,
+  description = SITE.description,
+  image = '/images/og-default.png',
+  article = false,
+  publishedTime,
+  modifiedTime,
+  tags = [],
+} = Astro.props;
+
+const canonicalURL = new URL(Astro.url.pathname, Astro.site);
+const ogImage = new URL(image, Astro.site).toString();
+const fullTitle = title === SITE.title ? title : `${title} · ${SITE.title}`;
+---
+
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="generator" content={Astro.generator} />
+
+<title>{fullTitle}</title>
+<meta name="description" content={description} />
+<meta name="author" content={SITE.author} />
+<link rel="canonical" href={canonicalURL} />
+
+<link rel="icon" type="image/x-icon" href="/favicon.ico" />
+<link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+
+<!-- Premium web typography: Fraunces (display serif, variable + optical sizing) + Inter (UI) -->
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link
+  rel="stylesheet"
+  href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght,SOFT@0,9..144,300..800,0..100;1,9..144,300..800,0..100&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap"
+/>
+
+<link rel="alternate" type="application/rss+xml" title={SITE.title} href="/rss.xml" />
+<link rel="sitemap" href="/sitemap-index.xml" />
+
+<!-- Open Graph -->
+<meta property="og:type" content={article ? 'article' : 'website'} />
+<meta property="og:site_name" content={SITE.title} />
+<meta property="og:title" content={title} />
+<meta property="og:description" content={description} />
+<meta property="og:url" content={canonicalURL} />
+<meta property="og:image" content={ogImage} />
+<meta property="og:locale" content={SITE.locale} />
+
+<!-- Twitter -->
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content={title} />
+<meta name="twitter:description" content={description} />
+<meta name="twitter:image" content={ogImage} />
+
+{article && publishedTime && (
+  <meta property="article:published_time" content={publishedTime.toISOString()} />
+)}
+{article && modifiedTime && (
+  <meta property="article:modified_time" content={modifiedTime.toISOString()} />
+)}
+{article && tags.map((tag) => (
+  <meta property="article:tag" content={tag} />
+))}
+
+<!-- Early theme init: avoid flash of wrong theme -->
+<script is:inline>
+  (function () {
+    const saved = localStorage.getItem('theme');
+    if (saved === 'dark' || saved === 'light') {
+      document.documentElement.dataset.theme = saved;
+    }
+  })();
+</script>
+
+{SITE.newsletter.provider === 'mailerlite' && SITE.newsletter.accountId.length > 0 && (
+  <script is:inline define:vars={{ accountId: SITE.newsletter.accountId }}>
+    (function(w,d,e,u,f,l,n){w[f]=w[f]||function(){(w[f].q=w[f].q||[])
+    .push(arguments);},l=d.createElement(e),l.async=1,l.src=u,
+    n=d.getElementsByTagName(e)[0],n.parentNode.insertBefore(l,n);})
+    (window,document,'script','https://assets.mailerlite.com/js/universal.js','ml');
+    ml('account', accountId);
+  </script>
+)}
+
+{SITE.analytics.provider === 'goatcounter' && SITE.analytics.code.length > 0 && (
+  <script
+    is:inline
+    data-goatcounter={`https://${SITE.analytics.code}.goatcounter.com/count`}
+    async
+    src="//gc.zgo.at/count.js"
+  />
+)}

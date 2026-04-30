@@ -1,0 +1,162 @@
+---
+import type { CollectionEntry } from 'astro:content';
+import { formatDate } from '../utils/date';
+
+interface Props {
+  post: CollectionEntry<'posts'>;
+  /** Layout variant. 'feature' is larger with stacked image; 'row' is a horizontal
+   *  editorial item (image left, content right), the default. */
+  variant?: 'row' | 'feature';
+}
+const { post, variant = 'row' } = Astro.props;
+const { title, description, date, tags, cover, coverAlt } = post.data;
+const href = `/blog/${post.slug}/`;
+---
+<article class:list={['post-card', variant]}>
+  {cover ? (
+    <a class="cover" href={href} aria-hidden="true" tabindex="-1">
+      <img src={cover} alt={coverAlt ?? ''} loading="lazy" decoding="async" />
+    </a>
+  ) : (
+    <a class="cover cover-placeholder" href={href} aria-hidden="true" tabindex="-1">
+      <span class="placeholder-mark">{title.slice(0, 1)}</span>
+    </a>
+  )}
+
+  <div class="body">
+    {tags.length > 0 && (
+      <p class="kicker">
+        {tags.slice(0, 2).map((t, i) => (
+          <>
+            {i > 0 && <span class="kicker-sep">·</span>}
+            <a href={`/tags/${t}/`}>{t.replace(/-/g, ' ')}</a>
+          </>
+        ))}
+      </p>
+    )}
+    <h2 class="title"><a href={href}>{title}</a></h2>
+    {description && <p class="desc">{description}</p>}
+    <p class="meta">
+      <time datetime={date.toISOString()}>{formatDate(date)}</time>
+      <span class="read-more">Read →</span>
+    </p>
+  </div>
+</article>
+
+<style>
+  .post-card {
+    display: grid;
+    grid-template-columns: minmax(10rem, 14rem) 1fr;
+    gap: clamp(1.2rem, 3vw, 2.2rem);
+    padding: 1.8rem 0;
+    border-bottom: 1px solid var(--c-rule);
+    align-items: start;
+  }
+  .post-card.feature {
+    grid-template-columns: 1fr;
+    gap: 1.2rem;
+    padding: 0 0 2rem;
+    border-bottom: 1px solid var(--c-rule);
+  }
+  .post-card:last-of-type { border-bottom: 0; }
+
+  .cover {
+    display: block;
+    overflow: hidden;
+    aspect-ratio: 4/3;
+    border-radius: var(--radius);
+    background: var(--c-bg-tint);
+    box-shadow: var(--shadow-sm);
+    transition: transform var(--transition), box-shadow var(--transition);
+  }
+  .post-card.feature .cover { aspect-ratio: 16/8; }
+  .cover img {
+    width: 100%; height: 100%;
+    object-fit: cover;
+    transition: transform var(--transition-slow);
+    border-radius: 0;
+    display: block;
+  }
+  .post-card:hover .cover { box-shadow: var(--shadow-md); }
+  .post-card:hover .cover img { transform: scale(1.04); }
+
+  .cover-placeholder {
+    display: grid; place-items: center;
+    background: linear-gradient(135deg, var(--c-bg-tint), var(--c-surface));
+  }
+  .placeholder-mark {
+    font-family: var(--font-display);
+    font-weight: 300;
+    font-size: 4rem;
+    line-height: 1;
+    color: var(--c-accent);
+    font-variation-settings: 'opsz' 144;
+    opacity: .45;
+  }
+
+  .body { padding-top: .15rem; min-width: 0; }
+
+  .kicker {
+    font-family: var(--font-ui);
+    font-size: 0.7rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.16em;
+    color: var(--c-accent);
+    margin: 0 0 .55rem;
+  }
+  .kicker a { color: inherit; text-decoration: none; }
+  .kicker a:hover { color: var(--c-link-hover); text-decoration: underline; text-underline-offset: 0.2em; }
+  .kicker-sep { margin: 0 .4rem; opacity: .5; }
+
+  .title {
+    font-family: var(--font-display);
+    font-weight: 500;
+    font-variation-settings: 'opsz' 72, 'SOFT' 30;
+    font-size: clamp(1.3rem, 2.2vw, 1.7rem);
+    line-height: 1.15;
+    letter-spacing: -0.015em;
+    margin: 0 0 .55rem;
+  }
+  .post-card.feature .title { font-size: clamp(1.8rem, 3.2vw, 2.4rem); }
+  .title a { color: var(--c-text); text-decoration: none; background-image: linear-gradient(var(--c-accent), var(--c-accent)); background-size: 0 1px; background-position: 0 100%; background-repeat: no-repeat; transition: background-size var(--transition); }
+  .title a:hover { color: var(--c-text); background-size: 100% 1px; }
+
+  .desc {
+    color: var(--c-text-soft);
+    font-size: 1rem;
+    line-height: 1.55;
+    margin: 0 0 .8rem;
+    /* Clamp to 3 lines */
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  .meta {
+    display: flex; align-items: center; gap: 1rem;
+    font-family: var(--font-ui);
+    font-size: 0.78rem;
+    letter-spacing: 0.03em;
+    color: var(--c-muted);
+    margin: 0;
+  }
+  .read-more {
+    color: var(--c-accent);
+    font-weight: 500;
+    opacity: 0;
+    transform: translateX(-4px);
+    transition: opacity var(--transition), transform var(--transition);
+  }
+  .post-card:hover .read-more { opacity: 1; transform: translateX(0); }
+
+  @media (max-width: 640px) {
+    .post-card {
+      grid-template-columns: 1fr;
+      gap: 1rem;
+      padding: 1.4rem 0;
+    }
+    .cover { aspect-ratio: 16/9; max-width: 100%; }
+  }
+</style>

@@ -1,0 +1,67 @@
+---
+// ThemeToggle.astro, respects OS by default, persists user override
+---
+<button
+  id="theme-toggle"
+  type="button"
+  class="theme-toggle"
+  aria-label="Toggle color theme"
+  title="Toggle light/dark theme"
+>
+  <svg class="sun" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+    <circle cx="12" cy="12" r="4"/>
+    <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/>
+  </svg>
+  <svg class="moon" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+    <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+  </svg>
+</button>
+
+<style>
+  .theme-toggle {
+    background: none;
+    border: 1px solid var(--c-rule);
+    color: var(--c-text);
+    width: 36px; height: 36px;
+    border-radius: 50%;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    transition: background var(--transition), border-color var(--transition);
+  }
+  .theme-toggle:hover {
+    background: var(--c-bg-tint);
+    border-color: var(--c-accent);
+    color: var(--c-accent);
+  }
+  .theme-toggle .sun { display: none; }
+  .theme-toggle .moon { display: inline; }
+  :root[data-theme='dark'] .theme-toggle .sun { display: inline; }
+  :root[data-theme='dark'] .theme-toggle .moon { display: none; }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme='light']) .theme-toggle .sun { display: inline; }
+    :root:not([data-theme='light']) .theme-toggle .moon { display: none; }
+  }
+</style>
+
+<script>
+  function applyTheme(theme: 'light' | 'dark') {
+    document.documentElement.dataset.theme = theme;
+    localStorage.setItem('theme', theme);
+  }
+  function currentTheme(): 'light' | 'dark' {
+    const attr = document.documentElement.dataset.theme;
+    if (attr === 'light' || attr === 'dark') return attr;
+    return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+  }
+  function bind() {
+    const btn = document.getElementById('theme-toggle');
+    if (!btn) return;
+    btn.addEventListener('click', () => {
+      applyTheme(currentTheme() === 'dark' ? 'light' : 'dark');
+    });
+  }
+  bind();
+  document.addEventListener('astro:after-swap', bind);
+</script>

@@ -1,0 +1,86 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { getCollection } from 'astro:content';
+
+const posts = await getCollection('posts', ({ data }) => !data.draft);
+const counts = new Map<string, number>();
+for (const p of posts) {
+  for (const t of p.data.tags) counts.set(t, (counts.get(t) ?? 0) + 1);
+}
+const tags = [...counts.entries()].sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0]));
+const max = Math.max(1, ...counts.values());
+---
+<BaseLayout title="Tags" description="Browse posts by topic.">
+  <section class="container tags-page">
+    <header class="page-head">
+      <p class="eyebrow">By topic</p>
+      <h1>Tags</h1>
+      <p class="muted">
+        {tags.length} tag{tags.length === 1 ? '' : 's'} across {posts.length} post{posts.length === 1 ? '' : 's'}.
+      </p>
+    </header>
+    <ul class="cloud">
+      {tags.map(([tag, count]) => {
+        const scale = 0.9 + (count / max) * 1.1;
+        return (
+          <li>
+            <a href={`/tags/${tag}/`} style={`font-size: ${scale}rem`}>
+              <span class="hash">#</span>{tag.replace(/-/g, ' ')}
+              <span class="count">{count}</span>
+            </a>
+          </li>
+        );
+      })}
+    </ul>
+  </section>
+</BaseLayout>
+
+<style>
+  .tags-page {
+    padding: clamp(2.5rem, 6vw, 4.5rem) var(--gutter);
+    max-width: 52rem;
+  }
+  .page-head { margin-bottom: 2.5rem; text-align: center; }
+  .page-head .eyebrow { margin: 0 0 1rem; }
+  .page-head h1 {
+    font-family: var(--font-display);
+    font-weight: 400;
+    font-variation-settings: 'opsz' 144, 'SOFT' 30;
+    font-size: clamp(2.4rem, 5vw, 3.4rem);
+    letter-spacing: -0.022em;
+    margin: 0 0 .5rem;
+  }
+  .page-head p { font-family: var(--font-ui); font-size: 0.88rem; margin: 0; }
+
+  .cloud {
+    list-style: none; padding: 0; margin: 2rem 0;
+    display: flex; flex-wrap: wrap; gap: .7rem 1rem;
+    justify-content: center;
+  }
+  .cloud a {
+    font-family: var(--font-display);
+    font-weight: 500;
+    font-variation-settings: 'opsz' 72, 'SOFT' 40;
+    color: var(--c-text);
+    text-decoration: none;
+    display: inline-flex; align-items: baseline; gap: .15rem;
+    padding: .3rem .7rem;
+    border-radius: var(--radius);
+    transition: background var(--transition), color var(--transition);
+    line-height: 1.25;
+  }
+  .cloud a:hover {
+    color: var(--c-accent);
+    background: var(--c-bg-tint);
+  }
+  .cloud .hash { color: var(--c-accent); font-weight: 300; }
+  .cloud .count {
+    font-family: var(--font-ui);
+    font-size: 0.72rem;
+    color: var(--c-muted);
+    margin-left: .35rem;
+    letter-spacing: 0.05em;
+    vertical-align: super;
+  }
+</style>
+
