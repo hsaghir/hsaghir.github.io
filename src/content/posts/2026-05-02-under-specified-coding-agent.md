@@ -35,7 +35,7 @@ This is not just a feeling. Alibaba's
 [SWE-CI study](https://arxiv.org/abs/2603.03823) measured it: 18
 AI models maintaining 100 real codebases over 233 days and 71
 consecutive commits. Most agents (75%+) showed accelerating
-regression rates — their changes broke previously passing tests at
+regression rates: their changes broke previously passing tests at
 increasing rates over time. The agents passed each immediate task.
 The codebase degraded anyway.
 
@@ -281,7 +281,7 @@ across layers that a prompt rarely reaches:
 A typical prompt covers (1) and part of (2). Layers (3) through (5)
 are almost never written down. The model fills them from training
 priors. On every dimension you did not constrain, the model tends
-to regress toward the average of its training corpus — and the
+to regress toward the average of its training corpus, and the
 average of public code is not a well-maintained codebase.
 
 ## The harness helps, but is not a fix
@@ -301,8 +301,8 @@ tacit spec into something the model can see at the moment of
 generation.
 
 But it would be wrong to call the harness a fix. Everything I
-described in the opening — the band-aid bug fixes, the
-architectural drift, the silent semantic errors — happened to me
+described in the opening (the band-aid bug fixes, the
+architectural drift, the silent semantic errors) happened to me
 with Claude Code, Cursor, GitHub Copilot, and Codex actively in
 the loop, with `CLAUDE.md` files, repo conventions, and typed
 interfaces in place. Modern harnesses raise the floor. They do not
@@ -373,8 +373,8 @@ design relatively more expensive, not less.
 
 Your coding agent is not broken. It is under-specified. Until we
 close the gap between what we say and what production code actually
-requires — through better harnesses, richer specification
+requires, through better harnesses, richer specification
 artifacts, and a more honest division of labor between human
-judgment and machine execution — the pattern will repeat: fast
+judgment and machine execution, the pattern will repeat: fast
 first drafts, slow-burning technical debt. The bottleneck is not
 the model. It is the channel between us and the model.
