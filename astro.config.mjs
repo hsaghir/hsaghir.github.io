@@ -6,12 +6,12 @@ import rehypeKatex from 'rehype-katex';
 
 // https://astro.build/config
 export default defineConfig({
-  site: 'https://hsaghir.github.io',
+  site: 'https://hsaghir.com',
   integrations: [
     mdx(),
     sitemap({
       // Exclude legacy Jekyll URL redirect pages — they're aliases, not canonical content.
-      filter: (page) => !/^https:\/\/hsaghir\.github\.io\/(data_science|philosophy|job|Fraud\s*detection)\//.test(page),
+      filter: (page) => !/^https:\/\/hsaghir\.com\/(data_science|philosophy|job|Fraud\s*detection)\//.test(page),
     }),
   ],
   markdown: {

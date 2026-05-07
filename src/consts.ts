@@ -1,11 +1,11 @@
 // Site-wide constants. Edit these to rebrand.
 export const SITE = {
-  title: 'Intuitions behind the world',
-  description: 'Notes on machine learning, AI, and the non-linear nature of things, by Hamidreza Saghir.',
+  title: 'Hamidreza Saghir',
+  description: 'Notes on applied LLMs, agents, and machine learning, by Hamidreza Saghir. Principal Applied Scientist at Microsoft. Author of Looplet.',
   author: 'Hamidreza Saghir',
-  authorBio: 'A notebook on machine learning, AI, and the non-linear nature of things.',
+  authorBio: 'Notes on applied LLMs, agents, and machine learning.',
   email: 'saghir.hr@gmail.com',
-  url: 'https://hsaghir.github.io',
+  url: 'https://hsaghir.com',
   locale: 'en',
   avatar: '/images/avatar.jpg',
   // Social links, leave empty string to hide
@@ -46,10 +46,9 @@ export const SITE = {
   nav: [
     { label: 'Home', href: '/' },
     { label: 'Blog', href: '/blog/' },
-    { label: 'Tags', href: '/tags/' },
-    { label: 'About', href: '/about/' },
     { label: 'Research', href: '/research/' },
-    { label: 'Subscribe', href: '/subscribe/' },
+    { label: 'Work with me', href: '/work-together/' },
+    { label: 'About', href: '/about/' },
   ],
   postsPerPage: 20,
 } as const;

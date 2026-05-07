@@ -1,0 +1,130 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+<BaseLayout
+  title="Work with me"
+  description="Senior advisory engagements on LLM systems, agents, evals, post-training, and inference cost. Selective. First call free, no slide deck."
+>
+  <section class="container prose">
+    <p class="kicker">Work with me</p>
+    <h1>Build LLM systems and agents that hold up in production.</h1>
+    <p class="lede">
+      I take a small number of advisory engagements each quarter. Senior-IC
+      depth on the technical questions, not deck-driven advisory.
+    </p>
+
+    <h2>Who I am</h2>
+    <p>
+      <strong>Hamidreza Saghir</strong>, Principal Applied Scientist at Microsoft.
+      Previously Senior MLE Lead at X (Twitter), Applied Scientist at Amazon, ML
+      Researcher at Borealis AI. PhD, U. Toronto. Publications at ACL, InterSpeech,
+      WWW, IEEE TASLP.
+    </p>
+    <p>
+      I open-sourced <a href="https://github.com/hsaghir/looplet" rel="noopener">Looplet</a>,
+      an iterator-first agent framework that exposes the loop instead of hiding
+      it behind <code>agent.run(task)</code>. I write
+      <a href="/blog/">opinion essays</a> on agent design, evals, and the parts
+      of LLM systems that don't show up in tutorials.
+    </p>
+
+    <h2>What I work on</h2>
+    <ul>
+      <li>
+        <strong>Agent architectures.</strong> Loop design, tool dispatch, recovery,
+        observability. When to use a framework vs. own the loop. The territory I
+        explore in <a href="https://github.com/hsaghir/looplet" rel="noopener">Looplet</a>
+        and write about in <a href="/blog/the-loop-is-the-product/">The loop is the product</a>
+        and <a href="/blog/under-specified-coding-agent/">Your coding agent is under-specified</a>.
+      </li>
+      <li>
+        <strong>LLM evaluation systems.</strong> The pipeline most teams underbuild.
+        Designing eval suites that actually predict production quality, judge-model
+        scaffolding, regression tracking, calibration.
+      </li>
+      <li>
+        <strong>Post-training stacks.</strong> SFT data curation, DPO vs. RLHF
+        decisions, knowledge retention vs. instruction following. Why fine-tuning
+        often degrades the base model and what to do about it.
+      </li>
+      <li>
+        <strong>RAG and retrieval design.</strong> Two-tower vs. cross-encoder
+        tradeoffs, chunking, hybrid retrieval, re-ranking. When the right answer
+        is "smaller model + better retrieval," not more compute.
+      </li>
+      <li>
+        <strong>Inference cost models.</strong> Reading actual serving traces,
+        prefill vs. decode tradeoffs, KV-cache strategy, quantization. Identifying
+        the 10x speedups hiding in your stack.
+      </li>
+    </ul>
+
+    <h2>Engagement shapes</h2>
+    <ul>
+      <li>
+        <strong>Technical advisory</strong> (typical). 2&ndash;4 hour deep-dive sessions,
+        async followup over a defined window. For teams with a specific decision
+        in front of them: "should we fine-tune or RAG", "is our eval set actually
+        measuring what we think", "why does our agent fail at scale".
+      </li>
+      <li>
+        <strong>Architecture review</strong>. Read the code, the eval, the recent
+        incidents. Produce a written assessment with prioritized actions.
+      </li>
+      <li>
+        <strong>Hands-on prototype</strong>. For very specific problems where
+        a prototype unblocks a decision. Limited availability.
+      </li>
+    </ul>
+
+    <h2>Who I work with</h2>
+    <ul>
+      <li>Engineering teams at Series&nbsp;B to growth-stage companies shipping LLM products.</li>
+      <li>Established companies adding LLM features to existing products.</li>
+      <li>Founders/CTOs who need a senior technical sounding board for specific decisions.</li>
+    </ul>
+
+    <h2>Who I don't work with</h2>
+    <ul>
+      <li>Pre-product teams looking for general "AI strategy" advice.</li>
+      <li>Anyone wanting full-time or fractional CTO arrangements.</li>
+      <li>Projects that compete directly with Microsoft.</li>
+    </ul>
+
+    <h2>How to reach me</h2>
+    <p>
+      Email <strong>saghir.hr [at] gmail [dot] com</strong> with:
+    </p>
+    <ul>
+      <li>One paragraph on what you're building.</li>
+      <li>The specific decision or problem you're stuck on.</li>
+      <li>Your team size and current stack (model, infra, eval setup if any).</li>
+      <li>Timeline and rough engagement shape you have in mind.</li>
+    </ul>
+    <p>
+      I reply within a few business days with whether it's a good fit and how
+      we'd start. First call is 30 minutes, no charge, no slide deck.
+    </p>
+  </section>
+</BaseLayout>
+
+<style>
+  .prose {
+    max-width: 42rem;
+    margin-inline: auto;
+    padding: clamp(2.5rem, 5vw, 4rem) var(--gutter);
+  }
+  .kicker {
+    font-family: var(--font-mono, monospace);
+    font-size: 0.74rem;
+    text-transform: uppercase;
+    letter-spacing: 0.14em;
+    color: var(--c-accent, #2563eb);
+    margin: 0 0 1rem;
+  }
+  .lede {
+    font-size: 1.15rem;
+    color: var(--c-text-soft, #334155);
+    margin-bottom: 2rem;
+  }
+</style>
