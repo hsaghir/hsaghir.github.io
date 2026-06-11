@@ -319,7 +319,7 @@ problems live between iterations, not inside any single model call,
 which is why I built [looplet](https://github.com/hsaghir/looplet)
 around the idea that the loop should be a `for` loop you own. (I
 made the longer case for that
-[in a previous post](/2026/04/23/the-loop-is-the-product/).)
+[in a previous post](/blog/2026-04-23-the-loop-is-the-product/).)
 
 Owning the loop does not write the missing spec for you. It just
 makes the spec *injectable* at the point where it matters, and
