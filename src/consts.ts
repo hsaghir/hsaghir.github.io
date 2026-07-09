@@ -1,4 +1,8 @@
 // Site-wide constants. Edit these to rebrand.
+
+// Sister site: the focused senior-ML interview-prep companion.
+export const MLMENTORSHIP_URL = 'https://mlmentorship.com';
+
 export const SITE = {
   title: 'Hamidreza Saghir',
   description: 'Notes on applied LLMs, agents, and machine learning, by Hamidreza Saghir. Principal Applied Scientist at Microsoft. Author of Looplet.',
@@ -47,6 +51,7 @@ export const SITE = {
     { label: 'Home', href: '/' },
     { label: 'Blog', href: '/blog/' },
     { label: 'Research', href: '/research/' },
+    { label: 'ML Interviews', href: MLMENTORSHIP_URL, external: true },
     { label: 'Work with me', href: '/work-together/' },
     { label: 'About', href: '/about/' },
   ],

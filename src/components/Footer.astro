@@ -1,5 +1,5 @@
 ---
-import { SITE } from '../consts';
+import { SITE, MLMENTORSHIP_URL } from '../consts';
 const year = new Date().getFullYear();
 const social = Object.entries(SITE.social).filter(([, url]) => url);
 ---
@@ -8,6 +8,7 @@ const social = Object.entries(SITE.social).filter(([, url]) => url);
     <div class="mark">
       <p class="wordmark">hsaghir.com</p>
       <p class="muted tagline">{SITE.description}</p>
+      <p class="cross"><a href={MLMENTORSHIP_URL} rel="noopener">Senior ML interview prep → mlmentorship.com <span aria-hidden="true">↗</span></a></p>
     </div>
 
     <div class="meta">
@@ -48,7 +49,10 @@ const social = Object.entries(SITE.social).filter(([, url]) => url);
     letter-spacing: -0.01em;
     margin: 0 0 .3rem;
   }
-  .tagline { font-size: 0.9rem; margin: 0; max-width: 28rem; }
+  .tagline { font-size: 0.9rem; margin: 0 0 .6rem; max-width: 28rem; }
+  .cross { margin: 0; font-family: var(--font-ui); font-size: 0.82rem; }
+  .cross a { color: var(--c-text-soft); text-decoration: none; font-weight: 500; }
+  .cross a:hover { color: var(--c-accent); text-decoration: underline; text-underline-offset: 0.2em; }
 
   .meta {
     font-family: var(--font-ui);

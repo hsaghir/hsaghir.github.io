@@ -21,8 +21,12 @@ function isActive(href: string) {
       <ul>
         {SITE.nav.map((item) => (
           <li>
-            <a href={item.href} class:list={[{ active: isActive(item.href) }]}>
-              {item.label}
+            <a
+              href={item.href}
+              class:list={[{ active: isActive(item.href) }, item.external && 'external']}
+              rel={item.external ? 'noopener' : undefined}
+            >
+              {item.label}{item.external && <span class="ext" aria-hidden="true">↗</span>}
             </a>
           </li>
         ))}
@@ -41,8 +45,12 @@ function isActive(href: string) {
     <ul>
       {SITE.nav.map((item) => (
         <li>
-          <a href={item.href} class:list={[{ active: isActive(item.href) }]}>
-            {item.label}
+          <a
+            href={item.href}
+            class:list={[{ active: isActive(item.href) }, item.external && 'external']}
+            rel={item.external ? 'noopener' : undefined}
+          >
+            {item.label}{item.external && <span class="ext" aria-hidden="true">↗</span>}
           </a>
         </li>
       ))}
@@ -111,6 +119,12 @@ function isActive(href: string) {
   }
   .nav-desktop a:hover { color: var(--c-accent); }
   .nav-desktop a.active { color: var(--c-text); }
+  .nav-desktop a.external .ext {
+    margin-left: 0.2rem;
+    font-size: 0.75em;
+    opacity: 0.55;
+    vertical-align: 0.05em;
+  }
   .nav-desktop a.active::after {
     content: '';
     position: absolute;

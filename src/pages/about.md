@@ -21,6 +21,7 @@ Some are just me trying to think out loud.
 
 ## Elsewhere
 
+- ML interview prep: [mlmentorship.com](https://mlmentorship.com) — senior ML/AI interview questions, guides, and concept notes.
 - Email: [saghir.hr@gmail.com](mailto:saghir.hr@gmail.com)
 - GitHub: [@hsaghir](https://github.com/hsaghir)
 - Google Scholar: [publications](https://scholar.google.com/citations?user=0QH0nTcAAAAJ&hl=en)
