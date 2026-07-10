@@ -96,10 +96,18 @@ const fullTitle = title === SITE.title ? title : `${title} · ${SITE.title}`;
 )}
 
 {SITE.analytics.provider === 'goatcounter' && SITE.analytics.code.length > 0 && (
-  <script
-    is:inline
-    data-goatcounter={`https://${SITE.analytics.code}.goatcounter.com/count`}
-    async
-    src="//gc.zgo.at/count.js"
-  />
+  <>
+    <!-- Prefix paths with the host so one dashboard can distinguish both sister sites. -->
+    <script is:inline>
+      window.goatcounter = {
+        path: function (path) { return location.host + path; },
+      };
+    </script>
+    <script
+      is:inline
+      data-goatcounter={`https://${SITE.analytics.code}.goatcounter.com/count`}
+      async
+      src="//gc.zgo.at/count.js"
+    />
+  </>
 )}
