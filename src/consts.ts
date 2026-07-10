@@ -30,11 +30,10 @@ export const SITE = {
     blurb: "Occasional notes on machine learning, AI, and security. No spam, unsubscribe any time.",
   },
   // Analytics. Privacy-respecting, no cookies, no consent banner needed.
-  // To activate: claim a code at https://goatcounter.com (free for personal blogs),
-  // then paste the code below. Leave empty to ship with no analytics.
+  // Shared with mlmentorship.com; BaseHead prefixes paths with the hostname.
   analytics: {
     provider: 'goatcounter' as 'goatcounter' | 'none',
-    code: '', // e.g. 'hsaghir' once claimed
+    code: 'hsaghir',
   },
   // Comments (Giscus). Leave repo empty to disable.
   giscus: {
