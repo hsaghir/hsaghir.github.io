@@ -32,18 +32,8 @@ and production ML systems.
 - **On-device and edge ML**: compressing and factorizing transformers
   for strict memory and latency budgets.
 
-## Selected systems
-
-- **Looplet**: an open-source Python harness for observable, testable
-   tool-calling agents. It captures prompts, model responses, tool calls, stop
-   reasons, and host-observed outcomes so agent behavior can become a replayable
-   regression test.
-- **Security Copilot evaluation**: shared evaluation infrastructure adopted by
-   20+ skill teams and used to support public-preview launch readiness.
-- **Defender investigation agent evaluation**: LLM-as-judge pipeline for private
-   preview that reduced iteration cycles by 40% versus manual review.
-- **Alexa edge NLU**: factorization-aware training and multilingual neural
-   language models for strict memory and latency budgets on OEM devices.
+For systems work around agents and evaluation, see [Looplet](/looplet/) and the
+selected work on [About](/about/).
 
 ## Selected publications
 
