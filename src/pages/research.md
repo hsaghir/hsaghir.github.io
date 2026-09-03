@@ -1,22 +1,26 @@
 ---
 layout: ../layouts/PageLayout.astro
 title: Research
-description: Selected publications and the questions I keep coming back to.
+description: Publications and current work on LLM evaluation, agent systems, NLP, and production ML.
 ---
 
-A few questions I keep returning to: how do we know a learned system is
-doing what we think it's doing? When do very different-looking methods
-turn out to be the same thing underneath? And how do we design tooling
-(evaluation, agents, interfaces) so that the answers to those questions
-stay honest as the models get bigger?
+My current research and engineering work centers on evaluating and controlling
+learned systems in production. The common thread is simple: as models become
+more capable, the surrounding harness, measurement, and operating loop become
+more important.
+
+Recent work includes LLM robustness, coding-agent evaluation, agent harness
+design, LLM-as-judge systems, multilingual NLP, retrieval, model compression,
+and production ML systems.
 
 ## Current interests
 
 - **Unified views of machine learning**: cases where spectral methods,
   probabilistic models, kernels, and neural networks collapse to the
   same underlying object (similarity, message passing, KL divergence).
-- **Evaluation**: measurement design, LLM-as-judge methods, and the long
-  tail of *the metric went up but the product got worse*.
+- **Evaluation**: measurement design, LLM-as-judge methods, agent trajectory
+   evaluation, and the long tail of *the metric went up but the product got
+   worse*.
 - **Agents and planning**: how learned decision-makers behave in
   adversarial or long-horizon settings, and what loop-level tooling
   they need.
@@ -27,6 +31,19 @@ stay honest as the models get bigger?
   detour into multifractal signal analysis.
 - **On-device and edge ML**: compressing and factorizing transformers
   for strict memory and latency budgets.
+
+## Selected systems
+
+- **Looplet**: an open-source Python harness for observable, testable
+   tool-calling agents. It captures prompts, model responses, tool calls, stop
+   reasons, and host-observed outcomes so agent behavior can become a replayable
+   regression test.
+- **Security Copilot evaluation**: shared evaluation infrastructure adopted by
+   20+ skill teams and used to support public-preview launch readiness.
+- **Defender investigation agent evaluation**: LLM-as-judge pipeline for private
+   preview that reduced iteration cycles by 40% versus manual review.
+- **Alexa edge NLU**: factorization-aware training and multilingual neural
+   language models for strict memory and latency budgets on OEM devices.
 
 ## Selected publications
 
@@ -49,3 +66,5 @@ stay honest as the models get bigger?
    dynamics in a complex signal.* **Physical Review E**, 2016.
 
 *Full list on [Google Scholar](https://scholar.google.com/citations?user=0QH0nTcAAAAJ&hl=en).*
+
+For a compact professional profile, see [About](/about/) or my [resume](/resume.pdf).

@@ -8,6 +8,9 @@ function isActive(href: string) {
   if (href === '/') return pathname === '/';
   return pathname === href || pathname.startsWith(href);
 }
+function isExternal(item: (typeof SITE.nav)[number]) {
+  return 'external' in item && item.external;
+}
 ---
 
 <header class="masthead">
@@ -23,10 +26,10 @@ function isActive(href: string) {
           <li>
             <a
               href={item.href}
-              class:list={[{ active: isActive(item.href) }, item.external && 'external']}
-              rel={item.external ? 'noopener' : undefined}
+              class:list={[{ active: isActive(item.href) }, isExternal(item) && 'external']}
+              rel={isExternal(item) ? 'noopener' : undefined}
             >
-              {item.label}{item.external && <span class="ext" aria-hidden="true">↗</span>}
+              {item.label}{isExternal(item) && <span class="ext" aria-hidden="true">↗</span>}
             </a>
           </li>
         ))}
@@ -47,10 +50,10 @@ function isActive(href: string) {
         <li>
           <a
             href={item.href}
-            class:list={[{ active: isActive(item.href) }, item.external && 'external']}
-            rel={item.external ? 'noopener' : undefined}
+            class:list={[{ active: isActive(item.href) }, isExternal(item) && 'external']}
+            rel={isExternal(item) ? 'noopener' : undefined}
           >
-            {item.label}{item.external && <span class="ext" aria-hidden="true">↗</span>}
+            {item.label}{isExternal(item) && <span class="ext" aria-hidden="true">↗</span>}
           </a>
         </li>
       ))}
