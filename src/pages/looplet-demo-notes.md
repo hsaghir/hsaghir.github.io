@@ -123,6 +123,42 @@ the original cases and these expected observations hold. The fixed comparisons
 are made by the demo runner in the same process; this does **not** implement
 an isolated evaluator or establish protection against hostile code.
 
+## Builder demo: candidate edit with host-owned acceptance
+
+Download the [builder demo](/looplet-refund-builder-demo.py). Its default mode
+uses scripted builder responses so the protocol is reproducible without an API
+key:
+
+```bash
+uv run --no-project --python 3.12 \
+    --with 'git+https://github.com/hsaghir/looplet.git@8384404061b9c22e9639679d1a4c61fbf9737e22' \
+    looplet-refund-builder-demo.py --out ./refund-builder-demo
+```
+
+The builder reads the visible failed run, edits a copied cartridge, and calls
+`done`. The host then runs that candidate through the same Looplet interfaces.
+The host replays the visible request and checks six additional cases: a valid
+refund, split and duplicate attempts, the exact limit, just above the limit,
+and finishing without a refund call.
+
+The acceptance data is in the host script, not the candidate cartridge. The
+run reports:
+
+```text
+Builder mode: scripted
+Baseline above-limit case: FAIL
+Changed files: hooks/00_RefundLimit/config.yaml, hooks/00_RefundLimit/hook.py
+Host-owned acceptance: PASS
+Candidate evals unchanged: YES
+```
+
+This demonstrates the cartridge boundary and the edit-run-accept protocol.
+It does not demonstrate that a live model can discover the repair or that
+autonomous improvement works in general. To run a provider-backed builder,
+set `OPENAI_BASE_URL` and `OPENAI_MODEL` (or `OPENAI_API_KEY`) and add
+`--mode live`. The evaluator still runs in the same process, so this is not
+a hostile-code sandbox or a production promotion system.
+
 ### Runtime details behind the diagrams
 
 The cover illustrates an editable agent definition, with a changed hook

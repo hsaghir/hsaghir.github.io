@@ -277,6 +277,18 @@ A **builder agent** can create a cartridge from a task description or
 revise one after a failed run. It uses the same files and runner as a
 developer.
 
+The [builder demo](/looplet-refund-builder-demo.py) makes this boundary
+concrete. In its reproducible offline run, a builder reads the failed refund
+result and writes two files into a copied cartridge. The host then replays
+the failed request and runs six other refund cases with expected results kept
+outside the cartridge. The original version fails; the candidate passes.
+The candidate's own eval files are unchanged.
+
+The default builder responses are scripted, so this demonstrates the
+edit-run-accept protocol, not a model discovering a repair. The same runner
+has a live mode for a provider-backed trial, but one live run would still not
+prove general autonomous improvement.
+
 There are two different jobs here. The **task loop** uses tools to handle
 a request. The **development loop** edits and tests the agent that will
 handle future requests. Each edited version is a **candidate**. It should
