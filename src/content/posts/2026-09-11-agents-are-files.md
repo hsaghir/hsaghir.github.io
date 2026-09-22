@@ -64,11 +64,12 @@ while the host can keep separate tests for final acceptance.
 
 The files do not make the code safe by themselves. They do not create a sandbox or grant service authorization. The host still controls the runtime, credentials, and release decision. Tool formats and saved results are also contracts, so pin versions and rerun the relevant evals when they change.
 
-## Keep the model's choice separate from the action
+## Keep actions under host control
 
-Suppose a customer says, "I was charged twice." Resolving the complaint may require comparing transactions, reading an invoice, or asking for missing details. A model can help choose the next step when the path is not known in advance. If the steps are fixed, ordinary application code is simpler.
-
-The refund rule is fixed: pay refunds up to \$100 once per request, and send larger requests for review. The model may ask for a refund, but code should still enforce this rule.
+The cartridge describes what the agent should do. The host decides whether a
+proposed action can run. For the refund, the model may ask to pay \$250, but
+host code must block the payment and create a review. A fixed rule belongs in
+ordinary application code, not in the model's judgment.
 
 <figure>
   <picture>
@@ -125,27 +126,19 @@ Replay fixes the model responses, not the tool results. Tools run again, includi
 
 Save the failure as an eval. Future changes can be checked against it, even when the person or agent making the change does not know the original bug.
 
-## Let evidence guide the next change
-
-The refund example shows how an eval catches a missing rule. The same method
-can tell us when an extra step is making the system worse.
-
-In a separate comparison, a data-analysis agent already investigated unclear
-parts of a task and tied its answer to evidence. I added a second model to
-review that answer. Across three trials of eight tasks, the version with review
+Once a failure is a test, the test can guide the next design choice. In a
+separate comparison, a data-analysis agent already investigated unclear parts
+of a task and tied its answer to evidence. I added a second model to review
+that answer. Across three trials of eight tasks, the version with review
 produced 5 accepted answers out of 24. The version without review produced 10.
-The review version also made 410 model calls, compared with 338.
-
-I removed the blocking reviewer for that implementation. This was a small
-development comparison, not a test of reviewers in general. The two versions
-took different steps, and some benchmark answers allowed reasonable
-interpretations. The [comparison notes](/looplet-demo-notes/#analytics-comparison-removing-blocking-review)
+The review version also made 410 model calls, compared with 338. The
+[comparison notes](/looplet-demo-notes/#analytics-comparison-removing-blocking-review)
 contain the trial details and limits.
 
-The lesson is simple: add a step when a test shows that it helps, and remove
-it when the results get worse. The same rule applies to context and delegation.
-Give an agent a way to fetch a current record when it needs one. Give a child
-agent only the tools and budget it needs. Test each change.
+I removed the reviewer for that implementation. The test showed that the extra
+step did not help there. The same rule applies to context and delegation:
+fetch a current record when the agent needs one, give a child only the tools
+and budget it needs, and test each change.
 
 ## A cartridge makes autonomous improvement possible
 
@@ -177,7 +170,7 @@ For the final decision, run the candidate and the code that judges it with separ
 
 The host can promote a passing candidate automatically or ask a person to review it. Either way, the rule is simple: **automate the edits; keep the final tests and release decision outside the program being edited.**
 
-The earlier refund comparison used a hook written by a developer. The live hill climb used a model to edit the cartridge. The same design supports both ways of working.
+The same design supports edits by a person and edits by a model.
 
 ## Start with one agent
 
