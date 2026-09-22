@@ -141,8 +141,9 @@ the failed request and checks six more cases: a valid refund, split and
 duplicate attempts, the exact limit, just above the limit, and finishing
 without a refund call.
 
-The expected results are in the host script, not the candidate cartridge. The
-run reports:
+The host script defines the expected results used for acceptance. The
+candidate also contains writable copies of the cases. The builder is
+instructed to leave its eval files alone. The run reports:
 
 ```text
 Builder mode: scripted
@@ -175,11 +176,22 @@ uv run --no-project --python 3.12 \
     --model gpt-5.6-sol --iterations 3 --out ./live-refund-builder
 ```
 
-The first copy fixed the visible `$250` failure but failed the split refund
-and no-refund-call cases. The host sent those failures back to the builder.
-The next round fixed the completion case. The final round changed the hook
-to return Looplet's `HookDecision(permission="deny")` for each oversized
-dispatch. All seven host tests then passed:
+The refund agent received scripted calls in every round. The live model
+edited its hook, and the controller tested each revision. The completed
+integrated run produced these results:
+
+- **Round 1:** 3/7 cases passed. The original \$250 case, split requests,
+  duplicate refunds, and the amount just above the limit failed.
+- **Round 2:** 3/7 cases passed. The same four cases failed after the edit.
+- **Round 3:** 7/7 cases passed.
+
+The starting prompt supplied the hook schema. Feedback explained how to reject
+a tool call: return a `HookDecision` with `permission="deny"` and a reason in
+`block`. The controller reused these cases throughout the run.
+Although the report calls them `host_owned_holdouts`, cases returned as feedback
+are development tests. This run had no separate, unseen final evaluation.
+
+The final results were:
 
 ```text
 above_limit          PASS
@@ -191,10 +203,18 @@ just_above_limit     PASS
 done_only_above_limit PASS
 ```
 
-The live builder took three rounds. It changed only
-`hooks/00_RefundLimit/config.yaml` and `hooks/00_RefundLimit/hook.py`; the
-nine candidate eval files were byte-identical to the baseline. This is a
-single bounded experiment, not evidence that every model or task will improve.
+The live builder took three rounds. It changed only the refund hook's
+`config.yaml` and `hook.py` files; the
+nine candidate eval files were byte-identical to the baseline. Those files
+were inside the builder workspace and writable. The runner used its own
+expected outcomes for acceptance, but candidate code and the evaluator ran
+in the same process without security isolation.
+
+The checks inspect the final ledger, review records, and reason for stopping.
+They cannot establish that an unwanted action never ran before the hook
+changed those files. The result demonstrates feedback-guided repair on these
+seven cases. It does not establish production payment safety or performance
+on new tasks.
 
 ### Runtime details behind the diagrams
 
@@ -205,8 +225,8 @@ Runtime bindings, credentials, service authorization, and release policy are
 separately controlled. A file layout does not enforce that separation:
 arbitrary candidate code needs isolation.
 
-The control-loop diagram shows ordinary tool calls and completion requests
-with application-supplied checks. In the runtime, `pre_prompt` can add context
+The control-loop diagram shows the host's harness calling cartridge hooks
+before tools execute and before completion. In the runtime, `pre_prompt` can add context
 and `build_prompt` can replace prompt construction. For ordinary tools,
 `pre_dispatch` and `check_permission` run before the tool body. Tool results
 and denials become feedback for the next model call. `post_dispatch` handles
@@ -224,20 +244,16 @@ A returned step is after the attempt, not an approval gate. Several calls in
 a batch may execute before their steps are yielded. No combination of editable
 hooks is an operating-system or service-authorization boundary.
 
-The article's Python excerpt uses the runner's imports, prepared workspace,
-eval case, and backend. It shows only loading and execution. The full runner
-separately loads the evals, installs `EvalHook` and `TrajectoryRecorder`,
-saves evidence with `save_eval_run`, and captures responses for replay.
-The excerpt is not a standalone script or a protected release verifier;
-use the full script above to reproduce the experiment.
+The full refund runner loads the cartridge and evals separately, installs
+`EvalHook` and `TrajectoryRecorder`, saves evidence with `save_eval_run`,
+and captures responses for replay. Use the full script above to reproduce
+the experiment.
 
-The development-loop diagram is a design enabled by these interfaces, not
-a recorded builder run or an automatic optimizer supplied by the cartridge
-loader. A controller must bound the builder, arrange isolated candidate runs,
-collect evidence, and apply release policy. The feedback arrow represents
-development results, not held-out answers revealed after every edit. Acceptance
-checks and permissions remain outside both the builder's and candidate's
-control; promotion may be automatic or human-reviewed under the host's policy.
+The development-loop diagram describes a deployment design. The recorded
+builder run implements editing and test feedback. Production use also needs
+limits on the builder, isolated candidate runs, protected acceptance checks,
+and a release policy. The feedback arrow represents development results.
+The host's policy may allow automatic deployment or require review.
 
 For release evaluation, run candidate code in an isolated worker, then
 evaluate its outputs in a separately controlled environment. Treat those
