@@ -1,6 +1,6 @@
 ---
 title: "Agents Are Files"
-description: "Treat an agent's changeable behavior as files. Let another agent edit and test new versions under host-owned checks."
+description: "Keep an agent's behavior in editable files, separate from the application that runs it. Then let another agent edit and test new versions against tests it cannot change."
 date: 2026-09-21
 featured: true
 tags: ["agents", "engineering", "open-source", "python"]
