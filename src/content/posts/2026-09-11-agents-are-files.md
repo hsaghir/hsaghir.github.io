@@ -10,41 +10,31 @@ coverMobile: "/images/looplet/platform-ownership-mobile.png"
 coverAlt: "A stack of files that define an agent, with one changed row highlighted. Edit. Run. Evaluate."
 ---
 
-Suppose an agent refunds a customer \$250. Its instructions say refunds
-above \$100 need review. Every tool call succeeds, but the agent has broken
-the rule.
+Suppose an agent refunds a customer \$250. Its instructions say refunds above
+\$100 need review. Every tool call succeeds, but the agent has broken the rule.
 
-An **agent** is a program that lets a model choose some of its next steps.
-Its behavior depends on instructions, tools, rules, and **context**: the
-information the model sees. These parts are harder to change and test
-when spread through an application.
+This is the hard part of building agents. Their behavior is spread across an
+application: instructions in one place, tools in another, memory somewhere
+else, and rules for stopping or blocking actions somewhere else again. When
+the agent fails, it is hard to know what to change. When we make a change, it
+is hard to know whether the change helped.
 
-**Keep these parts together as an agent definition, separate from the
-application that runs it.** Put the definition in ordinary files so a person
-or another program can read and edit it. Change the definition, run it, and
-check what happened.
+The answer is to give the agent's changeable behavior a clear home. Keep it
+separate from the application that runs it. Put it in ordinary files so a
+person or another agent can inspect it, edit it, version it, and test it.
 
-These files are not the whole running system. They are the part of its behavior
-we can inspect, edit, and test without copying the application.
+That gives us a useful development loop: copy the definition, change it, run
+it, and compare the result with the old version. The agent can make the edit,
+but the application that runs it can keep control of the tests and the final
+decision.
 
-That makes a simple improvement loop possible. Another agent can edit a copy,
-run it against tests owned by the host, and keep it only if it passes. In this
-hill climb, the agent makes the edits; the host owns the tests and decides
-whether to keep the result.
+## Put behavior in its own unit
 
-An edit is not automatically an improvement. We need to run it and compare
-the results.
-
-## Separate the agent from the application
-
-The refund rule and investigation instructions belong to the agent
-definition. The web server that receives requests does not. Nor does the
-billing database.
+The refund rule and investigation instructions belong to the agent. The web
+server that receives requests does not. Nor does the billing database.
 
 In [Looplet](https://github.com/hsaghir/looplet), my Python toolkit for
-building and evaluating agents, I call this collection a **cartridge**.
-It holds the agent's instructions, tools, rules, and context settings in
-one directory. The refund example has this layout:
+building and evaluating agents, I call the agent's files a **cartridge**:
 
 ```text
 refund.cartridge/
@@ -62,33 +52,31 @@ the model connection, libraries, credentials, and workspace. The billing
 service still stores payment records and decides which actions are authorized.
 A cartridge tool calls that service; it does not replace it.
 
-An **eval** combines a task with checks of the result. For a large refund,
-the checks might require no payment and one request awaiting review. Evals
-can live beside the definition, making the expected behavior visible. The
-test runner loads them separately; loading the cartridge alone does not
-evaluate the agent.
+This boundary gives the team a small unit to work on. A person can review a
+change without reviewing a copied web server. A new version can keep the same
+tools and change only its instructions or policy. Another agent can edit a
+copy without needing access to the whole application.
 
-An ordinary Python package can provide this separation too. Looplet adds
-a standard layout and shared functions for loading, running, and evaluating
-definitions. The layout alone does not make the code safe or portable.
+An **eval** is a task with checks of its result. For a large refund, the check
+might require no payment and one request waiting for review. Evals make the
+expected behavior visible. They can travel with the cartridge for development,
+while the host can keep separate tests for final acceptance.
 
-Tool arguments, the order of checks, and the format of saved results can
-change across versions. Use fixed versions of the definition, Looplet,
-and its dependencies, and rerun the
-relevant evals when any of them change. Even with fixed versions, a model
-may make different choices from one run to the next.
+The files do not make the code safe by themselves. They are not a sandbox,
+and they do not grant service authorization. The host still controls the
+runtime, credentials, and release decision. Tool formats and saved results are
+also contracts, so pin versions and rerun the relevant evals when they change.
 
-## A proposal is not an action
+## Keep the model's choice separate from the action
 
 Suppose a customer says, "I was charged twice." Resolving the complaint may
 require comparing transactions, reading an invoice, or asking for missing
-details. A model can help choose the next step when the cases vary too much
-for a fixed workflow. If the steps are known in advance, write that workflow
-directly.
+details. A model can help choose the next step when the path is not known in
+advance. If the steps are fixed, ordinary application code is simpler.
 
-The refund rule is simpler: pay refunds up to \$100, once per request;
-send larger requests for review. Code can enforce this rule; the model
-does not need to decide it.
+The refund rule is fixed: pay refunds up to \$100 once per request, and send
+larger requests for review. The model may ask for a refund, but code should
+enforce this rule.
 
 <figure>
   <picture>
@@ -99,48 +87,44 @@ does not need to decide it.
 </figure>
 
 The code around the model is the **harness**. It supplies information, runs
-tools, applies checks, and decides when to stop. Looplet's `composable_loop`
-provides this loop. You add **hooks**, methods it calls at specific points,
-to change those behaviors without copying the loop.
-
-A tool can be a short function that calls an existing service.
-`lookup_invoice` might call the billing API; `run_tests` might run the
-repository's test command.
+tools, applies checks, and decides when to stop. The same harness can run many
+cartridges, so changing an agent does not require copying the execution loop.
 
 Calling `done` is a request to finish, not proof of success. A separate check
-decides whether to allow it. Looplet also reports why the run stopped.
-It reports tool calls after attempting them. To block an action, the check
-must run before the tool does.
+decides whether to allow it. A returned record describes an action after it
+has been attempted. To block an action, the check must run before the tool.
 
-A check that rejects a request should tell the model why. If a required
-check crashes or times out, the run should stop and report that failure.
-The Looplet version used in this demo has a bug here: a crashing completion
-check can still allow `done`. The [failure test](/looplet-demo-notes/#probe-the-failure-contracts)
-reproduces it. An eval can detect missing work afterward, but it cannot
-make a broken completion check safe.
+A check that rejects a request should tell the model why. If a required check
+crashes or times out, the run should stop and report that failure. The Looplet
+version used in this demo has a bug here: a crashing completion check can still
+allow `done`. The [failure test](/looplet-demo-notes/#probe-the-failure-contracts)
+reproduces it. A later eval can find missing work, but it cannot make a broken
+completion check safe.
 
-And stopping a run cannot undo a payment. The payment service must enforce
+Stopping a run cannot undo a payment. The payment service must enforce
 authorization and prevent duplicate payments. If a call times out, check
 whether it took effect before retrying.
 
-## Make a change you can measure
+## Turn a failure into a test
 
-To test the refund rule, we do not need a live model. The
-[runnable refund example](/looplet-demo-notes/#refund-demo-change-the-actual-cartridge)
-uses two scripted model responses: request a \$250 refund, then call `done`.
-The first version has the rule in its prompt but no code to enforce it.
-The refund goes through, and the run finishes without an error.
+The first useful test is not "did the model finish?" It is "did the customer
+get the right result?"
+
+The [runnable refund example](/looplet-demo-notes/#refund-demo-change-the-actual-cartridge)
+uses two fixed model responses: request a \$250 refund, then call `done`. The
+first version has the rule in its prompt but no code to enforce it. The refund
+goes through, and the run finishes without an error.
 
 The tools worked. The task failed.
 
-Now add a hook that blocks the oversized refund and sends it for review.
-It checks the original amount so the agent cannot avoid the limit by
-splitting the request into smaller refunds.
+Now add a check that blocks the oversized refund and sends it for review. It
+checks the original request, so the agent cannot avoid the limit by splitting
+the request into smaller refunds.
 
-A new model run might choose a different action and never test this failure.
-Instead, Looplet can feed the saved responses through the changed harness.
-This is **captured-response replay**: testing the new code with the same
-model responses, without another model call.
+If we call the model again, it might choose a different action and never test
+this failure. Instead, we feed the saved responses through the changed host.
+This is **captured-response replay**: testing new code with the same model
+responses and fresh tool state.
 
 <figure>
   <picture>
@@ -156,15 +140,14 @@ Both runs reach `done`. Neither an error-free log nor a completion message
 tells us whether the task was done correctly.
 
 The eval checks the refund and review records, not the agent's claim of
-success. For the \$250 request, it requires no refund and exactly one pending review.
+success. For the \$250 request, it requires no refund and one pending review.
 A separate \$50 case must still produce a refund, so blocking every request
-would fail. Five more cases test split requests, duplicates, amounts at and
-just above the limit, and going straight to `done`. The demo uses scripted
-responses and local files; no real payments are made. It tests the harness,
-not whether a live model follows instructions.
+would fail. Five more cases test split requests, duplicates, the limit, and
+finishing without a refund call. The demo uses local files, not real payments.
+It tests the host code, not whether a live model follows instructions.
 
 Copy the cartridge and raise its refund limit from \$100 to \$300. The
-hook's configuration stores the amount in cents:
+policy configuration stores the amount in cents:
 
 ```diff
  kwargs:
@@ -176,54 +159,16 @@ Replay the same \$250 request. It now goes through. The original checks
 still expect a review, so they fail and the runner exits with status 1.
 A file edit changed the behavior; the unchanged evals caught it.
 
-The host runs either definition with the same code. Here `cartridge` is the
-definition's directory, `workspace` is a temporary working directory,
-`backend` supplies the model responses, and `case` contains the task:
-
-<div class="agent-wiring">
-
-```python
-runtime = dict(
-    project_root=str(workspace)
-)
-preset = cartridge_to_preset(
-    cartridge,
-    runtime=runtime, strict=True
-)
-try:
-    list(preset.run(
-        backend, task=case.task
-    ))
-finally:
-    preset.close()
-```
-
-</div>
-
-<style>
-  .prose .agent-wiring pre,
-  .prose .agent-wiring pre code {
-    font-size: 13px;
-    line-height: 1.65;
-    white-space: pre;
-    overflow-wrap: normal;
-    word-break: normal;
-  }
-  .prose .agent-wiring pre {
-    padding: 16px 12px;
-    overflow-x: auto;
-  }
-</style>
-
-The [full runner](/looplet-refund-demo.py) prepares these inputs, adds the
-evals, and saves the responses, tool calls, and results. Follow the
+The host runs both definitions with the same runner. The [full runner](/looplet-refund-demo.py)
+prepares the workspace, adds the checks, and saves the responses, tool calls,
+and results. Follow the
 [reproduction steps](/looplet-demo-notes/#refund-demo-change-the-actual-cartridge)
 to make the edit and run the comparison.
 
 Replay fixes the model responses, not the tool results. Tools run again,
 including their side effects, so use temporary workspaces and test services.
-To test a prompt change or
-the model's response to rejection, compare repeated runs with a live model.
+To test a prompt change or a model's response to rejection, run the model
+again and compare several trials.
 
 Save the failure as an eval. Future changes can be checked against it,
 even when the person or agent making the change does not know the original
@@ -231,13 +176,10 @@ bug.
 
 ## Let the results change the design
 
-Sometimes the best change is to remove code. In Looplet Analytics, our
-data-analysis agent, I added a review step that asked a model to check the
-answer before the run could finish. Both versions already investigated
-unclear parts of the task and required a final answer supported by evidence.
-The reviewer checked whether the answer matched the agent's written
-interpretation of the task. It could reject the answer and ask the agent
-to try again.
+Sometimes the best change is to remove a step. In Looplet Analytics, our
+data-analysis agent already investigated unclear parts of a task and required
+an answer tied to evidence. I added a second model that checked the answer
+against the first model's interpretation and could ask it to try again.
 
 I tested each version three times on the same eight tasks, for 24 runs per
 version. **With review, the benchmark accepted the answer in 5 of 24 runs.
@@ -245,60 +187,48 @@ Without review, it accepted 10 of 24.** The review version made **410 model
 calls, compared with 338** without review. It finished 22 of its 24 runs;
 the version without review finished all 24.
 
-I removed the blocking reviewer. That decision applies to this implementation,
-not to reviewers in general. These were reused development tasks, not unseen
-tests. The versions also took different steps, so the score difference
-cannot be attributed only to the reviewer's rejections. Some expected answers
-also conflicted with reasonable readings of the questions.
+I removed the blocking reviewer for this implementation. This was not a test
+of reviewers in general. These were reused development tasks, not unseen
+tests. The versions also took different steps, so the score difference cannot
+be attributed only to the reviewer's rejections. Some expected answers also
+conflicted with reasonable readings of the questions.
 The [comparison notes](/looplet-demo-notes/#analytics-comparison-removing-blocking-review)
 include each trial, the unfinished runs, and the limits of the comparison.
 
-A reviewer can confirm that an answer follows the agent's interpretation
-and still accept the wrong answer. The interpretation itself may be wrong.
-In this experiment, adding review did not solve that problem. The simpler
-version used fewer model calls and did better on the benchmark. Evals
-helped decide what to remove, not just what to add.
+A reviewer can check whether an answer follows an interpretation and still
+accept a wrong answer if the interpretation is wrong. In this experiment, the
+simpler version used fewer calls and did better on the benchmark. Evals helped
+decide what to remove, not just what to add.
 
-Context changes also need testing.
-If the agent lacks a current record, making its instructions longer may
-not help. Looplet's
-[memory sources](https://github.com/hsaghir/looplet/blob/8384404061b9c22e9639679d1a4c61fbf9737e22/src/looplet/memory.py)
-can fetch information during a run. Context hooks manage old tool results
-as the context fills up. Stored notes may be stale or wrong. A note saying
-"the customer was approved" is not an
-approval record.
+The same rule applies to context and delegation. If an agent lacks a current
+record, a longer instruction may not help. Give it a way to fetch current
+information, and test that change. A stored note may be stale; it is not an
+authorization record.
 
-**Delegation** means giving part of the task to another agent. Looplet's
-[run_sub_loop](https://github.com/hsaghir/looplet/blob/8384404061b9c22e9639679d1a4c61fbf9737e22/src/looplet/subagent.py)
-gives the child its own working state and log. That alone does not prevent
-it from accessing the parent's files or services. The calling program must
-choose the child's tools and checks, limit its budget, and verify its result.
-Add another agent only when its contribution justifies the cost.
+Delegation can help with a large task, but a child agent is not automatically
+isolated from the parent. The host must choose the child's tools, limit its
+budget, and check its result. Add another agent only when it earns its cost.
 
 ## A cartridge makes autonomous improvement possible
 
-A **builder agent** can create a cartridge from a task description or fix one
-after a failed run. It uses the same files and runner as a developer.
-
-Once behavior is in a cartridge, autonomous improvement follows naturally.
-Here, **autonomous** means the model makes the edits. The host still runs the
-tests and decides whether to keep the change.
+Once behavior is in a cartridge, another agent can improve it. Here,
+**autonomous** means the model makes the edits. The host still runs the tests
+and decides whether to keep the change.
 
 The loop is simple: copy the cartridge, let the builder edit the copy, run it
 against tests owned by the host, and keep it only if it passes. Repeat from
 the best version. This is a **hill climb**: each round tries to find a better
 version without giving the version being tested control of the tests.
 
-The agent doing a task and the agent improving the agent are different. The
-**task loop** uses tools to handle a request. The **development loop** edits
-and tests the agent that will handle future requests. An edited copy is a
-**candidate**. It should not replace the deployed agent just because the
-builder finished writing it.
+The agent doing a task and the agent improving the agent have different jobs.
+The task agent handles a request. The builder changes the definition that will
+handle future requests. The edited copy is a candidate; it does not replace
+the deployed version just because the builder finished writing it.
 
 The live hill climb shows this working. I ran `gpt-5.6-sol` against the failed
-refund case. The first candidate fixed that case but failed two other tests.
-The host sent those failures back to the builder. After two more rounds, the
-candidate passed all seven tests owned by the host.
+refund case. The first copy fixed that case but failed two other tests. The
+host sent those failures back to the builder. After two more rounds, the copy
+passed all seven tests owned by the host.
 
 Only two hook files changed. The nine eval files stayed byte-identical to the
 baseline. The host supplied the expected results and decided whether the
@@ -312,9 +242,7 @@ not a hostile-code sandbox.
 
 The [builder demo](/looplet-refund-builder-demo.py) also has a scripted mode.
 It makes the same copy-edit-run-keep loop reproducible without a model or an
-API key. The builder reads the failure and writes two files into a copied
-cartridge. The host then runs the failed request and six other cases.
-The candidate's eval files stay unchanged.
+API key.
 
 <figure>
   <picture>
@@ -324,28 +252,19 @@ The candidate's eval files stay unchanged.
   <figcaption>The builder can edit and test without waiting for a person at each step. Separate checks decide whether its candidate is ready to deploy. The builder and candidate cannot change those checks.</figcaption>
 </figure>
 
-Give the builder a goal, an editable copy, and a time or cost budget. Run
-candidates in fresh test workspaces and give the builder the eval results.
-Compare each candidate with the starting version on typical tasks, repeating
-live model runs where needed. Keep a separate set of tasks for the final
-decision. Do not feed their answers back after each edit.
+Give the builder a goal, a copy to edit, and a time or cost budget. Run each
+copy in a fresh workspace and return the test results. Keep final tests outside
+the cartridge. A candidate can change tests stored inside itself; in the
+[failure test](/looplet-demo-notes/#probe-the-failure-contracts), changing only
+the grading code makes the same wrong refund report a pass.
 
-The evals stored with the cartridge run with the agent's permissions.
-They are useful for development, but the candidate can change them. In the
-[failure test](/looplet-demo-notes/#probe-the-failure-contracts), the refund
-still breaks the rule, but changing only the grading code makes the evals
-report a pass.
+For the final decision, run the candidate and the code that judges it with
+separate permissions. Putting the files in another directory is not enough.
+The permissions and the worker boundary must enforce the separation.
 
-For the final decision, run the candidate separately from the code that
-judges its results. Neither the builder nor the candidate should be able to
-change those checks or grant itself extra permissions. Putting the files
-in another directory is not enough; permissions and isolation must enforce
-the separation.
-
-Deployment can be automatic or require a person to review the change. In
-either case, the release rules decide whether a passing candidate replaces
-the current version. The principle is **automate the edits; keep the final
-checks and release decision outside the builder's control.**
+The host can promote a passing candidate automatically or ask a person to
+review it. Either way, the rule is simple: **automate the edits; keep the
+final tests and release decision outside the program being edited.**
 
 The earlier refund comparison used a developer-supplied hook. The live hill
 climb used a model to make the cartridge edits. The development loop above is
@@ -353,27 +272,26 @@ the general pattern supported by the same interfaces.
 
 ## Start with one agent
 
-Start with an agent you already run. Keep its model and tools. Separate
-the definition, add checks of its results, and save one real failure as an
-eval. The [migration guide](https://hsaghir.com/looplet/migrate/) shows a
-small first step. If your current tools already provide this separation,
-you do not need to replace them.
+Start with an agent you already run. Keep its model and tools. Move its
+changeable behavior into a separate definition, add one check of the result,
+and save one real failure as an eval. The
+[migration guide](https://hsaghir.com/looplet/migrate/) shows a small first
+step. You do not need to replace tools that already provide this boundary.
 
 For each run, record the definition and model versions, inputs, tool calls,
-results, why it stopped, and any files it produced. Use those records to
-understand failures and turn them into evals. When comparing versions, check
-both the quality of the work and whether the agent broke any rules. Also
-measure time, model usage, and cost.
+results, stop reason, and files produced. Use those records to understand
+failures and turn them into evals. Compare quality and policy behavior, then
+measure time, model use, and cost.
 
-Teams can use the same runtime and eval tools without sharing credentials
-or business data. Keep access control, storage, worker isolation, and
-reliable job scheduling in the surrounding infrastructure. The
-[demo notes](/looplet-demo-notes/) contain commands, exact versions, and
-more examples, including a recorded coding run.
+The runtime and eval tools can be shared without sharing credentials or
+business data. Keep access control, storage, worker isolation, and job
+scheduling in the surrounding infrastructure. The
+[demo notes](/looplet-demo-notes/) contain commands and the evidence behind
+the examples.
 
-A running agent answers requests. A separate agent definition gives us
-something we can improve: inspect the files, make a change, run it, and
-compare the results. The edit may come from a person or another agent.
-Either way, the evals help us decide whether to keep it.
+A running agent answers requests. A separate definition gives us something
+we can improve: inspect it, change it, run it, and compare the result. The
+edit may come from a person or another agent. The eval tells us whether to
+keep it.
 
 **Own the harness. Turn failures into evals.**
