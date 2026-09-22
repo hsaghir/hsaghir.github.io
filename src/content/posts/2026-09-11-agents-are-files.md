@@ -271,37 +271,46 @@ it from accessing the parent's files or services. The calling program must
 choose the child's tools and checks, limit its budget, and verify its result.
 Add another agent only when its contribution justifies the cost.
 
-## Let another agent build the next version
+## A cartridge makes autonomous improvement possible
 
-A **builder agent** can create a cartridge from a task description or
-revise one after a failed run. It uses the same files and runner as a
-developer.
+A **builder agent** can create a cartridge from a task description or fix one
+after a failed run. It uses the same files and runner as a developer.
 
-There are two different jobs here. The **task loop** uses tools to handle
-a request. The **development loop** edits and tests the agent that will
-handle future requests. Each edited version is a **candidate**. It should
-not replace the deployed agent just because the builder finished writing it.
+Once behavior is in a cartridge, autonomous improvement follows naturally.
+Here, **autonomous** means the model makes the edits. The host still runs the
+tests and decides whether to keep the change.
 
-The live hill climb makes this boundary concrete. I ran `gpt-5.6-sol` against
-the failed refund case. The first candidate fixed that case but failed two
-holdouts. The host wrote those failures back to the builder. After two more
-iterations, the candidate passed all seven host-owned cases.
+The loop is simple: copy the cartridge, let the builder edit the copy, run it
+against tests owned by the host, and keep it only if it passes. Repeat from
+the best version. This is a **hill climb**: each round tries to find a better
+version without giving the version being tested control of the tests.
+
+The agent doing a task and the agent improving the agent are different. The
+**task loop** uses tools to handle a request. The **development loop** edits
+and tests the agent that will handle future requests. An edited copy is a
+**candidate**. It should not replace the deployed agent just because the
+builder finished writing it.
+
+The live hill climb shows this working. I ran `gpt-5.6-sol` against the failed
+refund case. The first candidate fixed that case but failed two other tests.
+The host sent those failures back to the builder. After two more rounds, the
+candidate passed all seven tests owned by the host.
 
 Only two hook files changed. The nine eval files stayed byte-identical to the
-baseline. The host, not the candidate, supplied the expected outcomes and
-decided whether the candidate passed.
+baseline. The host supplied the expected results and decided whether the
+candidate passed.
 
-This is evidence that a live model can discover and improve a cartridge when
-the host owns the evals and feeds failures back to the builder. It is one task,
-one model, and one bounded experiment, not a general result about autonomous
-improvement. The evaluator still runs in the same process and is not a hostile-
-code sandbox.
+This shows that a live model can discover and improve a cartridge when the
+host owns the tests and sends failures back to the builder. It is one task,
+one model, and one bounded experiment. It is not a general result about all
+autonomous agents. The evaluator also runs in the same process, so this is
+not a hostile-code sandbox.
 
 The [builder demo](/looplet-refund-builder-demo.py) also has a scripted mode.
-That mode makes the edit-run-accept protocol reproducible without a model or
-an API key: the builder reads the failure and writes two files into a copied
-cartridge, while the host replays the failed request and runs six other cases.
-The candidate's eval files remain unchanged.
+It makes the same copy-edit-run-keep loop reproducible without a model or an
+API key. The builder reads the failure and writes two files into a copied
+cartridge. The host then runs the failed request and six other cases.
+The candidate's eval files stay unchanged.
 
 <figure>
   <picture>
@@ -334,10 +343,9 @@ either case, the release rules decide whether a passing candidate replaces
 the current version. The principle is **automate the edits; keep the final
 checks and release decision outside the builder's control.**
 
-The earlier refund comparison used a developer-supplied hook, while the live
-hill climb used a model to make the cartridge edits. Neither experiment shows
-that every model or task will improve. The development loop above is the
-general pattern supported by the same interfaces.
+The earlier refund comparison used a developer-supplied hook. The live hill
+climb used a model to make the cartridge edits. The development loop above is
+the general pattern supported by the same interfaces.
 
 ## Start with one agent
 

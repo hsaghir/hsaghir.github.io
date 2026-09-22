@@ -123,7 +123,7 @@ the original cases and these expected observations hold. The fixed comparisons
 are made by the demo runner in the same process; this does **not** implement
 an isolated evaluator or establish protection against hostile code.
 
-## Builder demo: candidate edit with host-owned acceptance
+## Builder demo: a cartridge can improve under host tests
 
 Download the [builder demo](/looplet-refund-builder-demo.py). Its default mode
 uses scripted builder responses so the protocol is reproducible without an API
@@ -135,13 +135,13 @@ uv run --no-project --python 3.12 \
     looplet-refund-builder-demo.py --out ./refund-builder-demo
 ```
 
-The builder reads the visible failed run, edits a copied cartridge, and calls
-`done`. The host then runs that candidate through the same Looplet interfaces.
-The host replays the visible request and checks six additional cases: a valid
-refund, split and duplicate attempts, the exact limit, just above the limit,
-and finishing without a refund call.
+The builder reads the failed run, edits a copied cartridge, and calls `done`.
+The host then runs the copy through the same Looplet interfaces. It replays
+the failed request and checks six more cases: a valid refund, split and
+duplicate attempts, the exact limit, just above the limit, and finishing
+without a refund call.
 
-The acceptance data is in the host script, not the candidate cartridge. The
+The expected results are in the host script, not the candidate cartridge. The
 run reports:
 
 ```text
@@ -152,14 +152,14 @@ Host-owned acceptance: PASS
 Candidate evals unchanged: YES
 ```
 
-This demonstrates the cartridge boundary and the edit-run-accept protocol.
+This demonstrates the cartridge boundary and the copy-edit-run-keep loop.
 It does not demonstrate that a live model can discover the repair or that
 autonomous improvement works in general. To run a provider-backed builder,
 set `OPENAI_BASE_URL` and `OPENAI_MODEL` (or `OPENAI_API_KEY`) and add
 `--mode live`. The evaluator still runs in the same process, so this is not
 a hostile-code sandbox or a production promotion system.
 
-### Live hill climb through a Responses proxy
+### Live hill climb: the model improves the cartridge
 
 On September 21, 2026, I ran the builder against a live `gpt-5.6-sol` model
 through an OpenAI-compatible Copilot LM Proxy. The proxy's Responses API was
@@ -175,11 +175,11 @@ uv run --no-project --python 3.12 \
     --model gpt-5.6-sol --iterations 3 --out ./live-refund-builder
 ```
 
-The first candidate fixed the visible `$250` failure but failed the split
-refund and no-refund-call holdouts. The host returned those failures to the
-builder. The next iteration fixed the completion case; the final iteration
-changed the hook to return Looplet's `HookDecision(permission="deny")` for
-each oversized dispatch. All seven host-owned cases then passed:
+The first copy fixed the visible `$250` failure but failed the split refund
+and no-refund-call cases. The host sent those failures back to the builder.
+The next round fixed the completion case. The final round changed the hook
+to return Looplet's `HookDecision(permission="deny")` for each oversized
+dispatch. All seven host tests then passed:
 
 ```text
 above_limit          PASS
@@ -191,9 +191,7 @@ just_above_limit     PASS
 done_only_above_limit PASS
 ```
 
-The live builder took three iterations: the first candidate failed holdouts,
-the second repaired the completion path, and the third repaired the dispatch
-denial. It changed only
+The live builder took three rounds. It changed only
 `hooks/00_RefundLimit/config.yaml` and `hooks/00_RefundLimit/hook.py`; the
 nine candidate eval files were byte-identical to the baseline. This is a
 single bounded experiment, not evidence that every model or task will improve.
