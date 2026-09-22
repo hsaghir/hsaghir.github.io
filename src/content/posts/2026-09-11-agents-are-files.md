@@ -13,20 +13,19 @@ coverAlt: "A stack of files that define an agent, with one changed row highlight
 Suppose an agent refunds a customer \$250. Its instructions say refunds above
 \$100 need review. Every tool call succeeds, but the agent has broken the rule.
 
-This is the hard part of building agents. Their behavior is spread across an
-application: instructions in one place, tools in another, memory somewhere
-else, and rules for stopping or blocking actions somewhere else again. When
-the agent fails, it is hard to know what to change. When we make a change, it
-is hard to know whether the change helped.
+This is where agent projects become hard to maintain. Their behavior is spread
+across an application: instructions in one place, tools in another, memory
+somewhere else, and rules for stopping or blocking actions somewhere else
+again. When the agent fails, it is hard to know what to change. When we make a
+change, it is hard to know whether the change helped.
 
-The answer is to give the agent's changeable behavior a clear home. Keep it
-separate from the application that runs it. Put it in ordinary files so a
-person or another agent can inspect it, edit it, version it, and test it.
+Put the agent's changeable behavior in one clear place, separate from the
+application that runs it. Use ordinary files so a person or another agent can
+inspect, edit, version, and test it.
 
-That gives us a useful development loop: copy the definition, change it, run
-it, and compare the result with the old version. The agent can make the edit,
-but the application that runs it can keep control of the tests and the final
-decision.
+Now the team can copy the definition, change it, run it, and compare it with
+the old version. A person or a model can make the edit. The application that
+runs the agent keeps control of the tests and the final decision.
 
 ## Put behavior in its own unit
 
@@ -62,8 +61,8 @@ might require no payment and one request waiting for review. Evals make the
 expected behavior visible. They can travel with the cartridge for development,
 while the host can keep separate tests for final acceptance.
 
-The files do not make the code safe by themselves. They are not a sandbox,
-and they do not grant service authorization. The host still controls the
+The files do not make the code safe by themselves. They do not create a
+sandbox or grant service authorization. The host still controls the
 runtime, credentials, and release decision. Tool formats and saved results are
 also contracts, so pin versions and rerun the relevant evals when they change.
 
@@ -90,9 +89,10 @@ The code around the model is the **harness**. It supplies information, runs
 tools, applies checks, and decides when to stop. The same harness can run many
 cartridges, so changing an agent does not require copying the execution loop.
 
-Calling `done` is a request to finish, not proof of success. A separate check
-decides whether to allow it. A returned record describes an action after it
-has been attempted. To block an action, the check must run before the tool.
+Calling `done` asks to finish. It does not show that the task succeeded. A
+separate check decides whether to allow it. A returned record describes an
+action after it has been attempted. To block an action, the check must run
+before the tool.
 
 A check that rejects a request should tell the model why. If a required check
 crashes or times out, the run should stop and report that failure. The Looplet
@@ -107,8 +107,7 @@ whether it took effect before retrying.
 
 ## Turn a failure into a test
 
-The first useful test is not "did the model finish?" It is "did the customer
-get the right result?"
+Start with the customer result: did the customer get the right outcome?
 
 The [runnable refund example](/looplet-demo-notes/#refund-demo-change-the-actual-cartridge)
 uses two fixed model responses: request a \$250 refund, then call `done`. The
@@ -118,12 +117,11 @@ goes through, and the run finishes without an error.
 The tools worked. The task failed.
 
 Now add a check that blocks the oversized refund and sends it for review. It
-checks the original request, so the agent cannot avoid the limit by splitting
-the request into smaller refunds.
+checks the original request, so split attempts also fail.
 
 If we call the model again, it might choose a different action and never test
 this failure. Instead, we feed the saved responses through the changed host.
-This is **captured-response replay**: testing new code with the same model
+We call this **captured-response replay**: testing new code with the same model
 responses and fresh tool state.
 
 <figure>
@@ -187,8 +185,8 @@ Without review, it accepted 10 of 24.** The review version made **410 model
 calls, compared with 338** without review. It finished 22 of its 24 runs;
 the version without review finished all 24.
 
-I removed the blocking reviewer for this implementation. This was not a test
-of reviewers in general. These were reused development tasks, not unseen
+I removed the blocking reviewer for this implementation. This result covers
+this implementation only. These were reused development tasks, not unseen
 tests. The versions also took different steps, so the score difference cannot
 be attributed only to the reviewer's rejections. Some expected answers also
 conflicted with reasonable readings of the questions.
@@ -197,16 +195,16 @@ include each trial, the unfinished runs, and the limits of the comparison.
 
 A reviewer can check whether an answer follows an interpretation and still
 accept a wrong answer if the interpretation is wrong. In this experiment, the
-simpler version used fewer calls and did better on the benchmark. Evals helped
-decide what to remove, not just what to add.
+simpler version used fewer calls and did better on the benchmark. Evals also
+told me what to remove.
 
 The same rule applies to context and delegation. If an agent lacks a current
 record, a longer instruction may not help. Give it a way to fetch current
-information, and test that change. A stored note may be stale; it is not an
-authorization record.
+information, and test that change. A stored note may be stale and should not
+serve as an authorization record.
 
-Delegation can help with a large task, but a child agent is not automatically
-isolated from the parent. The host must choose the child's tools, limit its
+Delegation can help with a large task, but a child agent can still access the
+parent's files or services. The host must choose the child's tools, limit its
 budget, and check its result. Add another agent only when it earns its cost.
 
 ## A cartridge makes autonomous improvement possible
@@ -234,11 +232,11 @@ Only two hook files changed. The nine eval files stayed byte-identical to the
 baseline. The host supplied the expected results and decided whether the
 candidate passed.
 
-This shows that a live model can discover and improve a cartridge when the
-host owns the tests and sends failures back to the builder. It is one task,
-one model, and one bounded experiment. It is not a general result about all
-autonomous agents. The evaluator also runs in the same process, so this is
-not a hostile-code sandbox.
+In this trial, a live model discovered and improved a cartridge while the host
+owned the tests and sent failures back to the builder. The result covers
+one task, one model, and one bounded experiment. Other models and tasks may
+behave differently. The candidate and evaluator share a process, so candidate
+code can access the evaluator's permissions.
 
 The [builder demo](/looplet-refund-builder-demo.py) also has a scripted mode.
 It makes the same copy-edit-run-keep loop reproducible without a model or an
@@ -266,9 +264,9 @@ The host can promote a passing candidate automatically or ask a person to
 review it. Either way, the rule is simple: **automate the edits; keep the
 final tests and release decision outside the program being edited.**
 
-The earlier refund comparison used a developer-supplied hook. The live hill
-climb used a model to make the cartridge edits. The development loop above is
-the general pattern supported by the same interfaces.
+The earlier refund comparison used a hook written by a developer. The live
+hill climb used a model to edit the cartridge. The same design supports both
+ways of working.
 
 ## Start with one agent
 
