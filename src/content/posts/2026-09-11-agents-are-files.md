@@ -12,32 +12,22 @@ coverAlt: "A stack of files that define an agent, with one changed row highlight
 
 Suppose an agent refunds a customer \$250. Its instructions say refunds above \$100 need review. Every tool call succeeds, but the agent has broken the rule.
 
-An agent is a program in which a model chooses some next steps and uses tools
-to act.
+An agent is a program in which a model chooses some of its next steps and uses tools to act.
 
-This is where agent projects become hard to maintain. Their behavior is spread
-across an application: instructions in one place, tools in another, memory
-somewhere else, and rules for stopping or blocking actions somewhere else
-again. When the agent fails, it is hard to know what to change. When we make a
-change, it is hard to know whether the change helped.
+This failure points to a fundamental friction in building agents: their behavior is scattered across an application. Prompts live in configuration strings, tools live inside API clients, state sits in a database, and stopping rules are buried in gateway middleware. When an agent fails, it is hard to isolate what went wrong. When you change something, it is hard to know whether you broke other behaviors.
 
-Put the agent's changeable behavior in one clear place, separate from the
-application that runs it. Use ordinary files so a person or another agent can
-inspect, edit, version, and test it.
+The solution is to give the agent's behavior a clear home. Keep its instructions, tools, and rules together in ordinary files, separate from the application that runs it.
 
-Now the team can copy the definition, change it, run it, and compare it with
-the old version. A person or a model can make the edit. The application that
-runs the agent keeps control of the tests and the final decision.
-
-The same boundary lets us change the agent without copying the application,
-keeps actions and credentials with the host, and gives a builder tests it
-cannot rewrite.
+Once an agent is defined as files in a directory, three capabilities follow naturally:
+1. You can inspect, diff, version, and edit the agent without touching the application that hosts it.
+2. You can capture failures and turn them into automated tests that verify outcomes directly.
+3. Another agent can copy the definition, edit it, and test candidate versions against tests the model cannot rewrite.
 
 ## Put behavior in its own unit
 
-The refund rule and investigation instructions belong to the agent. The web server that receives requests does not. Nor does the billing database.
+In most codebases, changing an agent requires changing backend service code. Adding a policy check means modifying a request handler. Tweaking a prompt requires redeploying a service.
 
-In [Looplet](https://github.com/hsaghir/looplet), my Python toolkit for building and evaluating agents, I call the agent's boundary of changeable files a **cartridge**:
+In [Looplet](https://github.com/hsaghir/looplet), my Python toolkit for building and evaluating agents, I separate this behavior into a directory called a **cartridge**:
 
 ```text
 refund.cartridge/
@@ -50,31 +40,19 @@ refund.cartridge/
 └── evals/
 ```
 
-The application that loads and runs the cartridge is the **host**. It supplies the model connection, libraries, credentials, and workspace. The billing service still stores payment records and decides which actions are authorized. A cartridge tool calls that service; it does not replace it.
+The cartridge holds only what defines the agent: its system prompt, tool declarations, local rules, and development tests.
 
-This boundary gives the team a small unit to work on. A person can review a
-change without reviewing a copied web server. A new version can keep the same
-tools and change only its instructions or policy. Another agent can edit a
-copy without needing access to the whole application.
+The application that loads and runs the cartridge is the **host**. The host supplies the model API connection, runtime libraries, credentials, and execution workspace. Existing backend services still own business records and authorization. A cartridge tool calls the billing service; it does not replace it.
 
-An **eval** is a task with checks of its result. For a large refund, the check
-might require no payment and one request waiting for review. Evals make the
-expected behavior visible. They can travel with the cartridge for development,
-while the host can keep separate tests for final acceptance.
+This separation gives you a concrete unit of change. An engineer can review an update to the agent's policy without reviewing web server code. A developer can create a new variant by copying the directory and changing one file. Most importantly, another program can read and edit the cartridge directly.
 
-Context and delegation belong to the same boundary. If an agent lacks a current
-record, change how it retrieves context and test that change. If it delegates
-work, the host should choose the child's tools, limit its budget, and check its
-result. A child agent's working state is not an isolation boundary.
-
-The files do not make the code safe by themselves. They do not create a sandbox or grant service authorization. The host still controls the runtime, credentials, and release decision. Tool formats and saved results are also contracts, so pin versions and rerun the relevant evals when they change.
+Beside the prompts and tools live **evals**: tasks with automated checks of the final outcome. For an oversized refund, the check requires that no money was paid and that one request was placed in the review queue. Evals make the intended behavior explicit and version-controlled alongside the code they test.
 
 ## Keep actions under host control
 
-The cartridge describes what the agent should do. The host decides whether a
-proposed action can run. For the refund, the model may ask to pay \$250, but
-host code must block the payment and create a review. A fixed rule belongs in
-ordinary application code, not in the model's judgment.
+Once the agent definition lives in files, the next question is how to run it safely.
+
+When a model suggests calling a tool, that request is only a proposal. In our refund example, when the model calls `refund(amount=250)`, money should not move immediately. The application code surrounding the model must inspect the call before it runs. If the amount exceeds \$100, application code must block the call and route the request to human review.
 
 <figure>
   <picture>
@@ -84,24 +62,23 @@ ordinary application code, not in the model's judgment.
   <figcaption>The host supplies the checks. The model receives a tool result or a reason for rejection before choosing its next step. A separate check decides whether it may finish. Finishing does not prove the task was done correctly.</figcaption>
 </figure>
 
-The code around the model is the **harness**. It supplies information, runs tools, applies checks, and decides when to stop. Calling `done` asks to finish. It does not show that the task succeeded. A separate check decides whether to allow it. A returned record describes an action after it has been attempted. To block an action, the check must run before the tool.
+The code around the model is the **harness**. It prepares context, runs tools, enforces limits, and decides when the loop stops.
 
-A check that rejects a request should tell the model why. If a required check crashes or times out, the run should stop and report that failure. The Looplet version used in this demo has a bug here: a crashing completion check can still allow `done`. The [failure test](/looplet-demo-notes/#probe-the-failure-contracts) reproduces it. A later eval can find missing work, but it cannot make a broken completion check safe.
+In Looplet, `done` is also treated as a proposal. When a model calls `done`, it is asking to finish, not proving that the task succeeded. A separate host check verifies that required work is complete before letting the loop stop.
 
-Stopping a run cannot undo a payment. The payment service must enforce authorization and prevent duplicate payments. If a call times out, check whether it took effect before retrying.
+A rejected action should return a clear explanation so the model can choose a better next step. If a required check crashes or times out, the run must halt with an error. In the pinned demonstration revision, a crashing completion check can fail open and allow `done`. The [failure test](/looplet-demo-notes/#probe-the-failure-contracts) reproduces this limitation. An eval can catch missing work after the fact, but it cannot substitute for a safe completion gate during execution.
+
+Stopping a run also cannot undo an action that has already occurred. The payment service must enforce idempotency and authorization. If a network call times out, the system must check whether the payment took effect before retrying.
 
 ## Turn a failure into a test
 
-Start with the customer result: did the customer get the right outcome?
+With the host harness in place, we can test the refund policy systematically.
 
-The [runnable refund example](/looplet-demo-notes/#refund-demo-change-the-actual-cartridge) uses two fixed model responses: request a \$250 refund, then call `done`. The
-first version has the rule in its prompt but no code to enforce it. The refund goes through, and the run finishes without an error.
+In the [runnable refund example](/looplet-demo-notes/#refund-demo-change-the-actual-cartridge), we start with an unguarded cartridge that has the policy only in its prompt. We feed it two scripted responses: request a \$250 refund, then call `done`. Every tool call succeeds. The ledger records a \$250 refund. The task fails.
 
-The tools worked. The task failed.
+Now we add a policy hook to the cartridge. The hook reads the original request, blocks the \$250 refund, and creates a record in `reviews.json`.
 
-Now add a check that blocks the oversized refund and sends it for review. It checks the original request, so split attempts also fail.
-
-If we call the model again, it might choose a different action and never test this failure. Instead, we feed the saved responses through the changed host. We call this **captured-response replay**: testing new code with the same model responses and fresh tool state.
+To confirm the fix, we do not need to call a live model and hope it reproduces the scenario. Instead, we take the saved responses from the failed run and pass them through the updated cartridge. We call this **captured-response replay**: re-running the exact proposals against fresh tool state to test how the new code handles them.
 
 <figure>
   <picture>
@@ -111,11 +88,13 @@ If we call the model again, it might choose a different action and never test th
   <figcaption>Both versions receive the same responses and start with empty files. The result checks are unchanged. Only the hook and its configuration differ.</figcaption>
 </figure>
 
-**The successful run contains a tool error. The unsuccessful run does not.** The error reports that the refund was blocked, which is what we wanted. Both runs reach `done`. Neither an error-free log nor a completion message tells us whether the task was done correctly.
+**The successful run contains a tool error. The unsuccessful run does not.**
 
-The eval checks the refund and review records, not the agent's claim of success. For the \$250 request, it requires no refund and one pending review. A separate \$50 case must still produce a refund, so blocking every request would fail. Five more cases test split requests, duplicates, the limit, and finishing without a refund call. The demo uses local files, not real payments. It tests the host code, not whether a live model follows instructions.
+In the guarded run, the tool call returns an expected denial error, which prevents the payment. Both runs reach `done`. Neither a clean execution log nor a completion message tells you whether the business policy was respected; only the outcome check does.
 
-Copy the cartridge and raise its refund limit from \$100 to \$300. The policy configuration stores the amount in cents:
+The eval inspects the ledger and review records directly. For the \$250 request, it asserts that the ledger is empty and that exactly one review record exists. A control test verifies that a valid \$50 request still issues a refund, ensuring the hook does not simply block every call. Five additional test cases cover split amounts, duplicate submissions, edge values, and immediate completion requests.
+
+Now test the reverse. In the cartridge hook configuration, change the limit:
 
 ```diff
  kwargs:
@@ -123,34 +102,25 @@ Copy the cartridge and raise its refund limit from \$100 to \$300. The policy co
 +  max_cents: 30000
 ```
 
-Replay the same \$250 request. It now goes through. The original checks still expect a review, so they fail and the runner exits with status 1. A file edit changed the behavior; the unchanged evals caught it.
+Replay the same \$250 request. With the higher limit, the refund goes through. The unchanged outcome checks expect a review record, so they fail and the runner exits with status 1. An ordinary file edit changed the behavior, and an automated test immediately caught the regression.
 
-The host runs both definitions with the same runner. The [full runner](/looplet-refund-demo.py) prepares the workspace, adds the checks, and saves the responses, tool calls, and results. Follow the [reproduction steps](/looplet-demo-notes/#refund-demo-change-the-actual-cartridge) to make the edit and run the comparison.
+The [demo runner](/looplet-refund-demo.py) executes both versions through the same interface. The [reproduction notes](/looplet-demo-notes/#refund-demo-change-the-actual-cartridge) document the full test suite.
 
-Replay fixes the model responses, not the tool results. Tools run again, including their side effects, so use temporary workspaces and test services. To test a prompt change or a model's response to rejection, run the model again and compare several trials.
-
-Save the failure as an eval. Future versions can be checked against it, even
-when the person or agent making the change does not know the original bug.
-
-At this point, a person can fix the cartridge. The same test also gives a
-builder a clear target: edit a copy, run it, and use the failed checks to guide
-the next edit.
+Saving this failure as an eval provides permanent protection. Future developers, or future models, can change prompts and tools without silently reintroducing the bug.
 
 ## A cartridge makes autonomous improvement possible
 
-Once behavior is in a cartridge, another agent can improve it. Here, **autonomous** means the model makes the edits. The host still runs the tests and evals and decides whether to keep the change.
+Once an agent is defined in files and evaluated against outcome checks, a new capability emerges: **another agent can improve it.**
 
-The loop is simple: copy the cartridge, let the builder edit the copy, run it against tests owned by the host, and keep it only if it passes. Repeat from the best version. This is a **hill climb**: each round tries to find a better version without giving the version being tested control of the tests.
+When an agent fails, a human developer typically reads the error, edits the prompt or tool logic, runs the tests, and checks whether the pass rate improved. Because the cartridge is just files in a directory, a **builder agent** can execute that exact same loop.
 
-The agent doing a task and the agent improving the agent have different jobs. The task agent handles a request. The builder changes the definition that will handle future requests. The edited copy is a candidate; it does not replace the deployed version just because the builder finished writing it.
+This process is a **hill climb**:
+1. Copy the cartridge to a fresh workspace.
+2. Let the builder model read the failure report and edit the candidate cartridge files.
+3. Run the candidate against the test suite.
+4. If all tests pass, keep the candidate; if tests fail, return the error feedback to the builder and try again.
 
-The live hill climb shows this working. I ran `gpt-5.6-sol` against the failed refund case. The first copy fixed that case but failed two other tests. The host sent those failures back to the builder. After two more rounds, the copy passed all seven tests owned by the host.
-
-Only two hook files changed. The nine eval files stayed byte-identical to the baseline. The host supplied the expected results and decided whether the candidate passed.
-
-In this trial, a live model discovered and improved a cartridge while the host owned the tests and sent failures back to the builder. The result covers one task, one model, and one bounded experiment. Other models and tasks may behave differently. The candidate and evaluator share a process, so candidate code can access the evaluator's permissions.
-
-The [builder demo](/looplet-refund-builder-demo.py) also has a scripted mode. It makes the same copy-edit-run-keep loop reproducible without a model or an API key.
+The critical architectural requirement is that the host, not the candidate, must own the evaluation suite. If the candidate could modify its own eval checks, it could achieve a passing score by simply deleting the assertions. The [probe script](/looplet-demo-notes/#probe-the-failure-contracts) demonstrates this: modifying only the grading code produces a reported pass on the broken \$250 refund.
 
 <figure>
   <picture>
@@ -160,22 +130,28 @@ The [builder demo](/looplet-refund-builder-demo.py) also has a scripted mode. It
   <figcaption>The builder can edit and test without waiting for a person at each step. Separate checks decide whether its candidate is ready to deploy. The builder and candidate cannot change those checks.</figcaption>
 </figure>
 
-Give the builder a goal, a copy to edit, and a time or cost budget. Run each copy in a fresh workspace and return the test results. Keep final tests outside the cartridge. A candidate can change tests stored inside itself; in the [failure test](/looplet-demo-notes/#probe-the-failure-contracts), changing only the grading code makes the same wrong refund report a pass.
+This autonomous loop is not hypothetical. We ran a live hill climb using `gpt-5.6-sol` against the failed refund cartridge:
+- **Round 1:** The builder model read `failure.json`, created the policy hook, and fixed the primary \$250 failure. But host-owned holdout tests caught two regressions: an applicant could bypass the limit by splitting the refund into smaller requests, and finishing without a tool call bypassed the review queue.
+- **Round 2:** The host returned those failure reports to the builder. The model revised the hook to ensure oversized requests queue for review during the completion check.
+- **Round 3:** Guided by the remaining split-request failure, the builder updated the hook to return an explicit denial decision.
 
-For the final decision, run the candidate and the code that judges it with separate permissions. Putting the files in another directory is not enough. The permissions and the worker boundary must enforce the separation.
+After three iterations, the candidate passed all seven host-owned test cases. Only two hook files were modified. All nine eval files remained byte-identical to the baseline because they were maintained outside the builder workspace.
 
-The host can promote a passing candidate automatically or ask a person to review it. Either way, the rule is simple: **automate the edits; keep the final tests and release decision outside the program being edited.**
+The [builder runner](/looplet-refund-builder-demo.py) includes both this live mode and a deterministic scripted mode for offline reproduction.
 
-The same design supports edits by a person and edits by a model.
+This experiment demonstrates that a live model can discover and refine working cartridge logic when given clear outcome feedback. It is a single bounded experiment on one task and one model, not proof of universal autonomy. But it shows how treating agents as files turns agent optimization into an automated, test-driven engineering discipline.
 
 ## Start with one agent
 
-Start with an agent you already run. Keep its model and tools. Move its changeable behavior into a separate definition, add one check of the result, and save one real failure as an eval. The [migration guide](https://hsaghir.com/looplet/migrate/) shows a small first step. You do not need to replace tools that already provide this boundary.
+You do not need to replace your application architecture or adopt an all-in-one framework to use this approach.
 
-For each run, record the definition and model versions, inputs, tool calls, results, stop reason, and files produced. Use those records to understand failures and turn them into evals. Compare quality and policy behavior, then measure time, model use, and cost.
+Start with a single agent you already run in production:
+1. Move its prompts, tool declarations, and local policies into a dedicated directory.
+2. Keep your database clients, credentials, and business authorization inside the host application.
+3. When the agent fails, do not patch a prompt string in production and hope for the best. Capture the failure, write an automated outcome check, edit the cartridge files, and verify the result.
 
-The runtime and eval tools can be shared without sharing credentials or business data. Keep access control, storage, worker isolation, and job scheduling in the surrounding infrastructure. The [demo notes](/looplet-demo-notes/) contain commands and the evidence behind the examples.
+For each run, log the cartridge version, model identifier, inputs, tool calls, results, and stop reasons. These traces become the test cases for your next eval suite.
 
-A running agent answers requests. A separate definition gives us something we can improve: inspect it, change it, run it, and compare the result. The edit may come from a person or another agent. The eval tells us whether to keep it.
+A running agent is an active service component. A separate agent definition is an artifact you can systematically version, evaluate, and improve.
 
 **Own the harness. Turn failures into evals.**
