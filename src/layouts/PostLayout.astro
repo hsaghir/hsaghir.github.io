@@ -14,7 +14,7 @@ interface Props {
   rawContent: string;
 }
 const { post, headings, rawContent } = Astro.props;
-const { title, description, date, updated, tags, cover, coverAlt } = post.data;
+const { title, description, date, updated, tags, cover, coverMobile, coverAlt, coverCaption } = post.data;
 const stats = readingTime(rawContent);
 ---
 <BaseLayout
@@ -57,7 +57,15 @@ const stats = readingTime(rawContent);
 
     {cover && (
       <figure class="post-cover">
-        <img src={cover} alt={coverAlt ?? ''} loading="eager" />
+        {coverMobile ? (
+          <picture>
+            <source media="(max-width: 600px)" srcset={coverMobile} />
+            <img src={cover} alt={coverAlt ?? ''} loading="eager" />
+          </picture>
+        ) : (
+          <img src={cover} alt={coverAlt ?? ''} loading="eager" />
+        )}
+        {coverCaption && <figcaption>{coverCaption}</figcaption>}
       </figure>
     )}
 

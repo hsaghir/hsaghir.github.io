@@ -27,11 +27,6 @@ const rest = posts
       Essays, notes, and experiments on machine learning, AI,
       and the non-linear nature of things, by <a href="/about/">{SITE.author}</a>.
     </p>
-    <p class="cta">
-      <a class="btn" href="/blog/">Read the blog <span aria-hidden="true">→</span></a>
-      <a class="btn btn-ghost" href="/research/">Research</a>
-      <a class="btn btn-ghost" href="https://mlmentorship.com" rel="noopener">ML interviews <span aria-hidden="true">↗</span></a>
-    </p>
   </section>
 
   <div class="container">
@@ -90,42 +85,6 @@ const rest = posts
     margin: 0 0 2rem;
   }
   .lede a { color: var(--c-text); text-decoration-color: var(--c-accent); }
-
-  .cta { display: flex; flex-wrap: wrap; gap: .9rem; margin: 0; }
-  .btn {
-    font-family: var(--font-ui);
-    font-weight: 500;
-    font-size: 0.92rem;
-    letter-spacing: 0.02em;
-    display: inline-flex; align-items: center; gap: .45rem;
-    padding: .7rem 1.25rem;
-    border-radius: var(--radius);
-    background: var(--c-text);
-    color: var(--c-bg);
-    border: 1px solid var(--c-text);
-    text-decoration: none;
-    transition: transform var(--transition), box-shadow var(--transition), background var(--transition), color var(--transition);
-    box-shadow: var(--shadow-sm);
-  }
-  .btn:hover {
-    transform: translateY(-1px);
-    box-shadow: var(--shadow-md);
-    background: var(--c-accent);
-    border-color: var(--c-accent);
-    color: var(--c-bg);
-    text-decoration: none;
-  }
-  .btn-ghost {
-    background: transparent;
-    color: var(--c-text);
-    border-color: var(--c-rule);
-    box-shadow: none;
-  }
-  .btn-ghost:hover {
-    background: var(--c-bg-tint);
-    color: var(--c-text);
-    border-color: var(--c-text);
-  }
 
   .rule {
     height: 1px;

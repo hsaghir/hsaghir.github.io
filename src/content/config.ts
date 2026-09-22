@@ -13,7 +13,9 @@ const posts = defineCollection({
     // String path served from /public (e.g. "/images/foo.jpg").
     // For processed/optimized images, use a regular <Image> import inside the post body.
     cover: z.string().optional(),
+    coverMobile: z.string().optional(),
     coverAlt: z.string().optional(),
+    coverCaption: z.string().optional(),
     featured: z.boolean().default(false),
     // Hide from the home page (still reachable under /blog/ and tag/category
     // archives). Use for posts that are published but no longer representative
