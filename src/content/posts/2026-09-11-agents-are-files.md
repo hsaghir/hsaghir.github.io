@@ -62,6 +62,11 @@ might require no payment and one request waiting for review. Evals make the
 expected behavior visible. They can travel with the cartridge for development,
 while the host can keep separate tests for final acceptance.
 
+Context and delegation belong to the same boundary. If an agent lacks a current
+record, change how it retrieves context and test that change. If it delegates
+work, the host should choose the child's tools, limit its budget, and check its
+result. A child agent's working state is not an isolation boundary.
+
 The files do not make the code safe by themselves. They do not create a sandbox or grant service authorization. The host still controls the runtime, credentials, and release decision. Tool formats and saved results are also contracts, so pin versions and rerun the relevant evals when they change.
 
 ## Keep actions under host control
@@ -124,21 +129,12 @@ The host runs both definitions with the same runner. The [full runner](/looplet-
 
 Replay fixes the model responses, not the tool results. Tools run again, including their side effects, so use temporary workspaces and test services. To test a prompt change or a model's response to rejection, run the model again and compare several trials.
 
-Save the failure as an eval. Future changes can be checked against it, even when the person or agent making the change does not know the original bug.
+Save the failure as an eval. Future versions can be checked against it, even
+when the person or agent making the change does not know the original bug.
 
-Once a failure is a test, the test can guide the next design choice. In a
-separate comparison, a data-analysis agent already investigated unclear parts
-of a task and tied its answer to evidence. I added a second model to review
-that answer. Across three trials of eight tasks, the version with review
-produced 5 accepted answers out of 24. The version without review produced 10.
-The review version also made 410 model calls, compared with 338. The
-[comparison notes](/looplet-demo-notes/#analytics-comparison-removing-blocking-review)
-contain the trial details and limits.
-
-I removed the reviewer for that implementation. The test showed that the extra
-step did not help there. The same rule applies to context and delegation:
-fetch a current record when the agent needs one, give a child only the tools
-and budget it needs, and test each change.
+At this point, a person can fix the cartridge. The same test also gives a
+builder a clear target: edit a copy, run it, and use the failed checks to guide
+the next edit.
 
 ## A cartridge makes autonomous improvement possible
 
