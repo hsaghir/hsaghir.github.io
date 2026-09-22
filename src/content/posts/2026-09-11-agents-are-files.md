@@ -1,6 +1,6 @@
 ---
 title: "Agents Are Files"
-description: "Treat an agent's changeable behavior as files. Keep it separate from the application that runs it, then test whether edits help."
+description: "Treat an agent's changeable behavior as files. Let another agent edit and test new versions under host-owned checks."
 date: 2026-09-21
 featured: true
 tags: ["agents", "engineering", "open-source", "python"]
@@ -27,8 +27,12 @@ check what happened.
 These files are not the whole running system. They are the part of its behavior
 we can inspect, edit, and test without copying the application.
 
-Another agent can use the same files to build the next version. But making
-an edit is not the same as making an improvement. We need a way to compare
+That makes a simple improvement loop possible. Another agent can edit a copy,
+run it against tests owned by the host, and keep it only if it passes. In this
+hill climb, the agent makes the edits; the host owns the tests and decides
+whether to keep the result.
+
+An edit is not automatically an improvement. We need to run it and compare
 the results.
 
 ## Separate the agent from the application
