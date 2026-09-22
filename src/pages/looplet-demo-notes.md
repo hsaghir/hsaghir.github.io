@@ -159,6 +159,45 @@ set `OPENAI_BASE_URL` and `OPENAI_MODEL` (or `OPENAI_API_KEY`) and add
 `--mode live`. The evaluator still runs in the same process, so this is not
 a hostile-code sandbox or a production promotion system.
 
+### Live hill climb through a Responses proxy
+
+On September 21, 2026, I ran the builder against a live `gpt-5.6-sol` model
+through an OpenAI-compatible Copilot LM Proxy. The proxy's Responses API was
+used so tool calls could continue across turns:
+
+```bash
+uv run --no-project --python 3.12 \
+    --with openai \
+    --with 'git+https://github.com/hsaghir/looplet.git@8384404061b9c22e9639679d1a4c61fbf9737e22' \
+    looplet-refund-builder-demo.py \
+    --mode live --protocol responses \
+    --base-url http://127.0.0.1:19823/v1 \
+    --model gpt-5.6-sol --iterations 3 --out ./live-refund-builder
+```
+
+The first candidate fixed the visible `$250` failure but failed the split
+refund and no-refund-call holdouts. The host returned those failures to the
+builder. The next iteration fixed the completion case; the final iteration
+changed the hook to return Looplet's `HookDecision(permission="deny")` for
+each oversized dispatch. All seven host-owned cases then passed:
+
+```text
+above_limit          PASS
+within_limit         PASS
+split_request        PASS
+duplicate_refund     PASS
+at_limit              PASS
+just_above_limit     PASS
+done_only_above_limit PASS
+```
+
+The live builder took three iterations: the first candidate failed holdouts,
+the second repaired the completion path, and the third repaired the dispatch
+denial. It changed only
+`hooks/00_RefundLimit/config.yaml` and `hooks/00_RefundLimit/hook.py`; the
+seven candidate eval files were byte-identical to the baseline. This is a
+single bounded experiment, not evidence that every model or task will improve.
+
 ### Runtime details behind the diagrams
 
 The cover illustrates an editable agent definition, with a changed hook

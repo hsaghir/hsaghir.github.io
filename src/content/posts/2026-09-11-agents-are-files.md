@@ -286,8 +286,18 @@ The candidate's own eval files are unchanged.
 
 The default builder responses are scripted, so this demonstrates the
 edit-run-accept protocol, not a model discovering a repair. The same runner
-has a live mode for a provider-backed trial, but one live run would still not
-prove general autonomous improvement.
+also has a live mode. In a live trial, `gpt-5.6-sol` read the failed result,
+edited the copied cartridge, and passed the visible case but failed two
+holdouts. The host wrote those failures back as feedback. Two more live
+iterations repaired the hook, and the final candidate passed all seven cases
+while changing only the two hook files. The cartridge's eval files stayed
+byte-identical to the baseline.
+
+This is evidence that a live model can discover and improve a cartridge when
+the host owns the evals and feeds failures back to the builder. It is one task,
+one model, and one bounded experiment, not a general result about autonomous
+improvement. The evaluator still runs in the same process and is not a hostile-
+code sandbox.
 
 There are two different jobs here. The **task loop** uses tools to handle
 a request. The **development loop** edits and tests the agent that will
