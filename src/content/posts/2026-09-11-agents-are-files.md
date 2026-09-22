@@ -1,7 +1,7 @@
 ---
 title: "Agents Are Files"
-description: "Keep an agent's instructions, tools, and rules separate from the application that runs it. Then change them and test whether the agent does a better job."
-date: 2026-09-11
+description: "Treat an agent's changeable behavior as files. Keep it separate from the application that runs it, then test whether edits help."
+date: 2026-09-21
 featured: true
 tags: ["agents", "engineering", "open-source", "python"]
 category: "engineering"
@@ -23,6 +23,9 @@ when spread through an application.
 application that runs it.** Put the definition in ordinary files so a person
 or another program can read and edit it. Change the definition, run it, and
 check what happened.
+
+These files are not the whole running system. They are the part of its behavior
+we can inspect, edit, and test without copying the application.
 
 Another agent can use the same files to build the next version. But making
 an edit is not the same as making an improvement. We need a way to compare
