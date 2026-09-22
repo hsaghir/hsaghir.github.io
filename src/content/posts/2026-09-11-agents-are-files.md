@@ -277,21 +277,19 @@ A **builder agent** can create a cartridge from a task description or
 revise one after a failed run. It uses the same files and runner as a
 developer.
 
-The [builder demo](/looplet-refund-builder-demo.py) makes this boundary
-concrete. In its reproducible offline run, a builder reads the failed refund
-result and writes two files into a copied cartridge. The host then replays
-the failed request and runs six other refund cases with expected results kept
-outside the cartridge. The original version fails; the candidate passes.
-The candidate's own eval files are unchanged.
+There are two different jobs here. The **task loop** uses tools to handle
+a request. The **development loop** edits and tests the agent that will
+handle future requests. Each edited version is a **candidate**. It should
+not replace the deployed agent just because the builder finished writing it.
 
-The default builder responses are scripted, so this demonstrates the
-edit-run-accept protocol, not a model discovering a repair. The same runner
-also has a live mode. In a live trial, `gpt-5.6-sol` read the failed result,
-edited the copied cartridge, and passed the visible case but failed two
-holdouts. The host wrote those failures back as feedback. Two more live
-iterations repaired the hook, and the final candidate passed all seven cases
-while changing only the two hook files. The cartridge's eval files stayed
-byte-identical to the baseline.
+The live hill climb makes this boundary concrete. I ran `gpt-5.6-sol` against
+the failed refund case. The first candidate fixed that case but failed two
+holdouts. The host wrote those failures back to the builder. After two more
+iterations, the candidate passed all seven host-owned cases.
+
+Only two hook files changed. The nine eval files stayed byte-identical to the
+baseline. The host, not the candidate, supplied the expected outcomes and
+decided whether the candidate passed.
 
 This is evidence that a live model can discover and improve a cartridge when
 the host owns the evals and feeds failures back to the builder. It is one task,
@@ -299,10 +297,11 @@ one model, and one bounded experiment, not a general result about autonomous
 improvement. The evaluator still runs in the same process and is not a hostile-
 code sandbox.
 
-There are two different jobs here. The **task loop** uses tools to handle
-a request. The **development loop** edits and tests the agent that will
-handle future requests. Each edited version is a **candidate**. It should
-not replace the deployed agent just because the builder finished writing it.
+The [builder demo](/looplet-refund-builder-demo.py) also has a scripted mode.
+That mode makes the edit-run-accept protocol reproducible without a model or
+an API key: the builder reads the failure and writes two files into a copied
+cartridge, while the host replays the failed request and runs six other cases.
+The candidate's eval files remain unchanged.
 
 <figure>
   <picture>
@@ -335,10 +334,10 @@ either case, the release rules decide whether a passing candidate replaces
 the current version. The principle is **automate the edits; keep the final
 checks and release decision outside the builder's control.**
 
-In these experiments, a developer added the refund hook and removed the
-analytics reviewer. Neither experiment demonstrates autonomous improvement.
-The development loop above is a design we could build using the same
-interfaces.
+The earlier refund comparison used a developer-supplied hook, while the live
+hill climb used a model to make the cartridge edits. Neither experiment shows
+that every model or task will improve. The development loop above is the
+general pattern supported by the same interfaces.
 
 ## Start with one agent
 

@@ -195,7 +195,7 @@ The live builder took three iterations: the first candidate failed holdouts,
 the second repaired the completion path, and the third repaired the dispatch
 denial. It changed only
 `hooks/00_RefundLimit/config.yaml` and `hooks/00_RefundLimit/hook.py`; the
-seven candidate eval files were byte-identical to the baseline. This is a
+nine candidate eval files were byte-identical to the baseline. This is a
 single bounded experiment, not evidence that every model or task will improve.
 
 ### Runtime details behind the diagrams
