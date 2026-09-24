@@ -10,6 +10,8 @@ coverMobile: "/images/looplet/platform-ownership-mobile.png"
 coverAlt: "A stack of files that define an agent, with one changed row highlighted. Edit. Run. Evaluate."
 ---
 
+Think of an agent's editable harness as a game cartridge and the application that runs it as the console. The cartridge holds its instructions, tools, hooks, and configuration; the host supplies the loop, model access, service permissions, and release checks. Swapping cartridges changes the agent without rebuilding the console, but a cartridge cannot approve its own release.
+
 Imagine an incident-response agent taking a service offline, noticing its mistake, and restoring it before it stops. A test that reads only the final configuration sees a healthy service. Users still experienced an outage. The test missed the part that mattered.
 
 I want to change an agent like that and know whether the next version does better. An agent here is a program in which a model chooses tool calls. Its behavior depends on instructions, the tools that carry out those calls, and code that checks what may run. Once the agent is in use, an edit must fix the failure without breaking what already worked. Another agent can propose that edit, but a pass on tests it can change is not enough to ship it.
