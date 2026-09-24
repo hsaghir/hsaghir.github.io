@@ -10,23 +10,21 @@ coverMobile: "/images/looplet/platform-ownership-mobile.png"
 coverAlt: "A stack of files that define an agent, with one changed row highlighted. Edit. Run. Evaluate."
 ---
 
-Think of an agent's editable harness as a game cartridge and the application that runs it as the console. The cartridge holds its instructions, tools, hooks, and configuration; the host supplies the loop, model access, service permissions, and release checks. Swapping cartridges changes the agent without rebuilding the console, but a cartridge cannot approve its own release.
+An agent here is a program in which a model chooses tool calls. Once it is part of an application, its instructions, tools, hooks, and configuration can become mixed with request handlers and service code. But those are different things to change. I want to run another agent, or let a builder improve this one, without handing over the rest of the application for editing.
 
-Imagine an incident-response agent taking a service offline, noticing its mistake, and restoring it before it stops. A test that reads only the final configuration sees a healthy service. Users still experienced an outage. The test missed the part that mattered.
+Think of the application as a game console and each agent's editable harness as a cartridge. A cartridge groups its instructions, tools, hooks, configuration, and self-tests in a directory of files. The same host can run a refund agent or an incident-response agent by loading different cartridges, provided it supplies the capabilities each needs. An editor can share or change a copy without rewriting the host's loop; a compatible host can load it elsewhere.
 
-I want to change an agent like that and know whether the next version does better. An agent here is a program in which a model chooses tool calls. Its behavior depends on instructions, the tools that carry out those calls, and code that checks what may run. Once the agent is in use, an edit must fix the failure without breaking what already worked. Another agent can propose that edit, but a pass on tests it can change is not enough to ship it.
+I built [Looplet](https://github.com/hsaghir/looplet), a Python toolkit for running agents that call tools, to keep the loop under the application's control. The host supplies model access and service permissions and decides what can ship. An agent builder can propose a changed cartridge and learn from development tests, while the host compares versions. The files alone do not isolate candidate code or protect release checks.
 
-I built [Looplet](https://github.com/hsaghir/looplet), a Python toolkit for running agents that call tools, to keep that loop under the application's control and test changes after the first working version. It can load an agent's instructions, tool definitions, and checks from a directory of files. The application that runs the agent supplies the model and controls access to real services. Each edited copy of that directory is a proposed version you can test against a recorded failure and a case that already worked; the files alone cannot protect the release checks or authorize an action.
+Making an agent easier to change does not tell us whether the change helped. Imagine an incident-response agent taking a service offline, noticing its mistake, and restoring it before it stops. A test that reads only the final configuration sees a healthy service. Users still experienced an outage. To evaluate a fix, I need to check what happened during the run, not just where it ended.
 
 The experiment below is smaller than an incident responder. It uses scripted calls and local files to simulate a refund; a live coding agent edits its checks. In one run the builder improves the development results. In a separate scripted probe, changing only the graders turns the same bad outcome into a reported pass. Neither run is a protected release test.
 
 ## What a version includes
 
-Versioning only the prompt misses two changes that can alter a run. A new tool argument changes what the model can request; a **hook**, code called at a specific point, can allow or refuse the same request before it executes. If those pieces are mixed into request handlers and database clients, a prompt diff cannot tell you which behavior actually ran.
+Packaging only the prompt misses changes that can alter a run. A new tool argument changes what the model can request; a **hook**, code called at a specific point, can allow or refuse the same request before it executes. If those pieces are mixed into request handlers and database clients, a prompt diff cannot tell you which behavior actually ran.
 
-Looplet can run an agent directly from Python tools and hooks, yielding each step to the application. The files are optional. When I want to compare versions of the behavior, I group the parts we expect to change in a directory called a **cartridge**.
-
-Think of Looplet's runtime and the host application as a game console. Each cartridge holds an agent-specific harness: its instructions, tools, hooks, and configuration. Swap a refund cartridge for an incident-response cartridge, and the same host can run a different agent without rewriting its loop, provided it supplies the capabilities each needs. An editor can propose changes to the cartridge; the host retains control of model access, service approvals, and release checks. A compatible host can load the files elsewhere, but the directory alone cannot make its tools and hooks run in every runtime. This is the cartridge used by the runnable example:
+Looplet can run an agent directly from Python tools and hooks, yielding each step to the application. The files are optional. When I want to compare versions, I group the parts I expect to change in a cartridge. The refund example uses this directory:
 
 ```text
 refund.cartridge/
@@ -41,7 +39,7 @@ refund.cartridge/
 
 The evals beside the definition give the developer quick feedback; they are not an independent release check when the candidate can edit them.
 
-The **host** is the application that loads and runs the cartridge. It supplies the model connection and runtime, and decides which credentials and workspace a candidate receives. It can load a changed copy without changing its request handlers or service clients. The diff identifies what the candidate proposed; the original remains available to compare. In this demo, candidate Python runs in the same process as the host, so the directory itself provides no isolation. Loading a cartridge executes its Python tool and hook modules before the first model call; a tool-call hook cannot constrain that code.
+The host can load a changed copy without changing its request handlers or service clients. It decides which credentials and workspace a candidate receives. The diff identifies what the candidate proposed; the original remains available to compare. In this demo, candidate Python runs in the same process as the host, so the directory itself provides no isolation. Loading a cartridge executes its Python tool and hook modules before the first model call; a tool-call hook cannot constrain that code.
 
 Those files do not freeze the model or the world around it. A useful run record also names the model and definition version, inputs, tool results, and reason for stopping. Without that context, repeating a task with the same files may give a different result for reasons the diff cannot explain.
 
